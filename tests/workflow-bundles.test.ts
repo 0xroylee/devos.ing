@@ -2006,6 +2006,7 @@ describe("workflow bundles", () => {
     const mattPocockWorkflowNames = [
       "ceo",
       "cto",
+      "deliver-code",
       "development-design-delivery",
       "engineering-manager",
       "founding-engineer",
@@ -3221,6 +3222,61 @@ describe("workflow bundles", () => {
     ).resolves.toContain(
       "This is the entry skill for the development-design-delivery Omniskills workflow.",
     );
+  });
+
+  test("loads deliver-code as an adaptive direct-delivery workflow", async () => {
+    const bundle = await loadWorkflowBundle("examples/workflows/deliver-code");
+
+    expect(bundle.manifest.name).toBe("deliver-code");
+    expect(bundle.manifest.skills.map((skill) => skill.source)).toEqual([
+      "./skills/deliver-code",
+      "mattpocock:grill-with-docs",
+      "mattpocock:domain-modeling",
+      "mattpocock:to-spec",
+      "mattpocock:to-tickets",
+      "mattpocock:codebase-design",
+      "mattpocock:implement",
+      "mattpocock:tdd",
+      "mattpocock:diagnosing-bugs",
+      "mattpocock:code-review",
+      "superpowers:verification-before-completion",
+    ]);
+    expect(bundle.manifest.steps.map((step) => [step.id, step.skill, step.gate ?? null])).toEqual([
+      ["prepare", "./skills/deliver-code", null],
+      ["grill", "mattpocock:grill-with-docs", null],
+      ["domain", "mattpocock:domain-modeling", null],
+      ["design", "mattpocock:codebase-design", null],
+      ["spec", "mattpocock:to-spec", null],
+      ["tickets", "mattpocock:to-tickets", null],
+      ["approve", "./skills/deliver-code", "human_approval"],
+      ["implement", "mattpocock:implement", null],
+      ["debug", "mattpocock:diagnosing-bugs", null],
+      ["review", "mattpocock:code-review", null],
+      ["verify", "superpowers:verification-before-completion", null],
+      ["accept", "./skills/deliver-code", "human_approval"],
+    ]);
+
+    const entrySkill = await readFile(
+      join(
+        import.meta.dir,
+        "..",
+        "examples",
+        "workflows",
+        "deliver-code",
+        "skills",
+        "deliver-code",
+        "SKILL.md",
+      ),
+      "utf8",
+    );
+    expect(entrySkill).toContain("## Direct mode");
+    expect(entrySkill).toContain("## Delegated mode");
+    expect(entrySkill).toContain("Mutation envelope");
+    expect(entrySkill).toContain("Prepared, not executed");
+    expect(entrySkill).toContain("state.json");
+    expect(entrySkill).toContain("90% line coverage is sufficient");
+    expect(entrySkill).toContain("Never claim automatic dispatch");
+    expect(entrySkill).not.toContain("automatically launches");
   });
 
   test("loads the openspec delivery example workflow from the handoff diagram", async () => {
