@@ -54,6 +54,8 @@ verification remain mandatory.
 - Do not add a CLI dispatcher, automatic agent launch, or a conditional
   workflow-manifest schema.
 - Do not force an ADR, a new spec, or multiple tickets for every small fix.
+- Do not require 100% test coverage or add low-value tests merely to increase a
+  coverage number; the repository's 90% line-coverage gate is sufficient.
 - Do not let research material silently become an approved requirement.
 - Do not grant commit, issue-publication, or other external-write authority
   implicitly.
@@ -423,6 +425,12 @@ separate deprecation decision is approved.
 Only M1 is active in the next implementation plan.
 
 ## Testing and Verification
+
+The quality target is meaningful behavioral confidence, not exhaustive test
+volume. Meet the repository's 90% line-coverage gate, but never chase 100%
+coverage. Tests should prioritize public behavior, approved seams, material
+failure modes, and regression risks; implementation details and low-value lines
+do not need tests solely to raise the percentage.
 
 Focused bundle tests must assert:
 
