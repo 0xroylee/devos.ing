@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "0.2",
+  "workflow": "deliver-code",
+  "workflowVersion": "0.1.0",
+  "generatedAt": "2026-07-20T14:40:43.063Z",
+  "workflows": [
+    {
+      "id": "workflow:deliver-code@0.1.0",
+      "name": "deliver-code",
+      "version": "0.1.0",
+      "source": {
+        "kind": "root"
+      }
+    }
+  ],
+  "edges": [],
+  "skills": [
+    {
+      "source": "./skills/deliver-code",
+      "resolvedName": "deliver-code",
+      "kind": "local",
+      "hash": "sha256:6620a6af860a72dd557a23924f29696c7021370c3eb78e022934a2b65f24eea5"
+    },
+    {
+      "source": "mattpocock:grill-with-docs",
+      "resolvedName": "grill-with-docs",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:a7e2ffc2e216483f140c486c5e1b5e3e66d6ca7cf47980357069b21887645069"
+    },
+    {
+      "source": "mattpocock:domain-modeling",
+      "resolvedName": "domain-modeling",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:f01e41e3fdaf3c4d4c20ddea9eb00e8330003d91bb564ef4518aaee856d4bf69"
+    },
+    {
+      "source": "mattpocock:to-spec",
+      "resolvedName": "to-spec",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:1cf05443c48f01b135983e7382cbb1cfed1b54b0caf5bd400067632355f15726"
+    },
+    {
+      "source": "mattpocock:to-tickets",
+      "resolvedName": "to-tickets",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:49679c184e8970591136c431ba4fa00a4890aff23a2701c194465f79007a23c9"
+    },
+    {
+      "source": "mattpocock:codebase-design",
+      "resolvedName": "codebase-design",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:452bfb044551a8177528b7df68e204e6a77b8a7f89daa741ef659f652c441376"
+    },
+    {
+      "source": "mattpocock:implement",
+      "resolvedName": "implement",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:1ad478cef4ccf1cde4cfff91cd551cb781e21da4e6d4940ef4df64c209db35cc"
+    },
+    {
+      "source": "mattpocock:tdd",
+      "resolvedName": "tdd",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:e845c35d776277cb08cbf3b68ea32b28e181069620c4a6b9d9642871184105f8"
+    },
+    {
+      "source": "mattpocock:diagnosing-bugs",
+      "resolvedName": "diagnosing-bugs",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:8148a4181f76442579999629563f08f31fa3784955584e781a190b64d65a1501"
+    },
+    {
+      "source": "mattpocock:code-review",
+      "resolvedName": "code-review",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:913b01e36a6d3e28173b68e3147295754dd1ff2b91dbc23ebb1161cc687c91e6"
+    },
+    {
+      "source": "superpowers:verification-before-completion",
+      "resolvedName": "superpowers-verification-before-completion",
+      "kind": "external",
+      "repo": "obra/superpowers",
+      "hash": "sha256:26401a7561086d127295b4267e19ccbc44a8b0d04ca519723a8a70301ae6efdf"
+    }
+  ]
+}

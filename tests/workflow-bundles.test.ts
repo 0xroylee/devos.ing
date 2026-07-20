@@ -3277,6 +3277,19 @@ describe("workflow bundles", () => {
     expect(entrySkill).toContain("90% line coverage is sufficient");
     expect(entrySkill).toContain("Never claim automatic dispatch");
     expect(entrySkill).not.toContain("automatically launches");
+
+    expect(bundle.lock?.workflow).toBe("deliver-code");
+    expect(bundle.lock?.skills.map((skill) => skill.source)).toEqual(
+      bundle.manifest.skills.map((skill) => skill.source),
+    );
+
+    const readme = await readFile(
+      join(import.meta.dir, "..", "examples", "workflows", "deliver-code", "README.md"),
+      "utf8",
+    );
+    expect(readme).toContain("$deliver-code");
+    expect(readme).toContain("90% line coverage");
+    expect(readme).toContain("does not authorize commits");
   });
 
   test("loads the openspec delivery example workflow from the handoff diagram", async () => {
