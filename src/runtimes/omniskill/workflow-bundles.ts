@@ -4,6 +4,7 @@ import { cp, mkdir, mkdtemp, readdir, readFile, rename, rm, writeFile } from "no
 import { tmpdir } from "node:os";
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { z } from "zod";
+import { materializePinnedGitCheckout } from "../../plugins/pinned-skill-source";
 import { runSubprocess } from "../../process";
 import { hashAgentProfileContent } from "./orchestration";
 
@@ -2435,36 +2436,52 @@ async function cloneGitWorkflowSource(
     commit?: string;
   },
 ): Promise<ResolvedWorkflowBundleSource> {
+  if (options.commit) {
+    const materialized = await materializePinnedGitCheckout({
+      repositoryUrl: source.cloneUrl,
+      commit: options.commit,
+      cwd: options.cwd,
+      env: process.env,
+      runCommand: options.runGitCommand ?? runSubprocess,
+      ...(options.tempDir ? { tempDir: options.tempDir } : {}),
+      tempPrefix: "omniskill-git-",
+      failureMessage: (stage) =>
+        `Locked git workflow commit could not ${stage}: ${source.url}@${options.commit}`,
+      mismatchMessage: (resolvedCommit) =>
+        `Locked git workflow commit mismatch: expected ${options.commit}, resolved ${resolvedCommit || "<none>"}`,
+    });
+    const sourceDir = source.subdirectory
+      ? join(materialized.checkoutDir, source.subdirectory)
+      : materialized.checkoutDir;
+
+    return {
+      sourceDir,
+      source: {
+        kind: "git",
+        url: source.url,
+        commit: materialized.commit,
+        ...(source.subdirectory ? { subdirectory: source.subdirectory } : {}),
+      },
+      cleanup: materialized.cleanup,
+      ...(source.alias ? { alias: source.alias } : {}),
+    };
+  }
+
   const tempRoot = await mkdtemp(join(options.tempDir ?? tmpdir(), "omniskill-git-"));
   const checkoutDir = join(tempRoot, "checkout");
   const cleanup = () => rm(tempRoot, { recursive: true, force: true });
 
   try {
-    if (options.commit) {
-      for (const command of [
-        { args: ["init", checkoutDir], cwd: options.cwd },
-        { args: ["remote", "add", "origin", source.cloneUrl], cwd: checkoutDir },
-        { args: ["fetch", "--depth", "1", "origin", options.commit], cwd: checkoutDir },
-        { args: ["checkout", "--detach", options.commit], cwd: checkoutDir },
-      ]) {
-        await runRequiredGitCommand(
-          { executable: "git", args: command.args, cwd: command.cwd, env: process.env },
-          options.runGitCommand,
-          `Locked git workflow commit could not be fetched: ${source.url}@${options.commit}`,
-        );
-      }
-    } else {
-      await runRequiredGitCommand(
-        {
-          executable: "git",
-          args: ["clone", "--depth", "1", source.cloneUrl, checkoutDir],
-          cwd: options.cwd,
-          env: process.env,
-        },
-        options.runGitCommand,
-        `Public git workflow source could not be fetched: ${source.url}`,
-      );
-    }
+    await runRequiredGitCommand(
+      {
+        executable: "git",
+        args: ["clone", "--depth", "1", source.cloneUrl, checkoutDir],
+        cwd: options.cwd,
+        env: process.env,
+      },
+      options.runGitCommand,
+      `Public git workflow source could not be fetched: ${source.url}`,
+    );
 
     const commitResult = await runOptionalGitCommand(
       {
@@ -2476,11 +2493,6 @@ async function cloneGitWorkflowSource(
       options.runGitCommand,
     );
     const commit = commitResult.exitCode === 0 ? commitResult.stdout.trim() : undefined;
-    if (options.commit && commit !== options.commit) {
-      throw new Error(
-        `Locked git workflow commit mismatch: expected ${options.commit}, resolved ${commit ?? "<none>"}`,
-      );
-    }
     const sourceDir = source.subdirectory ? join(checkoutDir, source.subdirectory) : checkoutDir;
 
     return {

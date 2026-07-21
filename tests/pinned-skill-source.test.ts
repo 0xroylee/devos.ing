@@ -24,7 +24,7 @@ describe("pinned skill source materializer", () => {
       },
     });
 
-    expect(commands.at(-1)).toEqual(["-C", materialized.sourcePath, "rev-parse", "HEAD"]);
+    expect(commands.at(-1)).toEqual(["rev-parse", "HEAD"]);
     expect(materialized.copy).toBe(true);
     await materialized.cleanup();
     await expect(stat(materialized.sourcePath)).rejects.toThrow();
