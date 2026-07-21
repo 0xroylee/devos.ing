@@ -2,8 +2,8 @@
   "schemaVersion": "0.1",
   "kind": "team",
   "name": "startup-team",
-  "version": "0.6.0",
-  "description": "Install a startup team as one goal-oriented Omniskills bundle: a startup-goal coordinator plus CEO, CTO, product manager, web-design lead, engineering manager, founding engineer, and QA lead.",
+  "version": "0.7.0",
+  "description": "Install a startup team as one goal-oriented Omniskills bundle: a startup-goal coordinator plus CEO, CTO, product manager, web-design lead, engineering manager, founding engineer, deliver-code implementation, and QA lead.",
   "coordinator": "./skills/startup-goal",
   "loop": {
     "script": "./loop.mjs",
@@ -15,7 +15,7 @@
     "stop_when": ["human_stops", "critical_evidence_missing", "milestone_blocked"],
     "milestone": {
       "coordinator": "./skills/startup-goal",
-      "implementer": "mattpocock:implement",
+      "implementer": "../../workflows/deliver-code",
       "verifier": "../../workflows/qa-lead"
     }
   },
@@ -26,6 +26,7 @@
     "../../workflows/web-design",
     "../../workflows/engineering-manager",
     "../../workflows/founding-engineer",
+    "../../workflows/deliver-code",
     "../../workflows/qa-lead"
   ],
   "orchestration": {
@@ -72,16 +73,16 @@
         "access": "read-only",
         "consultation": "request"
       },
+      "../../workflows/deliver-code": {
+        "tier": "standard",
+        "modelRole": "implementation",
+        "access": "workspace-write",
+        "consultation": "request"
+      },
       "../../workflows/qa-lead": {
         "tier": "deep",
         "modelRole": "verification",
         "access": "read-only",
-        "consultation": "request"
-      },
-      "mattpocock:implement": {
-        "tier": "standard",
-        "modelRole": "implementation",
-        "access": "workspace-write",
         "consultation": "request"
       }
     },
@@ -118,15 +119,14 @@
       "source": "../../workflows/founding-engineer"
     },
     {
+      "source": "../../workflows/deliver-code"
+    },
+    {
       "source": "../../workflows/qa-lead"
     },
     {
       "source": "superpowers:brainstorming",
       "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
-    },
-    {
-      "source": "mattpocock:implement",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
     },
     {
       "source": "../../workflows/setup-model-routing/skills/setup-model-routing"
@@ -155,16 +155,16 @@
     {
       "id": "implementing",
       "title": "Implement the approved milestone",
-      "skill": "mattpocock:implement",
+      "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "After plan approval, launch only the configured internal implement profile with the approved plan projection, wait for its result, remain inside the approved plan, and record changed artifacts and verification evidence; otherwise emit an honest Prepared, not executed fallback."
+      "instruction": "After plan approval, launch only the configured internal deliver-code profile with the complete delegated delivery packet, wait for its result, remain inside the approved plan, and record changed artifacts and verification evidence; otherwise emit an honest Prepared, not executed fallback."
     },
     {
       "id": "rework",
       "title": "Repair the approved milestone implementation",
-      "skill": "mattpocock:implement",
+      "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "Launch the configured internal implement profile for one bounded repair when verification failures remain inside the approved plan; wait for its result and return newly discovered requirements to planning instead of expanding scope."
+      "instruction": "Launch the configured internal deliver-code profile for one bounded repair when verification failures remain inside the approved plan; wait for its result and return scope drift or newly discovered requirements to planning instead of expanding scope."
     },
     {
       "id": "verifying",

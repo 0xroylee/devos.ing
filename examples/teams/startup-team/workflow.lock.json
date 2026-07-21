@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "startup-team",
-  "workflowVersion": "0.6.0",
-  "generatedAt": "2026-07-17T16:23:49.371Z",
+  "workflowVersion": "0.7.0",
+  "generatedAt": "2026-07-21T06:36:24.527Z",
   "workflows": [
     {
-      "id": "workflow:startup-team@0.6.0",
+      "id": "workflow:startup-team@0.7.0",
       "name": "startup-team",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "source": {
         "kind": "root"
       }
@@ -67,6 +67,15 @@
       }
     },
     {
+      "id": "workflow:deliver-code@0.1.0",
+      "name": "deliver-code",
+      "version": "0.1.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/deliver-code"
+      }
+    },
+    {
       "id": "workflow:qa-lead@0.2.0",
       "name": "qa-lead",
       "version": "0.2.0",
@@ -78,31 +87,35 @@
   ],
   "edges": [
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:ceo@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:cto@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:product-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:web-design@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:engineering-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:founding-engineer@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.0",
+      "to": "workflow:deliver-code@0.1.0"
+    },
+    {
+      "from": "workflow:startup-team@0.7.0",
       "to": "workflow:qa-lead@0.2.0"
     }
   ],
@@ -111,7 +124,7 @@
       "source": "./skills/startup-goal",
       "resolvedName": "startup-goal",
       "kind": "local",
-      "hash": "sha256:95fcae8e87213b001404c2c20731f1b5dc99058e887bfc1f590363860e49fff1"
+      "hash": "sha256:809c9d627e8f1e3424ef4d8108c892aa8e8cb078cc560a232940ba70ff3c11cd"
     },
     {
       "source": "../../workflows/ceo/skills/ceo",
@@ -262,10 +275,10 @@
       "hash": "sha256:c18b038bea9b9d89b95f4779ee98e44d1b14360b5b818b40d4b2cce8a5ad1b35"
     },
     {
-      "source": "../../workflows/qa-lead/skills/qa-lead",
-      "resolvedName": "qa-lead",
+      "source": "../../workflows/deliver-code/skills/deliver-code",
+      "resolvedName": "deliver-code",
       "kind": "local",
-      "hash": "sha256:7560f9837f16a770f47b2520a30d1d69d8aa8e37d47019698a70b35887da8297"
+      "hash": "sha256:6620a6af860a72dd557a23924f29696c7021370c3eb78e022934a2b65f24eea5"
     },
     {
       "source": "mattpocock:implement",
@@ -273,6 +286,12 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:62933cc0179d730078cd1e284e965c43ed04bac7910aee05a1d47506e56c1d7c"
+    },
+    {
+      "source": "../../workflows/qa-lead/skills/qa-lead",
+      "resolvedName": "qa-lead",
+      "kind": "local",
+      "hash": "sha256:7560f9837f16a770f47b2520a30d1d69d8aa8e37d47019698a70b35887da8297"
     },
     {
       "source": "../../workflows/setup-model-routing/skills/setup-model-routing",

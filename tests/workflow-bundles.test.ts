@@ -1767,7 +1767,7 @@ describe("workflow bundles", () => {
           access: "read-only",
           consultation: "request",
         },
-        "mattpocock:implement": {
+        "../../workflows/deliver-code": {
           tier: "standard",
           modelRole: "implementation",
           access: "workspace-write",
@@ -1967,6 +1967,7 @@ describe("workflow bundles", () => {
           "web-design",
           "engineering-manager",
           "founding-engineer",
+          "deliver-code",
           "qa-lead",
         ],
       },
@@ -2051,11 +2052,20 @@ describe("workflow bundles", () => {
     const startupTeamMattPocockSkills = startupTeam.manifest.skills.filter((skill) =>
       skill.source.startsWith("mattpocock:"),
     );
-    expect(startupTeamMattPocockSkills).not.toHaveLength(0);
-    for (const skill of startupTeamMattPocockSkills) {
+    expect(startupTeamMattPocockSkills).toHaveLength(0);
+    const startupTeamGraph = await resolveWorkflowDependencyGraph({
+      bundle: startupTeam,
+      ignoreLockValidation: true,
+    });
+    const nestedMattPocockSkills = startupTeamGraph.dependencies.filter((skill) =>
+      skill.source.startsWith("mattpocock:"),
+    );
+    expect(nestedMattPocockSkills).not.toHaveLength(0);
+    for (const skill of nestedMattPocockSkills) {
       expect(skill.repo).toBe(mattPocockV1_1Repo);
       expect(retiredMattPocockSources).not.toContain(skill.source);
     }
+    await startupTeamGraph.cleanup?.();
     for (const source of startupTeam.manifest.steps.map((step) => step.skill)) {
       expect(retiredMattPocockSources).not.toContain(source);
     }
@@ -2162,6 +2172,7 @@ describe("workflow bundles", () => {
       "../../workflows/web-design",
       "../../workflows/engineering-manager",
       "../../workflows/founding-engineer",
+      "../../workflows/deliver-code",
       "../../workflows/qa-lead",
     ];
     const bundle = await loadWorkflowBundle(
@@ -2184,7 +2195,7 @@ describe("workflow bundles", () => {
     expect(bundle.manifest).toMatchObject({
       kind: "team",
       name: "startup-team",
-      version: "0.6.0",
+      version: "0.7.0",
       coordinator: "./skills/startup-goal",
       members: canonicalMembers,
       loop: {
@@ -2192,7 +2203,7 @@ describe("workflow bundles", () => {
         type: "milestone_based",
         milestone: {
           coordinator: "./skills/startup-goal",
-          implementer: "mattpocock:implement",
+          implementer: "../../workflows/deliver-code",
           verifier: "../../workflows/qa-lead",
         },
       },
@@ -2206,8 +2217,8 @@ describe("workflow bundles", () => {
       ["preparing", "./skills/startup-goal", null],
       ["planning", "./skills/startup-goal", null],
       ["awaiting_plan_approval", "./skills/startup-goal", "human_approval"],
-      ["implementing", "mattpocock:implement", null],
-      ["rework", "mattpocock:implement", null],
+      ["implementing", "../../workflows/deliver-code", null],
+      ["rework", "../../workflows/deliver-code", null],
       ["verifying", "../../workflows/qa-lead", null],
       ["evaluating", "./skills/startup-goal", null],
       ["awaiting_acceptance", "./skills/startup-goal", "human_approval"],
@@ -2223,10 +2234,6 @@ describe("workflow bundles", () => {
         source: "superpowers:brainstorming",
         repo: "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
       },
-      {
-        source: "mattpocock:implement",
-        repo: "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      },
       { source: "../../workflows/setup-model-routing/skills/setup-model-routing" },
     ]);
     expect(bundle.manifest.skills).not.toContainEqual({ source: "implement" });
@@ -2239,7 +2246,7 @@ describe("workflow bundles", () => {
       "startup-team",
       ...canonicalMembers.map((source) => source.slice("../../workflows/".length)),
     ]);
-    expect(graph.edges).toHaveLength(7);
+    expect(graph.edges).toHaveLength(8);
     for (const role of canonicalMembers.map((source) => source.slice("../../workflows/".length))) {
       expect(
         graph.dependencies.filter(({ source }) => source.endsWith(`/skills/${role}`)),
@@ -2249,12 +2256,9 @@ describe("workflow bundles", () => {
       ).rejects.toThrow();
     }
     expect(graph.dependencies.filter(({ source }) => source === "implement")).toHaveLength(0);
-    expect(graph.dependencies.filter(({ source }) => source === "mattpocock:implement")).toEqual([
-      {
-        source: "mattpocock:implement",
-        repo: "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      },
-    ]);
+    expect(
+      graph.dependencies.filter(({ source }) => source === "mattpocock:implement"),
+    ).toHaveLength(1);
     expect(
       graph.dependencies.filter(({ source }) =>
         source.endsWith("/examples/workflows/setup-model-routing/skills/setup-model-routing"),
@@ -2294,7 +2298,30 @@ describe("workflow bundles", () => {
     expect(skill).not.toContain("Automatic role launch is disabled");
     expect(skill).toContain("one repair");
     expect(skill).toContain("one targeted review");
+    expect(skill).toContain("approved Goal Tunnel");
+    expect(skill).toContain("scope and non-goals");
+    expect(skill).toContain("acceptance criteria");
+    expect(skill).toContain("permissions");
+    expect(skill).toContain("immutable decisions");
+    expect(skill).toContain("plan approval evidence");
+    expect(skill).toContain("scope drift returns to planning");
     expect(skill).not.toContain("omniskill dispatch");
+
+    const writeRoles = Object.entries(bundle.manifest.orchestration?.roles ?? {}).filter(
+      ([, assignment]) => assignment.access === "workspace-write",
+    );
+    expect(writeRoles).toEqual([
+      [
+        "../../workflows/deliver-code",
+        {
+          tier: "standard",
+          modelRole: "implementation",
+          access: "workspace-write",
+          consultation: "request",
+        },
+      ],
+    ]);
+    expect(bundle.manifest.orchestration?.roles).not.toHaveProperty("mattpocock:implement");
 
     for (const { role } of startupRoleContracts) {
       const roleSkill = await readStartupRoleSkill(role);

@@ -81,13 +81,19 @@ and acceptance criteria, then wait for explicit human plan approval.
 
 ## 6. Execute implementation and QA roles
 
-After plan approval, launch the configured `mattpocock:implement` profile with a
-stage-specific packet limited to the approved plan, then wait for and validate
-its result: summary, changed files, and verification commands. Next launch the
-configured `qa-lead` profile with the approved acceptance criteria, changed
-artifacts, and verification evidence; wait for and validate its acceptance,
-regression, release-risk, and verification packet. A QA failure permits one
-bounded rework inside the approved plan; a new requirement returns to planning.
+After plan approval, launch the configured `deliver-code` profile with a
+stage-specific delegated delivery packet containing the approved Goal Tunnel,
+scope and non-goals, acceptance criteria, permissions, immutable decisions,
+and plan approval evidence. Wait for and validate its result: summary, changed
+files, review findings, and fresh verification commands. The implementation
+role may clarify execution details but may not reopen approved product scope;
+scope drift returns to planning.
+
+Next launch the configured `qa-lead` profile with the approved acceptance
+criteria, changed artifacts, and verification evidence; wait for and validate
+its acceptance, regression, release-risk, and verification packet. A QA failure
+permits one bounded deliver-code rework inside the approved plan; a new
+requirement returns to planning.
 
 ## 7. Reconstruct and evaluate the user outcome
 
