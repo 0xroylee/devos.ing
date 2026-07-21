@@ -127,7 +127,16 @@ describe("README source contract", () => {
       expect(content).toMatch(/same\s+checkout/);
       expect(content).toMatch(/mixed\s+ownership/);
       expect(content).toContain("npx omniskill@latest setup-model-routing");
+      expect(content).toContain("npx skills add --copy --skill brainstorming");
+      expect(content).toMatch(/commit SHA/);
     }
+
+    expect(english).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
+    expect(traditionalChinese).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
 
     expect(english).toContain("Finance Team and Market Team remain lockless local previews");
     expect(traditionalChinese).toMatch(

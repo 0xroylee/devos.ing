@@ -182,8 +182,11 @@ skill packs:
 `omniskill install` uses each workflow skill's `repo` metadata to fetch
 missing external skills through the Skills CLI. For example,
 `{ "source": "superpowers:brainstorming", "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99" }`
-keeps the original skill name in `source` and installs it with
-`npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99 --skill brainstorming`.
+keeps the original skill name in `source`. For an exact 40-character commit,
+Omniskills fetches and verifies that detached commit in a temporary checkout,
+then passes the local checkout to `npx skills add --copy --skill brainstorming`.
+This avoids treating a commit SHA as a branch name and removes the checkout
+after installation.
 
 If automatic bootstrap fails, run the package install through Omniskills and
 retry:

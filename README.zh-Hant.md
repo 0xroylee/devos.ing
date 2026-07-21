@@ -171,8 +171,10 @@ Omniskills workflows 可以組合 local skills、bundled skills、external skill
 `omniskill install` 會使用每個 workflow skill 的 `repo` metadata，透過 Skills CLI 抓取缺少的 external
 skills。例如：
 `{ "source": "superpowers:brainstorming", "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99" }`
-會在 `source` 保留原始 skill name，並用
-`npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99 --skill brainstorming` 安裝它。
+會在 `source` 保留原始 skill name。若 repo 指向 40 字元的 exact commit，
+Omniskills 會在暫存 checkout 中 fetch 並驗證 detached commit，再把本地 checkout
+交給 `npx skills add --copy --skill brainstorming`。這可避免把 commit SHA
+誤當成 branch name，並會在安裝後移除暫存 checkout。
 
 如果 automatic bootstrap 失敗，請透過 Omniskills 執行 package install，然後重試：
 

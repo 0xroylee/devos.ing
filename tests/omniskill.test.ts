@@ -2800,7 +2800,13 @@ describe("omniskill command module", () => {
       homeDir,
       runCommand: async (command) => {
         commands.push(command);
-        return { stdout: "", stderr: "", exitCode: 0 };
+        return {
+          stdout: command.args.includes("rev-parse")
+            ? "d574778f94cf620fcc8ce741584093bc650a61d3\n"
+            : "",
+          stderr: "",
+          exitCode: 0,
+        };
       },
     });
 
@@ -2848,6 +2854,12 @@ describe("omniskill command module", () => {
         env: expect.objectContaining({ HOME: homeDir }),
       },
       {
+        executable: "git",
+        args: ["-C", sourceDir, "rev-parse", "HEAD"],
+        cwd: homeDir,
+        env: expect.objectContaining({ HOME: homeDir }),
+      },
+      {
         executable: "npx",
         args: [
           "--yes",
@@ -2866,6 +2878,63 @@ describe("omniskill command module", () => {
         env: expect.objectContaining({ HOME: homeDir }),
       },
     ]);
+    await expect(stat(sourceDir)).rejects.toThrow();
+  });
+
+  test("cleans pinned sources and skips the Skills CLI when checkout fails", async () => {
+    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-home-"));
+    const commands: OmniskillExternalSkillCommand[] = [];
+
+    await expect(
+      installExternalSkillDependencyWithSkillsCli({
+        source: "mattpocock:tdd",
+        repo: mattPocockV1_1Repo,
+        homeDir,
+        runCommand: async (command) => {
+          commands.push(command);
+          if (command.args.includes("checkout")) {
+            return { stdout: "", stderr: "checkout rejected", exitCode: 128 };
+          }
+          return { stdout: "", stderr: "", exitCode: 0 };
+        },
+      }),
+    ).rejects.toThrow("Failed to checkout pinned skill source");
+
+    const sourceDir = commands[0]?.args[1];
+    if (!sourceDir) throw new Error("Expected a temporary pinned skill source directory");
+    expect(commands.every((command) => command.executable === "git")).toBe(true);
+    await expect(stat(sourceDir)).rejects.toThrow();
+  });
+
+  test("reports Skills CLI failures and cleans a verified pinned source", async () => {
+    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-home-"));
+    const commands: OmniskillExternalSkillCommand[] = [];
+
+    await expect(
+      installExternalSkillDependencyWithSkillsCli({
+        source: "mattpocock:tdd",
+        repo: mattPocockV1_1Repo,
+        homeDir,
+        runCommand: async (command) => {
+          commands.push(command);
+          if (command.args.includes("rev-parse")) {
+            return {
+              stdout: "d574778f94cf620fcc8ce741584093bc650a61d3\n",
+              stderr: "",
+              exitCode: 0,
+            };
+          }
+          if (command.executable === "npx") {
+            return { stdout: "", stderr: "install rejected", exitCode: 1 };
+          }
+          return { stdout: "", stderr: "", exitCode: 0 };
+        },
+      }),
+    ).rejects.toThrow(`skills CLI failed while installing ${mattPocockV1_1Repo} (exit 1)`);
+
+    const sourceDir = commands[0]?.args[1];
+    if (!sourceDir) throw new Error("Expected a temporary pinned skill source directory");
+    expect(commands.at(-1)?.executable).toBe("npx");
     await expect(stat(sourceDir)).rejects.toThrow();
   });
 

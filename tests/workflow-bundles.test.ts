@@ -2195,7 +2195,7 @@ describe("workflow bundles", () => {
     expect(bundle.manifest).toMatchObject({
       kind: "team",
       name: "startup-team",
-      version: "0.7.0",
+      version: "0.7.1",
       coordinator: "./skills/startup-goal",
       members: canonicalMembers,
       loop: {
@@ -2298,10 +2298,15 @@ describe("workflow bundles", () => {
     expect(skill).not.toContain("Automatic role launch is disabled");
     expect(skill).toContain("one repair");
     expect(skill).toContain("one targeted review");
+    expect(skill).toContain("mode: delegated");
+    expect(skill).toContain("source coordinator");
+    expect(skill).toContain("milestone ID");
     expect(skill).toContain("approved Goal Tunnel");
     expect(skill).toContain("scope and non-goals");
     expect(skill).toContain("acceptance criteria");
+    expect(skill).toContain("implementation-plan boundary");
     expect(skill).toContain("permissions");
+    expect(skill).toContain("repository context");
     expect(skill).toContain("immutable decisions");
     expect(skill).toContain("plan approval evidence");
     expect(skill).toContain("scope drift returns to planning");
