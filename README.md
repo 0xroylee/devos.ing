@@ -20,9 +20,10 @@ launch or the installed role profile is unavailable. Public CLI dispatch stays
 disabled.
 
 The installed bench still includes CEO, CTO, Product Manager, Web Design,
-Engineering Manager, Founding Engineer, and QA Lead; the active milestone uses
-only the roles it needs. After implementation, one bounded in-scope rework can
-return fresh evidence to QA when needed.
+Engineering Manager, Founding Engineer, Deliver Code, and QA Lead; the active
+milestone uses only the roles it needs. Deliver Code receives the approved
+boundary and is the only workspace-write member. After implementation, one
+bounded in-scope rework can return fresh evidence to QA when needed.
 
 `Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance`
 
@@ -122,6 +123,7 @@ copy the install command.
 | Web Design | `$web-design` | Implementable interface direction, responsive interaction states, and rigorous animation review. |
 | Engineering Manager | `$engineering-manager` | Delivery sequencing, execution risk, quality gates, blocker triage, and engineering process. |
 | Founding Engineer | `$founding-engineer` | Read-only implementation framing: affected seams, test strategy, technical risk, and execution handoff. |
+| Deliver Code | `$deliver-code` | Deliver approved vertical code slices through TDD, review, and fresh verification. |
 | QA Lead | `$qa-lead` | Release-risk review, acceptance checks, regression focus, reproduction gaps, and verification evidence. |
 
 Each workflow is still just files you can inspect: a `workflow.json`, optional
@@ -133,7 +135,7 @@ skills to use.
 
 | Need | Choose | Where it stops |
 | --- | --- | --- |
-| Move one startup feature from direction through acceptance | `startup-team` | After QA, User Outcome Replay, and human feature acceptance; only the implement role writes. |
+| Move one startup feature from direction through acceptance | `startup-team` | After QA, User Outcome Replay, and human feature acceptance; only the delegated deliver-code role writes. |
 | Make one product decision or define customer-value scope | `product-manager` | A read-only product recommendation, spec, ticket set, or delivery plan. |
 | Turn a vague product request into an approved plan | `grilled-product-dev` | An approved implementation plan; it does not implement the work. |
 | Deliver a product or interface change with prototyping and review | `development-design-delivery` | Verified implementation evidence after the approved design and plan. |
@@ -276,7 +278,8 @@ The full guide is in [`docs/workflow-author-guide.md`](docs/workflow-author-guid
 
 | Example | Use it for | Notes |
 | --- | --- | --- |
-| `examples/teams/startup-team` | Install a realistic startup operating team around one goal. | Includes the `$startup-goal` coordinator plus `$ceo`, `$cto`, `$product-manager`, `$web-design`, `$engineering-manager`, `$founding-engineer`, and `$qa-lead`. |
+| `examples/teams/startup-team` | Install a realistic startup operating team around one goal. | Includes the `$startup-goal` coordinator plus `$ceo`, `$cto`, `$product-manager`, `$web-design`, `$engineering-manager`, `$founding-engineer`, `$deliver-code`, and `$qa-lead`. |
+| `examples/workflows/deliver-code` | Deliver an approved vertical engineering slice. | Uses TDD, review, fresh verification, and a 90% coverage floor without chasing 100%. |
 | `examples/workflows/ceo` | Company direction, strategy, tradeoffs, and decision mapping. | Uses Matt Pocock decision and grilling skills. |
 | `examples/workflows/cto` | Architecture, domain model, technical risk, and review. | Uses Matt Pocock architecture/review skills. |
 | `examples/workflows/product-manager` | Discovery, PRD, issue slicing, and product planning. | Uses Superpowers plus Matt Pocock PRD/issue skills. |

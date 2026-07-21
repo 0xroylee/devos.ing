@@ -147,14 +147,15 @@ Members：
 - Web Design — Interface direction and motion quality
 - Engineering Manager — Delivery sequencing and quality gates
 - Founding Engineer — Implementation framing and handoff
+- Deliver Code — Approved vertical slices through TDD, review, and verification
 - QA Lead — Acceptance checks and release risk
 
 Actions：`View team` 開啟 `/workflows/startup-team`；`View team source` 開啟
 `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/startup-team`。
 
-Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`qa-lead`、`superpowers:brainstorming`、`mattpocock:implement`、`setup-model-routing`。
+Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`deliver-code`、`qa-lead`、`superpowers:brainstorming`、`setup-model-routing`。
 
-Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `mattpocock:implement`；Rework if needed -> `mattpocock:implement`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
+Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `deliver-code`；Rework if needed -> `deliver-code`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
 
 Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance
 

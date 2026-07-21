@@ -365,6 +365,11 @@ export const startupTeam: TeamCardContent = {
       description: "Implementation framing and handoff",
     },
     {
+      name: "Deliver Code",
+      skill: "deliver-code",
+      description: "Approved vertical slices through TDD, review, and verification",
+    },
+    {
       name: "QA Lead",
       skill: "qa-lead",
       description: "Acceptance checks and release risk",
@@ -383,6 +388,7 @@ export const startupTeam: TeamCardContent = {
     "web-design": `${githubUrl}/blob/main/examples/workflows/web-design/skills/web-design/SKILL.md`,
     "engineering-manager": `${githubUrl}/blob/main/examples/workflows/engineering-manager/skills/engineering-manager/SKILL.md`,
     "founding-engineer": `${githubUrl}/blob/main/examples/workflows/founding-engineer/skills/founding-engineer/SKILL.md`,
+    "deliver-code": `${githubUrl}/blob/main/examples/workflows/deliver-code/skills/deliver-code/SKILL.md`,
     "qa-lead": `${githubUrl}/blob/main/examples/workflows/qa-lead/skills/qa-lead/SKILL.md`,
     "setup-model-routing": `${githubUrl}/blob/main/examples/workflows/setup-model-routing/skills/setup-model-routing/SKILL.md`,
   },
@@ -395,9 +401,9 @@ export const startupTeam: TeamCardContent = {
     { name: "web-design", description: "Interface direction and motion quality" },
     { name: "engineering-manager", description: "Delivery sequencing and quality gates" },
     { name: "founding-engineer", description: "Implementation framing and handoff" },
+    { name: "deliver-code", description: "Deliver approved vertical code slices" },
     { name: "qa-lead", description: "Acceptance checks and release risk" },
     { name: "superpowers:brainstorming", description: "Explore options before scope locks" },
-    { name: "mattpocock:implement", description: "Execute the implementation slice" },
     { name: "setup-model-routing", description: "Configure global Codex model roles" },
   ],
   diagramSteps: [
@@ -419,12 +425,12 @@ export const startupTeam: TeamCardContent = {
     },
     {
       label: "Implement",
-      skill: "mattpocock:implement",
-      description: "Execute only the approved milestone slice.",
+      skill: "deliver-code",
+      description: "Deliver only the approved milestone slice through TDD and review.",
     },
     {
       label: "Rework if needed",
-      skill: "mattpocock:implement",
+      skill: "deliver-code",
       description: "Make one bounded in-scope repair, then return fresh evidence to QA.",
     },
     {

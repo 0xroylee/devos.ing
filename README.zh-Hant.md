@@ -18,6 +18,10 @@ startup-team 角色，且每個階段只傳遞有限的資料包。流程仍會�
 暫停；只有當內部啟動能力或已安裝的角色 profile 不可用時，才回退為
 `Prepared, not executed`。公開 CLI dispatch 仍維持停用。
 
+已安裝的 team 也包含 `$deliver-code`。只有 deliver-code 取得 workspace-write
+權限；它接收已核准的 Goal Tunnel、scope、non-goals、acceptance criteria 與
+permissions。任何 scope drift 都回到 planning，QA 與兩個 human gates 不會被合併。
+
 `Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance`
 
 
@@ -114,6 +118,7 @@ Finance Team 與 Market Team 仍是無 lock 的 local previews，直到完整 gr
 | Web Design | `$web-design` | 可實作的 interface direction、responsive interaction states，以及嚴格的 animation review。 |
 | Engineering Manager | `$engineering-manager` | Delivery sequencing、execution risk、quality gates、blocker triage、engineering process。 |
 | Founding Engineer | `$founding-engineer` | Read-only implementation frame：定位 seams、tests、risk 與 handoff；不修改檔案。 |
+| Deliver Code | `$deliver-code` | 透過 TDD、review 與 fresh verification 交付已核准的垂直切片。 |
 | QA Lead | `$qa-lead` | Release-risk review、acceptance checks、regression focus、reproduction gaps、verification evidence。 |
 
 每個 workflow 仍然只是你可以檢查的檔案：`workflow.json`、選用的
@@ -248,7 +253,8 @@ npx omniskill@latest deps ./release-review
 
 | Example | 適合用途 | Notes |
 | --- | --- | --- |
-| `examples/teams/startup-team` | 圍繞一個 goal 安裝 realistic startup operating team。 | 包含 `$startup-goal` coordinator，以及 `$ceo`、`$cto`、`$product-manager`、`$web-design`、`$engineering-manager`、`$founding-engineer`、`$qa-lead`。 |
+| `examples/teams/startup-team` | 圍繞一個 goal 安裝 realistic startup operating team。 | 包含 `$startup-goal` coordinator，以及 `$ceo`、`$cto`、`$product-manager`、`$web-design`、`$engineering-manager`、`$founding-engineer`、`$deliver-code`、`$qa-lead`。 |
+| `examples/workflows/deliver-code` | 交付已核准的垂直工程切片。 | 使用 TDD、review、fresh verification，coverage 以 90% 為底線，不追求 100%。 |
 | `examples/workflows/ceo` | Company direction、strategy、tradeoffs、decision mapping。 | Uses Matt Pocock decision and grilling skills. |
 | `examples/workflows/cto` | Architecture、domain model、technical risk、review。 | Uses Matt Pocock architecture/review skills. |
 | `examples/workflows/product-manager` | Discovery、PRD、issue slicing、product planning。 | Uses Superpowers plus Matt Pocock PRD/issue skills. |

@@ -3,7 +3,8 @@
 Use this team when one agent session needs a realistic startup operating bench
 organized around a goal. It installs `$startup-goal` as the coordinator plus
 role skills for CEO, CTO, product manager, web-design lead, engineering manager,
-founding engineer, and QA lead, with the companion skills those roles expect.
+founding engineer, delegated deliver-code implementation, and QA lead, with the
+companion skills those roles expect.
 
 The flow starts with `superpowers:brainstorming` as a one-question-at-a-time
 requirements interview. The coordinator launches selected internal subagents
@@ -79,6 +80,19 @@ implementation and feature acceptance after QA and evaluation. Between those
 two gates, the accountable outcome role reconstructs the original expectations,
 needs, wishes, and journey steps in a post-QA User Outcome Replay.
 
+## Delegate the approved implementation boundary
+
+After plan approval, `$startup-goal` sends the `deliver-code` child workflow a
+bounded packet containing the approved Goal Tunnel, scope and non-goals,
+acceptance criteria, permissions, immutable decisions, and plan approval
+evidence. Deliver-code owns the implementation and one bounded in-scope rework
+through TDD, code review, and fresh verification. It cannot expand the product
+boundary: scope drift returns to planning and requires renewed human approval.
+
+QA remains independently owned by `qa-lead`. User Outcome Replay and feature
+acceptance remain owned by `$startup-goal`; installing deliver-code does not
+collapse either human gate.
+
 ## Model orchestration
 
 The default install compiles the team's vendor-neutral `deep`, `standard`, and
@@ -87,8 +101,8 @@ assignment with one of three model roles:
 
 - `planning` for `$startup-goal`, strategy, product, design, architecture,
   management, founding-engineer framing, and support exploration.
-- `implementation` for `mattpocock:implement` workspace-write execution.
-- `verification` for `catalog:qa-lead`.
+- `implementation` for delegated `deliver-code` workspace-write execution.
+- `verification` for `../../workflows/qa-lead`.
 
 Use `$setup-model-routing` to configure global Codex CLI model and effort
 selections for those labels. The skill drives these deterministic commands:

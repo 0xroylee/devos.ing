@@ -149,6 +149,7 @@ Members:
 - Web Design — Interface direction and motion quality
 - Engineering Manager — Delivery sequencing and quality gates
 - Founding Engineer — Implementation framing and handoff
+- Deliver Code — Approved vertical slices through TDD, review, and verification
 - QA Lead — Acceptance checks and release risk
 
 Actions: `View team` opens `/workflows/startup-team`; `View team source` opens
@@ -163,9 +164,9 @@ Skills:
 - `web-design`: Interface direction and motion quality
 - `engineering-manager`: Delivery sequencing and quality gates
 - `founding-engineer`: Implementation framing and handoff
+- `deliver-code`: Deliver approved vertical code slices
 - `qa-lead`: Acceptance checks and release risk
 - `superpowers:brainstorming`: Explore options before scope locks
-- `mattpocock:implement`: Execute the implementation slice
 - `setup-model-routing`: Configure global Codex model roles
 
 Ordered milestone path:
@@ -178,9 +179,9 @@ Ordered milestone path:
    - Validate role outputs and the Evidence Ledger without prescribing expert methods.
 3. Plan approval -> `startup-goal`
    - Wait for explicit human approval of the implementation boundary.
-4. Implement -> `mattpocock:implement`
-   - Execute only the approved milestone slice.
-5. Rework if needed -> `mattpocock:implement`
+4. Implement -> `deliver-code`
+   - Deliver only the approved milestone slice through TDD and review.
+5. Rework if needed -> `deliver-code`
    - Make one bounded in-scope repair, then return fresh evidence to QA.
 6. Verify -> `qa-lead`
    - Record acceptance evidence, regressions, untested areas, and residual risk.
