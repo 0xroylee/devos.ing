@@ -2790,7 +2790,7 @@ describe("omniskill command module", () => {
     ]);
   });
 
-  test("installs the declared skills CLI repo non-interactively before adding external dependencies", async () => {
+  test("materializes immutable GitHub commit sources before adding external dependencies", async () => {
     const homeDir = await mkdtemp(join(tmpdir(), "omniskill-home-"));
     const commands: OmniskillExternalSkillCommand[] = [];
 
@@ -2804,16 +2804,59 @@ describe("omniskill command module", () => {
       },
     });
 
+    const sourceDir = commands[0]?.args[1];
+    expect(sourceDir).toContain("omniskill-skill-source-");
+    if (!sourceDir) throw new Error("Expected a temporary pinned skill source directory");
     expect(commands).toEqual([
+      {
+        executable: "git",
+        args: ["-C", sourceDir, "init"],
+        cwd: homeDir,
+        env: expect.objectContaining({ HOME: homeDir }),
+      },
+      {
+        executable: "git",
+        args: [
+          "-C",
+          sourceDir,
+          "remote",
+          "add",
+          "origin",
+          "https://github.com/mattpocock/skills.git",
+        ],
+        cwd: homeDir,
+        env: expect.objectContaining({ HOME: homeDir }),
+      },
+      {
+        executable: "git",
+        args: [
+          "-C",
+          sourceDir,
+          "fetch",
+          "--depth",
+          "1",
+          "origin",
+          "d574778f94cf620fcc8ce741584093bc650a61d3",
+        ],
+        cwd: homeDir,
+        env: expect.objectContaining({ HOME: homeDir }),
+      },
+      {
+        executable: "git",
+        args: ["-C", sourceDir, "checkout", "--detach", "FETCH_HEAD"],
+        cwd: homeDir,
+        env: expect.objectContaining({ HOME: homeDir }),
+      },
       {
         executable: "npx",
         args: [
           "--yes",
           "skills@latest",
           "add",
-          mattPocockV1_1Repo,
+          sourceDir,
           "--yes",
           "--global",
+          "--copy",
           "--skill",
           "tdd",
           "--agent",
@@ -2823,6 +2866,7 @@ describe("omniskill command module", () => {
         env: expect.objectContaining({ HOME: homeDir }),
       },
     ]);
+    await expect(stat(sourceDir)).rejects.toThrow();
   });
 
   test("normalizes markdown repository links before invoking the Skills CLI", async () => {

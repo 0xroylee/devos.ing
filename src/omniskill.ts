@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
-import { homedir } from "node:os";
+import { mkdtemp, rm } from "node:fs/promises";
+import { homedir, tmpdir } from "node:os";
 import { basename, isAbsolute, join, resolve } from "node:path";
 import { cancel as clackCancel, confirm as clackConfirm, isCancel } from "@clack/prompts";
 import type { Command } from "commander";
@@ -1130,6 +1131,25 @@ function isBareSkillsCliPackage(source: string): boolean {
   return /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(source);
 }
 
+function parsePinnedGitHubTreeSource(
+  source: string,
+): { repositoryUrl: string; commit: string } | null {
+  const match = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/tree\/([0-9a-f]{40})\/?$/i.exec(source);
+  if (!match) {
+    return null;
+  }
+
+  const [, owner, repository, commit] = match;
+  if (!owner || !repository || !commit) {
+    return null;
+  }
+
+  return {
+    repositoryUrl: `https://github.com/${owner}/${repository.replace(/\.git$/, "")}.git`,
+    commit,
+  };
+}
+
 export async function installExternalSkillDependencyWithSkillsCli(
   input: OmniskillExternalSkillDependencyInstallInput,
 ): Promise<void> {
@@ -1138,30 +1158,73 @@ export async function installExternalSkillDependencyWithSkillsCli(
     throw new Error(`No skills CLI package is known for dependency: ${input.source}`);
   }
 
-  const args = ["--yes", "skills@latest", "add", packageName, "--yes", "--global"];
-  const skillName = getSkillsCliSkillNameForSource(input.source);
-  if (skillName) {
-    args.push("--skill", skillName, "--agent", "codex");
-  }
+  const runCommand = input.runCommand ?? runExternalSkillCommand;
+  const env = {
+    ...process.env,
+    HOME: input.homeDir,
+  };
+  const pinnedSource = parsePinnedGitHubTreeSource(packageName);
+  let pinnedSourceDir: string | null = null;
 
-  const result = await (input.runCommand ?? runExternalSkillCommand)({
-    executable: "npx",
-    args,
-    cwd: input.homeDir,
-    env: {
-      ...process.env,
-      HOME: input.homeDir,
-    },
-  });
+  try {
+    let installSource = packageName;
+    if (pinnedSource) {
+      pinnedSourceDir = await mkdtemp(join(tmpdir(), "omniskill-skill-source-"));
+      const gitCommands = [
+        ["-C", pinnedSourceDir, "init"],
+        ["-C", pinnedSourceDir, "remote", "add", "origin", pinnedSource.repositoryUrl],
+        ["-C", pinnedSourceDir, "fetch", "--depth", "1", "origin", pinnedSource.commit],
+        ["-C", pinnedSourceDir, "checkout", "--detach", "FETCH_HEAD"],
+      ];
 
-  if (result.stdout.trim()) {
-    console.log(result.stdout.trim());
-  }
-  if (result.stderr.trim()) {
-    console.error(result.stderr.trim());
-  }
-  if (result.exitCode !== 0) {
-    throw new Error(`skills CLI failed while installing ${packageName} (exit ${result.exitCode})`);
+      for (const args of gitCommands) {
+        const result = await runCommand({
+          executable: "git",
+          args,
+          cwd: input.homeDir,
+          env,
+        });
+        if (result.exitCode !== 0) {
+          const detail = result.stderr.trim();
+          throw new Error(
+            `Failed to materialize pinned skill source ${packageName} (exit ${result.exitCode})${detail ? `: ${detail}` : ""}`,
+          );
+        }
+      }
+      installSource = pinnedSourceDir;
+    }
+
+    const args = ["--yes", "skills@latest", "add", installSource, "--yes", "--global"];
+    if (pinnedSourceDir) {
+      args.push("--copy");
+    }
+    const skillName = getSkillsCliSkillNameForSource(input.source);
+    if (skillName) {
+      args.push("--skill", skillName, "--agent", "codex");
+    }
+
+    const result = await runCommand({
+      executable: "npx",
+      args,
+      cwd: input.homeDir,
+      env,
+    });
+
+    if (result.stdout.trim()) {
+      console.log(result.stdout.trim());
+    }
+    if (result.stderr.trim()) {
+      console.error(result.stderr.trim());
+    }
+    if (result.exitCode !== 0) {
+      throw new Error(
+        `skills CLI failed while installing ${packageName} (exit ${result.exitCode})`,
+      );
+    }
+  } finally {
+    if (pinnedSourceDir) {
+      await rm(pinnedSourceDir, { recursive: true, force: true });
+    }
   }
 }
 
