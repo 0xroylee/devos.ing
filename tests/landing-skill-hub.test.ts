@@ -48,6 +48,7 @@ describe("landing teams and skill hub data", () => {
       "web-design",
       "engineering-manager",
       "founding-engineer",
+      "deliver-code",
       "qa-lead",
     ]);
     expect(workflows.every(({ kind }) => kind === "workflow")).toBe(true);
@@ -117,10 +118,10 @@ describe("landing teams and skill hub data", () => {
     expect(cto?.usedBy.map(({ name }) => name)).toEqual(["Startup Team", "CTO"]);
     expect(cto?.sourceUrl).toContain("/examples/workflows/cto/skills/cto/SKILL.md");
 
-    const implement = skills.find(({ name }) => name === "mattpocock:implement");
-    expect(implement?.usedBy.map(({ name }) => name)).toEqual(["Startup Team"]);
-    expect(implement?.sourceUrl).toBe(
-      "https://github.com/mattpocock/skills/blob/v1.1.0/skills/engineering/implement/SKILL.md",
+    const deliverCode = skills.find(({ name }) => name === "deliver-code");
+    expect(deliverCode?.usedBy.map(({ name }) => name)).toEqual(["Startup Team"]);
+    expect(deliverCode?.sourceUrl).toContain(
+      "/examples/workflows/deliver-code/skills/deliver-code/SKILL.md",
     );
 
     const wayfinder = skills.find(({ name }) => name === "mattpocock:wayfinder");

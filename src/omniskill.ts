@@ -17,15 +17,18 @@ import {
   type CodexModelCatalogProvider,
   executeAgentProfilePlan,
   executeModelRoutingSetup,
-  getInterfaceCraftInstalledSkillName,
   getSkillInstallArtifactPaths,
+  getSkillsCliPackageForDependency,
+  getSkillsCliSkillNameForSource,
   getVisibleCodexModels,
+  installExternalSkillDependencyWithSkillsCli,
   loadOrchestrationConfigPlan,
   MissingInterfaceCraftSkillError,
   MissingMattPocockSkillError,
   MissingSuperpowersSkillError,
   ModelRoutingSelectionsSchema,
   type ModelRoutingSetupPlan,
+  type OmniskillExternalSkillDependencyInstaller,
   parseSkillInstallAgents,
   planModelRoutingSetup,
   preflightAgentProfiles,
@@ -33,7 +36,19 @@ import {
   type SkillInstallResult,
   SkillSourceNotFoundError,
 } from "./plugins";
+
 import { runSubprocess } from "./process";
+
+export {
+  getSkillsCliPackageForSource,
+  installExternalSkillDependencyWithSkillsCli,
+  type OmniskillExternalSkillCommand,
+  type OmniskillExternalSkillCommandResult,
+  type OmniskillExternalSkillCommandRunner,
+  type OmniskillExternalSkillDependencyInstaller,
+  type OmniskillExternalSkillDependencyInstallInput,
+} from "./plugins";
+
 import {
   type AgentProfileTarget,
   appendWorkflowInstallJournal,
@@ -87,34 +102,6 @@ export type OmniskillSkillInstallPrinter = (
   operation: "install",
   options: OmniskillSkillInstallPrintOptions,
 ) => void;
-
-export interface OmniskillExternalSkillDependencyInstallInput {
-  source: string;
-  repo?: string;
-  homeDir: string;
-  runCommand?: OmniskillExternalSkillCommandRunner;
-}
-
-export type OmniskillExternalSkillDependencyInstaller = (
-  input: OmniskillExternalSkillDependencyInstallInput,
-) => Promise<void>;
-
-export interface OmniskillExternalSkillCommand {
-  executable: string;
-  args: string[];
-  cwd: string;
-  env: Record<string, string | undefined>;
-}
-
-export interface OmniskillExternalSkillCommandResult {
-  stdout: string;
-  stderr: string;
-  exitCode: number;
-}
-
-export type OmniskillExternalSkillCommandRunner = (
-  command: OmniskillExternalSkillCommand,
-) => Promise<OmniskillExternalSkillCommandResult>;
 
 export interface OmniskillOnboardPrompt {
   confirm(input: { message: string; defaultValue: boolean }): Promise<boolean>;
@@ -1038,60 +1025,6 @@ function isMissingBootstrappableSkillError(
   );
 }
 
-export function getSkillsCliPackageForSource(source: string): string | null {
-  if (isBareSkillsCliPackage(source)) {
-    return source;
-  }
-
-  if (source.startsWith("superpowers:")) {
-    return "obra/superpowers";
-  }
-
-  if (source.startsWith("mattpocock:")) {
-    return "mattpocock/skills";
-  }
-
-  if (getInterfaceCraftInstalledSkillName(source)) {
-    return "emilkowalski/skills";
-  }
-
-  const githubPrefix = "github:";
-  if (!source.startsWith(githubPrefix)) {
-    return null;
-  }
-
-  const [owner, repo] = source.slice(githubPrefix.length).split("/");
-  if (!owner || !repo) {
-    return null;
-  }
-
-  return `${owner}/${repo}`;
-}
-
-function getSkillsCliPackageForDependency(source: string, repo: string | undefined): string | null {
-  return normalizeSkillsCliRepoSource(repo) ?? getSkillsCliPackageForSource(source);
-}
-
-function normalizeSkillsCliRepoSource(repo: string | undefined): string | null {
-  const trimmed = repo?.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const markdownLinkMatch = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(trimmed);
-  if (!markdownLinkMatch) {
-    return trimmed;
-  }
-
-  const label = markdownLinkMatch[1]?.trim();
-  const url = markdownLinkMatch[2]?.trim();
-  if (label && isBareSkillsCliPackage(label)) {
-    return label;
-  }
-
-  return url || null;
-}
-
 function getSkillsCliInstallKeyForSource(source: string, repo?: string): string | null {
   const skillName = getSkillsCliSkillNameForSource(source);
   if (!skillName) {
@@ -1100,75 +1033,6 @@ function getSkillsCliInstallKeyForSource(source: string, repo?: string): string 
 
   const packageName = getSkillsCliPackageForDependency(source, repo);
   return packageName ? `${packageName}:${skillName}` : null;
-}
-
-function getSkillsCliSkillNameForSource(source: string): string | null {
-  const interfaceCraftSkillName = getInterfaceCraftInstalledSkillName(source);
-  if (interfaceCraftSkillName) {
-    return interfaceCraftSkillName;
-  }
-
-  if (source.startsWith("superpowers:")) {
-    return source.slice("superpowers:".length).trim() || null;
-  }
-
-  if (source.startsWith("mattpocock:")) {
-    return source.slice("mattpocock:".length).trim() || null;
-  }
-
-  const mattPocockGithubPrefix = "github:mattpocock/skills/";
-  if (source.startsWith(mattPocockGithubPrefix)) {
-    const suffix = source.slice(mattPocockGithubPrefix.length);
-    const skillPath = suffix.startsWith("skills/") ? suffix.slice("skills/".length) : suffix;
-    return skillPath.trim() || null;
-  }
-
-  return null;
-}
-
-function isBareSkillsCliPackage(source: string): boolean {
-  return /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(source);
-}
-
-export async function installExternalSkillDependencyWithSkillsCli(
-  input: OmniskillExternalSkillDependencyInstallInput,
-): Promise<void> {
-  const packageName = getSkillsCliPackageForDependency(input.source, input.repo);
-  if (!packageName) {
-    throw new Error(`No skills CLI package is known for dependency: ${input.source}`);
-  }
-
-  const args = ["--yes", "skills@latest", "add", packageName, "--yes", "--global"];
-  const skillName = getSkillsCliSkillNameForSource(input.source);
-  if (skillName) {
-    args.push("--skill", skillName, "--agent", "codex");
-  }
-
-  const result = await (input.runCommand ?? runExternalSkillCommand)({
-    executable: "npx",
-    args,
-    cwd: input.homeDir,
-    env: {
-      ...process.env,
-      HOME: input.homeDir,
-    },
-  });
-
-  if (result.stdout.trim()) {
-    console.log(result.stdout.trim());
-  }
-  if (result.stderr.trim()) {
-    console.error(result.stderr.trim());
-  }
-  if (result.exitCode !== 0) {
-    throw new Error(`skills CLI failed while installing ${packageName} (exit ${result.exitCode})`);
-  }
-}
-
-async function runExternalSkillCommand(
-  command: OmniskillExternalSkillCommand,
-): Promise<OmniskillExternalSkillCommandResult> {
-  return runSubprocess(command);
 }
 
 function configureListCommand(command: Command, rootDir: string): void {
@@ -1482,7 +1346,7 @@ async function runOmniskillOnboard(
   }
 
   const prompt = options.onboardPrompt ?? createDefaultOnboardPrompt();
-  const runCommand = options.onboardCommandRunner ?? runExternalSkillCommand;
+  const runCommand = options.onboardCommandRunner ?? runOmniskillOnboardCommand;
 
   console.log(success("Omniskills onboard"));
   console.log(keyValue("Workspace", targetDir));
@@ -1522,6 +1386,12 @@ async function runOmniskillOnboard(
   }
 
   console.log(success("Omniskills onboard complete"));
+}
+
+async function runOmniskillOnboardCommand(
+  command: OmniskillOnboardCommand,
+): Promise<OmniskillOnboardCommandResult> {
+  return runSubprocess(command);
 }
 
 function printRtkSetupGuidance(): void {

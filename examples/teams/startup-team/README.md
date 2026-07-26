@@ -3,13 +3,22 @@
 Use this team when one agent session needs a realistic startup operating bench
 organized around a goal. It installs `$startup-goal` as the coordinator plus
 role skills for CEO, CTO, product manager, web-design lead, engineering manager,
-founding engineer, and QA lead, with the companion skills those roles expect.
+founding engineer, delegated deliver-code implementation, and QA lead, with the
+companion skills those roles expect.
 
-The flow starts with `superpowers:brainstorming` as a one-question-at-a-time
-requirements interview. The coordinator launches selected internal subagents
-only after the requirement brief is approved, so vague startup asks become
-clear goals, constraints, success criteria, and bounded role packets before
-execution.
+The flow starts with the native Goal Tunnel interview, asking one material
+question at a time and including a recommended answer. The coordinator launches
+selected internal subagents only after the requirement brief is approved, so
+vague startup asks become clear goals, constraints, success criteria, and
+bounded role packets before execution.
+
+During planning, `$startup-goal` classifies selected roles by dependency and
+submits every dependency-free role before it awaits results. It then uses one
+all-settled fan-in: a failed role does not cancel healthy siblings, but every
+required role must return a conforming packet before the plan can reach human
+approval. The plan is synthesized in the captured pre-launch order, never the
+order results happened to finish. Reviews and repairs that depend on another
+role run only after that prerequisite.
 
 Install it from the repo root:
 
@@ -79,6 +88,40 @@ implementation and feature acceptance after QA and evaluation. Between those
 two gates, the accountable outcome role reconstructs the original expectations,
 needs, wishes, and journey steps in a post-QA User Outcome Replay.
 
+## Delegate the approved implementation boundary
+
+After plan approval, `$startup-goal` sends the `deliver-code` child workflow a
+bounded packet containing the approved Goal Tunnel, scope and non-goals,
+acceptance criteria, permissions, immutable decisions, and plan approval
+evidence. Deliver-code owns the implementation and one bounded in-scope rework
+through TDD, code review, and fresh verification. It cannot expand the product
+boundary: scope drift returns to planning and requires renewed human approval.
+
+QA remains independently owned by `qa-lead`. User Outcome Replay and feature
+acceptance remain owned by `$startup-goal`; installing deliver-code does not
+collapse either human gate.
+
+### Optional visible Terra implementation task
+
+`internal` remains the default execution mode. A run-scoped `visible_task` is
+available only after plan approval plus a separate explicit post-plan
+confirmation; an ambiguous `approve` or `yes` does not create a task. The
+confirmation shows `[startup-goal] Implement <milestone-id> — <milestone title>`,
+the exact `gpt-5.6-terra` model, reasoning effort high, project, filesystem
+target, and workspace-write boundary.
+
+Before confirmation or creation, the coordinator calls `list_projects`; the
+selected returned opaque project identity must resolve the visible task target.
+For Git projects, it defaults to an isolated worktree,
+using `startingState: working-tree` when approved work depends on
+uncommitted changes. Direct current-checkout use requires explicit choice. The
+coordinator creates exactly one visible task per milestone, reuses its task ID
+and workspace reference for the one bounded correction and permitted rework,
+and starts QA only after the result and exact workspace identity validate.
+Capability, exact-model, target/access, creation failure, reconciliation, or result-collection
+failure is `Prepared, not executed` with the failed boundary named. The root
+model and global routing remain unchanged; public CLI dispatch stays disabled.
+
 ## Model orchestration
 
 The default install compiles the team's vendor-neutral `deep`, `standard`, and
@@ -87,8 +130,8 @@ assignment with one of three model roles:
 
 - `planning` for `$startup-goal`, strategy, product, design, architecture,
   management, founding-engineer framing, and support exploration.
-- `implementation` for `mattpocock:implement` workspace-write execution.
-- `verification` for `catalog:qa-lead`.
+- `implementation` for delegated `deliver-code` workspace-write execution.
+- `verification` for `../../workflows/qa-lead`.
 
 Use `$setup-model-routing` to configure global Codex CLI model and effort
 selections for those labels. The skill drives these deterministic commands:
@@ -130,12 +173,14 @@ Preview every skill and profile destination without writing:
 bun run dev -- install examples/teams/startup-team --dry-run
 ```
 
-When the host's agent-launch capability and the requested installed profile are
+When the host's agent-launch capability and the requested installed profiles are
 available, the coordinator launches the smallest selected role set as internal
-subagents in the current task, waits for their Output Packets, and validates
-evidence without prescribing their methods or conclusions. If either capability
-is unavailable, it returns the same bounded brief labeled
-`Prepared, not executed` and stops without claiming the role ran.
+subagents in the current task, submits independent planning roles before
+waiting, then validates their Output Packets without prescribing their methods
+or conclusions. Host capacity determines actual concurrency. If launch
+capability or a requested profile is unavailable, it returns the same bounded
+brief labeled `Prepared, not executed` and stops without claiming the role ran;
+this is an honest handoff, not evidence of execution.
 
 Installation still creates managed Codex and Claude profiles and preserves
 model-role configuration. Profile generation does not itself launch a role or

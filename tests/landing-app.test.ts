@@ -348,6 +348,11 @@ describe("landing app source contract", () => {
     );
     expect(content).toContain("Prepare selected specialist handoffs");
     expect(content).not.toContain("Dispatch selected analysts");
+    expect(content).toContain("visible_task");
+    expect(content).toContain("gpt-5.6-terra");
+    expect(content).toContain("reasoning effort high");
+    expect(content).toContain("explicit post-plan confirmation");
+    expect(content).toContain("creation failure");
 
     expect(demo).toContain('dispatch: "Starting selected roles"');
     expect(demo).toContain("The coordinator can launch the selected roles.");
@@ -421,7 +426,7 @@ describe("landing app source contract", () => {
     expect(content).toContain("Create one profile-icon meme concept");
     expect(content).not.toContain("Generate meme angles");
     expect(content).toContain('label: "Feature acceptance"');
-    expect(content).toContain("Execute only the approved milestone slice.");
+    expect(content).toContain("Deliver only the approved milestone slice through TDD and review.");
   });
 
   test("mirrors the expanded startup-team roster and same-checkout member sources", () => {
@@ -452,6 +457,9 @@ describe("landing app source contract", () => {
     );
     expect(startupTeam.skillSourceUrls?.["setup-model-routing"]).toBe(
       `${githubUrl}/blob/main/examples/workflows/setup-model-routing/skills/setup-model-routing/SKILL.md`,
+    );
+    expect(startupTeam.skillSourceUrls?.["deliver-code"]).toBe(
+      `${githubUrl}/blob/main/examples/workflows/deliver-code/skills/deliver-code/SKILL.md`,
     );
     expect(expectedNames).toHaveLength(manifest.skills.length);
     for (const name of expectedNames) {

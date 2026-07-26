@@ -95,6 +95,18 @@ describe("README source contract", () => {
       "Prepared, not executed",
       "plan approval",
       "feature acceptance",
+      "deliver-code",
+      "approved Goal Tunnel",
+      "scope and non-goals",
+      "scope drift returns to planning",
+      "visible_task",
+      "gpt-5.6-terra",
+      "reasoning effort high",
+      "list_projects",
+      "creation failure",
+      "post-plan",
+      "isolated worktree",
+      "Prepared, not executed",
       "../../workflows/setup-model-routing/skills/setup-model-routing",
       "examples/workflows/setup-model-routing",
       "omniskill remove startup-team",
@@ -105,6 +117,22 @@ describe("README source contract", () => {
     expect(readme).not.toContain("omniskill dispatch");
     expect(readme).not.toContain("dispatch resume");
     expect(readme).not.toContain(".omniskills/runs/");
+  });
+
+  test("documents the opt-in visible Terra implementation boundary in public mirrors", () => {
+    for (const content of [
+      readReadme(),
+      readRepoFile("docs/landing-content.md"),
+      readRepoFile("docs/landing-content.zh-Hant.md"),
+    ]) {
+      expect(content).toContain("visible_task");
+      expect(content).toContain("gpt-5.6-terra");
+      expect(content).toContain("reasoning effort high");
+      expect(content).toContain("post-plan");
+      expect(content).toContain("creation failure");
+      expect(content).toContain("Prepared, not executed");
+      expect(content).toContain("public CLI dispatch stays disabled");
+    }
   });
 
   test("documents the latest locked startup lifecycle and CLI safety contract", () => {
@@ -123,7 +151,16 @@ describe("README source contract", () => {
       expect(content).toMatch(/same\s+checkout/);
       expect(content).toMatch(/mixed\s+ownership/);
       expect(content).toContain("npx omniskill@latest setup-model-routing");
+      expect(content).toContain("npx skills add --copy --skill brainstorming");
+      expect(content).toMatch(/commit SHA/);
     }
+
+    expect(english).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
+    expect(traditionalChinese).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
 
     expect(english).toContain("Finance Team and Market Team remain lockless local previews");
     expect(traditionalChinese).toMatch(

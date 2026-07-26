@@ -182,9 +182,11 @@ The coordinator is one declared local entry skill. Every `members[]` source
 must be declared in `skills[]` and resolve to a child workflow with exactly one
 local entry skill. Member dependencies expand recursively, but only the root
 team install record is written. For `startup-team`, startup-goal remains the
-callable coordinator while seven canonical standalone role workflows provide
-the members. The public bundle installs as `startup-team`; users invoke
-`$startup-goal` after installation.
+callable coordinator while seven canonical standalone role workflows plus the
+`deliver-code` delivery workflow provide the members. Only deliver-code receives
+workspace-write access; QA, User Outcome Replay, and both human gates retain
+their existing owners. The public bundle installs as `startup-team`; users
+invoke `$startup-goal` after installation.
 
 `finance-team` and `market-team` use the same first-class team contract.
 `finance-team` composes `company-analysis`, `financial-analysis`,

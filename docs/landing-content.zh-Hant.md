@@ -130,11 +130,14 @@ Runtime description：Move one approved startup feature at a time through plan a
 implementation, conditional rework, QA, User Outcome Replay, and human feature
 acceptance.
 
-Coordinator：`$startup-goal` — Controls the Goal Tunnel and Evidence Ledger,
-runs selected installed roles as internal subagents with bounded stage packets,
-and holds both human approval gates. Prepared, not executed is the fallback when
-the host launch capability or role profile is unavailable; public CLI dispatch
-stays disabled.
+Coordinator：`$startup-goal` — 預設以 internal subagents 執行 selected installed
+roles，並持有兩個 human approval gates。run-scoped visible_task 必須有 explicit
+post-plan confirmation，使用 gpt-5.6-terra 與 reasoning effort high，並保留
+project/worktree-aware workspace-write boundary。capability、exact-model、
+target/access、creation failure、reconciliation 或 result collection 不可用時，回傳
+Prepared, not executed 並標明邊界；public CLI dispatch stays disabled.
+
+Source coordinator description: Controls the Goal Tunnel and Evidence Ledger, runs selected installed roles as internal subagents by default, and holds both human approval gates. A run-scoped visible_task needs explicit post-plan confirmation and uses gpt-5.6-terra with reasoning effort high in a project/worktree-aware workspace-write boundary. Prepared, not executed names unavailable capability, exact-model, target/access, creation failure, reconciliation, or result collection; public CLI dispatch stays disabled.
 
 Startup Team 一次只推進一個功能里程碑；證據帳本區分 Verified、Inferred、Assumed，
 QA 完成後再執行使用者結果重演，最後由 human 決定是否接受功能。
@@ -147,14 +150,15 @@ Members：
 - Web Design — Interface direction and motion quality
 - Engineering Manager — Delivery sequencing and quality gates
 - Founding Engineer — Implementation framing and handoff
+- Deliver Code — Approved vertical slices through TDD, review, and verification
 - QA Lead — Acceptance checks and release risk
 
 Actions：`View team` 開啟 `/workflows/startup-team`；`View team source` 開啟
 `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/startup-team`。
 
-Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`qa-lead`、`superpowers:brainstorming`、`mattpocock:implement`、`setup-model-routing`。
+Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`deliver-code`、`qa-lead`、`superpowers:brainstorming`、`setup-model-routing`。
 
-Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `mattpocock:implement`；Rework if needed -> `mattpocock:implement`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
+Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `deliver-code`；Rework if needed -> `deliver-code`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
 
 Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance
 

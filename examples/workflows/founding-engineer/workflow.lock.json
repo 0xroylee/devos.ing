@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "founding-engineer",
   "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-17T16:23:46.286Z",
+  "generatedAt": "2026-07-21T07:39:04.670Z",
   "workflows": [
     {
       "id": "workflow:founding-engineer@0.2.0",
@@ -41,13 +41,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:4281a8bb8667c7c46ca512cc19782af9606876d9bab13d306688829783ebfa13"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:c18b038bea9b9d89b95f4779ee98e44d1b14360b5b818b40d4b2cce8a5ad1b35"
     }
   ]
 }

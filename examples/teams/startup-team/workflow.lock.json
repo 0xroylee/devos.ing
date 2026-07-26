@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "startup-team",
-  "workflowVersion": "0.6.0",
-  "generatedAt": "2026-07-17T16:23:49.371Z",
+  "workflowVersion": "0.7.3",
+  "generatedAt": "2026-07-25T08:11:12.787Z",
   "workflows": [
     {
-      "id": "workflow:startup-team@0.6.0",
+      "id": "workflow:startup-team@0.7.3",
       "name": "startup-team",
-      "version": "0.6.0",
+      "version": "0.7.3",
       "source": {
         "kind": "root"
       }
@@ -67,6 +67,15 @@
       }
     },
     {
+      "id": "workflow:deliver-code@0.1.0",
+      "name": "deliver-code",
+      "version": "0.1.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/deliver-code"
+      }
+    },
+    {
       "id": "workflow:qa-lead@0.2.0",
       "name": "qa-lead",
       "version": "0.2.0",
@@ -78,31 +87,35 @@
   ],
   "edges": [
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:ceo@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:cto@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:product-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:web-design@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:engineering-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:founding-engineer@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.7.3",
+      "to": "workflow:deliver-code@0.1.0"
+    },
+    {
+      "from": "workflow:startup-team@0.7.3",
       "to": "workflow:qa-lead@0.2.0"
     }
   ],
@@ -111,7 +124,7 @@
       "source": "./skills/startup-goal",
       "resolvedName": "startup-goal",
       "kind": "local",
-      "hash": "sha256:95fcae8e87213b001404c2c20731f1b5dc99058e887bfc1f590363860e49fff1"
+      "hash": "sha256:b1469d9341cd59efddc24e19324bf3327e3573ba0f3c029cdc2574b75c93451d"
     },
     {
       "source": "../../workflows/ceo/skills/ceo",
@@ -174,13 +187,6 @@
       "hash": "sha256:35b234429d541940ac942f1f631e76b573a97a29ce8200c57776b68dd6eae6e2"
     },
     {
-      "source": "superpowers:brainstorming",
-      "resolvedName": "superpowers-brainstorming",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:1c1eba0a93ff82e0d3af1e040cbbabae5ba7f8aa1ea3f9f92b10db759ffa1087"
-    },
-    {
       "source": "mattpocock:to-spec",
       "resolvedName": "to-spec",
       "kind": "external",
@@ -193,13 +199,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:5d9c9aa0dc2ed6b52784fd50a9bd5c9355d0ef64312c49d506e18449893c76a2"
-    },
-    {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:bc3ff0415b4d0afce51a65123f5f1d079e34a436121fead087ee296d29af861d"
     },
     {
       "source": "../../workflows/web-design/skills/web-design",
@@ -255,17 +254,10 @@
       "hash": "sha256:105be4fb3dd371d6c9b1c6c207b29291493899fd64ccb34a4651ffa2fd421f83"
     },
     {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:c18b038bea9b9d89b95f4779ee98e44d1b14360b5b818b40d4b2cce8a5ad1b35"
-    },
-    {
-      "source": "../../workflows/qa-lead/skills/qa-lead",
-      "resolvedName": "qa-lead",
+      "source": "../../workflows/deliver-code/skills/deliver-code",
+      "resolvedName": "deliver-code",
       "kind": "local",
-      "hash": "sha256:7560f9837f16a770f47b2520a30d1d69d8aa8e37d47019698a70b35887da8297"
+      "hash": "sha256:d4e6fce27040479054c1fc39e25a583ecc0a422be262c4bbe03e6a4eef45a3b5"
     },
     {
       "source": "mattpocock:implement",
@@ -273,6 +265,12 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:62933cc0179d730078cd1e284e965c43ed04bac7910aee05a1d47506e56c1d7c"
+    },
+    {
+      "source": "../../workflows/qa-lead/skills/qa-lead",
+      "resolvedName": "qa-lead",
+      "kind": "local",
+      "hash": "sha256:7560f9837f16a770f47b2520a30d1d69d8aa8e37d47019698a70b35887da8297"
     },
     {
       "source": "../../workflows/setup-model-routing/skills/setup-model-routing",
