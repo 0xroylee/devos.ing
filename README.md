@@ -25,6 +25,16 @@ milestone uses only the roles it needs. Deliver Code receives the approved
 boundary and is the only workspace-write member. After implementation, one
 bounded in-scope rework can return fresh evidence to QA when needed.
 
+Internal execution remains the default. After plan approval, a user may opt in
+to one run-scoped `visible_task` only through a separate explicit post-plan
+confirmation. It names the `gpt-5.6-terra` model, reasoning effort high,
+project, filesystem target, and workspace-write boundary; plan approval or an
+ambiguous `approve` never creates a task. Git work defaults to an isolated
+worktree, dirty-state dependencies use `startingState: working-tree`, and QA
+waits for the result plus exact workspace identity. Any capability, exact-model,
+target/access, creation failure, reconciliation, or result-collection failure is `Prepared, not
+executed`; public CLI dispatch stays disabled.
+
 `Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance`
 
 ## Quick Start

@@ -15,10 +15,6 @@
     {
       "source": "mattpocock:diagnosing-bugs",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
     }
   ],
   "steps": [

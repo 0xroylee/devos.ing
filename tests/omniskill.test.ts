@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { cp, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { Command } from "commander";
 import {
   configureOmniskillCommand,
@@ -17,6 +17,7 @@ import {
   SkillSourceNotFoundError,
 } from "../src/plugins";
 import type { WorkflowGitCommand } from "../src/runtimes/omniskill/workflow-bundles";
+import { createWorkflowRemovalPlan } from "../src/runtimes/omniskill/workflow-bundles";
 
 const mattPocockV1_1Repo =
   "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3";
@@ -1222,6 +1223,201 @@ describe("omniskill command module", () => {
           }),
         ]),
       );
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+      await rm(homeDir, { recursive: true, force: true });
+    }
+  });
+
+  test("fresh startup-team install has no Superpowers dependency or bootstrap", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "omniskill-startup-fresh-root-"));
+    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-startup-fresh-home-"));
+    const examplesDir = join(rootDir, "examples");
+    const teamDir = join(examplesDir, "teams", "startup-team");
+    const skillInstalls: string[] = [];
+    const externalInstalls: Array<{ source: string; repo?: string; homeDir: string }> = [];
+    const program = new Command();
+
+    try {
+      await cp(join(import.meta.dir, "..", "examples"), examplesDir, { recursive: true });
+      configureOmniskillCommand(program, {
+        rootDir,
+        installPrompt: { confirmInstall: async () => true },
+        installSkill: async (input) => {
+          skillInstalls.push(input.source);
+          const skillName = input.source.includes(":")
+            ? input.source.slice(input.source.indexOf(":") + 1)
+            : basename(input.source);
+          const destination = join(homeDir, ".agents", "skills", skillName);
+          await mkdir(destination, { recursive: true });
+          await writeFile(join(destination, "SKILL.md"), `${input.source}\n`);
+          return {
+            skillInstall: fakeSkillInstallResult({
+              source: input.source,
+              skillName,
+              destination,
+            }),
+          };
+        },
+        printSkillInstallResult: () => {},
+        installExternalSkillDependency: async (input) => {
+          externalInstalls.push(input);
+        },
+        codexModelCatalog: testCodexModelCatalog,
+      });
+
+      await program.parseAsync(["install", teamDir, "--home", homeDir, "--agents", "codex"], {
+        from: "user",
+      });
+
+      expect(skillInstalls).toHaveLength(24);
+      expect(skillInstalls.some((source) => source.startsWith("superpowers:"))).toBe(false);
+      expect(externalInstalls).toEqual([]);
+      const installed = JSON.parse(
+        await readFile(join(homeDir, ".omniskills", "workflows", "startup-team.json"), "utf8"),
+      );
+      expect(
+        installed.installArtifacts.some((artifact: { source: string }) =>
+          artifact.source.startsWith("superpowers:"),
+        ),
+      ).toBe(false);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+      await rm(homeDir, { recursive: true, force: true });
+    }
+  });
+
+  test("startup-team upgrade releases but preserves prior Superpowers artifacts", async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), "omniskill-startup-upgrade-root-"));
+    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-startup-upgrade-home-"));
+    const examplesDir = join(rootDir, "examples");
+    const teamDir = join(examplesDir, "teams", "startup-team");
+    const recordPath = join(homeDir, ".omniskills", "workflows", "startup-team.json");
+    const legacySources = [
+      "superpowers:brainstorming",
+      "superpowers:writing-plans",
+      "superpowers:verification-before-completion",
+    ];
+    const legacyArtifacts = legacySources.map((source) => {
+      const skillName = source.replace(":", "-");
+      return {
+        source,
+        skillName,
+        agent: "codex",
+        status: "installed",
+        createdByBootstrap: true,
+        paths: [join(homeDir, ".agents", "skills", skillName)],
+      };
+    });
+    const legacyArtifactPath = (artifact: (typeof legacyArtifacts)[number]) => {
+      const [path] = artifact.paths;
+      if (!path) throw new Error(`missing legacy artifact path for ${artifact.source}`);
+      return path;
+    };
+    const program = new Command();
+
+    try {
+      await cp(join(import.meta.dir, "..", "examples"), examplesDir, { recursive: true });
+      configureOmniskillCommand(program, {
+        rootDir,
+        installPrompt: { confirmInstall: async () => true },
+        installSkill: async (input) => {
+          const skillName = input.source.includes(":")
+            ? input.source.slice(input.source.indexOf(":") + 1)
+            : basename(input.source);
+          const destination = join(homeDir, ".agents", "skills", skillName);
+          await mkdir(destination, { recursive: true });
+          await writeFile(join(destination, "SKILL.md"), `${input.source}\n`);
+          return {
+            skillInstall: fakeSkillInstallResult({
+              source: input.source,
+              skillName,
+              destination,
+            }),
+          };
+        },
+        printSkillInstallResult: () => {},
+        installExternalSkillDependency: async () => {
+          throw new Error("startup-team must not bootstrap Superpowers during upgrade");
+        },
+        codexModelCatalog: testCodexModelCatalog,
+      });
+
+      await program.parseAsync(["install", teamDir, "--home", homeDir, "--agents", "codex"], {
+        from: "user",
+      });
+      const currentRecord = JSON.parse(await readFile(recordPath, "utf8"));
+      for (const [index, artifact] of legacyArtifacts.entries()) {
+        const nested = join(legacyArtifactPath(artifact), "nested", "sentinel.bin");
+        await mkdir(dirname(nested), { recursive: true });
+        await writeFile(nested, new Uint8Array([0, 255, index, 10, 13]));
+      }
+      await writeFile(
+        recordPath,
+        `${JSON.stringify(
+          {
+            ...currentRecord,
+            version: "0.7.0",
+            installArtifacts: [...currentRecord.installArtifacts, ...legacyArtifacts],
+          },
+          null,
+          2,
+        )}\n`,
+      );
+      const sentinelBefore = await Promise.all(
+        legacyArtifacts.map((artifact) =>
+          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
+        ),
+      );
+
+      await program.parseAsync(["install", teamDir, "--home", homeDir, "--agents", "codex"], {
+        from: "user",
+      });
+
+      const upgradedRecord = JSON.parse(await readFile(recordPath, "utf8"));
+      expect(upgradedRecord.version).toBe("0.7.3");
+      expect(
+        upgradedRecord.installArtifacts.some((artifact: { source: string }) =>
+          artifact.source.startsWith("superpowers:"),
+        ),
+      ).toBe(false);
+      const removalPlan = await createWorkflowRemovalPlan({
+        rootDir: homeDir,
+        homeDir,
+        workflowName: "startup-team",
+      });
+      for (const artifact of legacyArtifacts) {
+        expect(removalPlan.artifactsToRemove.map(({ path }) => path)).not.toContain(
+          legacyArtifactPath(artifact),
+        );
+      }
+      const sentinelAfterUpgrade = await Promise.all(
+        legacyArtifacts.map((artifact) =>
+          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
+        ),
+      );
+      expect(
+        sentinelAfterUpgrade.every((bytes, index) => {
+          const before = sentinelBefore[index];
+          return before ? bytes.equals(before) : false;
+        }),
+      ).toBe(true);
+
+      await program.parseAsync(["remove", "startup-team", "--home", homeDir, "--yes"], {
+        from: "user",
+      });
+      const sentinelAfterRemoval = await Promise.all(
+        legacyArtifacts.map((artifact) =>
+          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
+        ),
+      );
+      expect(
+        sentinelAfterRemoval.every((bytes, index) => {
+          const before = sentinelBefore[index];
+          return before ? bytes.equals(before) : false;
+        }),
+      ).toBe(true);
+      await expect(stat(recordPath)).rejects.toThrow();
     } finally {
       await rm(rootDir, { recursive: true, force: true });
       await rm(homeDir, { recursive: true, force: true });

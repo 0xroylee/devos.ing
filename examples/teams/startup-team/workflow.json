@@ -2,7 +2,7 @@
   "schemaVersion": "0.1",
   "kind": "team",
   "name": "startup-team",
-  "version": "0.7.1",
+  "version": "0.7.3",
   "description": "Install a startup team as one goal-oriented Omniskills bundle: a startup-goal coordinator plus CEO, CTO, product manager, web-design lead, engineering manager, founding engineer, deliver-code implementation, and QA lead.",
   "coordinator": "./skills/startup-goal",
   "loop": {
@@ -125,10 +125,6 @@
       "source": "../../workflows/qa-lead"
     },
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
-    },
-    {
       "source": "../../workflows/setup-model-routing/skills/setup-model-routing"
     }
   ],
@@ -143,7 +139,7 @@
       "id": "planning",
       "title": "Collect and validate the milestone plan",
       "skill": "./skills/startup-goal",
-      "instruction": "Launch selected installed planning profiles as internal subagents when the host capability is available, wait for their Output Packets, validate evidence, preserve material disagreements, and assemble the active milestone plan without rewriting expert conclusions; otherwise emit an honest Prepared, not executed fallback."
+      "instruction": "Classify selected roles by dependency before launch. Capture their stable pre-launch order, submit every dependency-free selected role before awaiting, then collect one all-settled barrier: healthy siblings continue after a failure, but every required role needs a conforming Output Packet and any required planning role failure blocks plan approval. Synthesize deterministically in captured pre-launch order, never completion order; launch dependent reviews or repairs only after their prerequisites. The host owns capacity. When host capability or a requested profile is unavailable, emit the bounded packets honestly as Prepared, not executed."
     },
     {
       "id": "awaiting_plan_approval",
@@ -157,14 +153,14 @@
       "title": "Implement the approved milestone",
       "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "After plan approval, launch only the configured internal deliver-code profile with the complete delegated delivery packet, wait for its result, remain inside the approved plan, and record changed artifacts and verification evidence; otherwise emit an honest Prepared, not executed fallback."
+      "instruction": "Internal remains the default. An opt-in run-scoped visible_task requires plan approval plus a separate explicit post-plan confirmation; plan approval or ambiguous approve/yes never creates a task. Call the host capability list_projects and require the selected returned opaque project identity to resolve the visible task target before confirmation or creation. Show the deterministic title, exact gpt-5.6-terra model, reasoning effort high, project, filesystem target, and workspace-write boundary. For Git, default to an isolated worktree; use startingState: working-tree for approved dirty-state dependencies, and require explicit choice for the current checkout. Create exactly one visible implementation task with the bounded delegated packet, persist its task ID and workspace reference, reconcile ambiguity without duplication or mode fallback, and block QA until a conforming result and exact workspace identity validate. Capability, exact-model, target/access, creation failure, reconciliation, or collection failure is Prepared, not executed naming the boundary. Public CLI dispatch stays disabled."
     },
     {
       "id": "rework",
       "title": "Repair the approved milestone implementation",
       "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "Launch the configured internal deliver-code profile for one bounded repair when verification failures remain inside the approved plan; wait for its result and return scope drift or newly discovered requirements to planning instead of expanding scope."
+      "instruction": "For internal mode, launch the configured internal deliver-code profile for one bounded repair when verification failures remain inside the approved plan. For visible_task, use the same visible task and persisted workspace reference for one bounded correction request and the single permitted rework; never create a replacement, silently retry, or switch modes. Wait for a conforming result and exact workspace identity before QA, and return scope drift or newly discovered requirements to planning instead of expanding scope."
     },
     {
       "id": "verifying",

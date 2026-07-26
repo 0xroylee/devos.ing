@@ -136,10 +136,12 @@ implementation, conditional rework, QA, User Outcome Replay, and human feature
 acceptance.
 
 Coordinator: `$startup-goal` — Controls the Goal Tunnel and Evidence Ledger,
-runs selected installed roles as internal subagents with bounded stage packets,
-and holds both human approval gates. Prepared, not executed is the fallback when
-the host launch capability or role profile is unavailable; public CLI dispatch
-stays disabled.
+runs selected installed roles as internal subagents by default, and holds both
+human approval gates. A run-scoped visible_task needs explicit post-plan
+confirmation and uses gpt-5.6-terra with reasoning effort high in a
+project/worktree-aware workspace-write boundary. Prepared, not executed names
+unavailable capability, exact-model, target/access, creation failure, reconciliation, or result
+collection; public CLI dispatch stays disabled.
 
 Members:
 

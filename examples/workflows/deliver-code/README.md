@@ -31,6 +31,13 @@ Standards and Spec review, and fresh verification never disappear. The quality
 target is meaningful behavioral confidence; 90% line coverage is sufficient,
 and the workflow never chases 100% with low-value tests.
 
+Fresh checks use native verification evidence from
+`scripts/verification-evidence.mjs`. The helper records command availability,
+timestamps, exit codes, a workspace fingerprint, delegated implementation
+metadata, and requirement-to-evidence mappings. Failed, partial, stale,
+unavailable, or mismatched evidence stays blocked; only a full pass can support
+a completion claim.
+
 ## Permissions
 
 Scaffold setup does not authorize code changes, GitHub Issue publication, or

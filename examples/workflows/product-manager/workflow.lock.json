@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "product-manager",
   "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-17T16:23:46.294Z",
+  "generatedAt": "2026-07-21T07:39:04.753Z",
   "workflows": [
     {
       "id": "workflow:product-manager@0.2.0",
@@ -22,13 +22,6 @@
       "hash": "sha256:35b234429d541940ac942f1f631e76b573a97a29ce8200c57776b68dd6eae6e2"
     },
     {
-      "source": "superpowers:brainstorming",
-      "resolvedName": "superpowers-brainstorming",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:1c1eba0a93ff82e0d3af1e040cbbabae5ba7f8aa1ea3f9f92b10db759ffa1087"
-    },
-    {
       "source": "mattpocock:to-spec",
       "resolvedName": "to-spec",
       "kind": "external",
@@ -41,13 +34,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:5d9c9aa0dc2ed6b52784fd50a9bd5c9355d0ef64312c49d506e18449893c76a2"
-    },
-    {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:bc3ff0415b4d0afce51a65123f5f1d079e34a436121fead087ee296d29af861d"
     }
   ]
 }

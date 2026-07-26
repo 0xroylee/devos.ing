@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "deliver-code",
   "workflowVersion": "0.1.0",
-  "generatedAt": "2026-07-21T06:35:48.209Z",
+  "generatedAt": "2026-07-21T08:01:22.748Z",
   "workflows": [
     {
       "id": "workflow:deliver-code@0.1.0",
@@ -19,7 +19,7 @@
       "source": "./skills/deliver-code",
       "resolvedName": "deliver-code",
       "kind": "local",
-      "hash": "sha256:6620a6af860a72dd557a23924f29696c7021370c3eb78e022934a2b65f24eea5"
+      "hash": "sha256:d4e6fce27040479054c1fc39e25a583ecc0a422be262c4bbe03e6a4eef45a3b5"
     },
     {
       "source": "mattpocock:grill-with-docs",
@@ -83,13 +83,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
       "hash": "sha256:4281a8bb8667c7c46ca512cc19782af9606876d9bab13d306688829783ebfa13"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
-      "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:c18b038bea9b9d89b95f4779ee98e44d1b14360b5b818b40d4b2cce8a5ad1b35"
     }
   ]
 }

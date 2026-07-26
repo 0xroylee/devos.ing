@@ -34,7 +34,7 @@ Delegated mode may scaffold only when its packet includes workspace-write permis
    - ambiguous or architecture-heavy work: run the full Grill, Domain Modeling, Spec, Design or ADR when warranted, and vertical-ticket route.
 5. Present one plan approval package. Stop before implementation.
 6. After approval, implement only the dependency-ready frontier, one ticket at a time, using TDD at approved public seams.
-7. Run Standards and Spec code-review axes, then fresh verification.
+7. Run Standards and Spec code-review axes, then collect native structured verification evidence.
 8. Present result evidence and wait for accept or rework direction.
 
 ## Delegated mode
@@ -44,6 +44,11 @@ Require the complete delegated packet defined in `references/delivery-contract.m
 Do not repeat product discovery, reinterpret non-goals, or add requirements. Ask only about contradictory evidence or missing engineering details. Return a structured scope delta to `$startup-goal` when new product scope is required. Never silently fall back to direct mode.
 
 Return an approval-ready engineering plan to `$startup-goal`; after an approved implementation handoff, return code, test, review, and verification evidence. Independent QA, User Outcome Replay, and milestone acceptance remain upstream.
+
+For delegated verification evidence, preserve `sourceCoordinator`, `milestoneId`,
+`agentId`, `role: deliver-code`, `modelRole: implementation`, `access:
+workspace-write`, and the zero-based candidate index and count from the launched
+profile. A mismatch blocks the result.
 
 ## Plan approval package
 
@@ -71,6 +76,25 @@ The Mutation envelope authorizes code edits, GitHub Issue publication, commits, 
 - Allow one repair inside the approved boundary; a repeated failure returns to the user.
 - If a required skill or subagent capability is unavailable, return the exact phase handoff labeled `Prepared, not executed`; never skip the gate.
 - Resume by reading the canonical spec, ticket graph, Git state, state pointers, and last evidence, then show the last verified checkpoint.
+
+## Native verification evidence
+
+Use `scripts/verification-evidence.mjs` through its exported
+`collectVerificationEvidence`, `evaluateVerificationEvidence`, and
+`renderVerificationOutcome` helpers. Inject the approved command runner and a
+clock. Record each command, start and completion timestamps, availability, exit
+code, output, and workspace fingerprint after implementation is finished.
+
+Every approved requirement must map to at least one fresh passing command. Use
+unique kebab-case command and requirement IDs, and map commands only to declared
+requirements. The expected, report, and command workspace fingerprints must be
+valid nonempty `sha256:` values and must match exactly. Treat malformed evidence,
+a partial mapping, unavailable command, nonzero exit, stale chronology, workspace
+mismatch, or invalid delegated metadata as blocked. Only the full-pass renderer
+may emit `Completion verified`.
+Write the evidence JSON under `.scratch/deliver-code/<work-id>/` and store its
+path, fingerprint, collection time, and evaluated status under
+`lastVerification` in `state.json`.
 
 ## Quality policy
 

@@ -99,6 +99,14 @@ describe("README source contract", () => {
       "approved Goal Tunnel",
       "scope and non-goals",
       "scope drift returns to planning",
+      "visible_task",
+      "gpt-5.6-terra",
+      "reasoning effort high",
+      "list_projects",
+      "creation failure",
+      "post-plan",
+      "isolated worktree",
+      "Prepared, not executed",
       "../../workflows/setup-model-routing/skills/setup-model-routing",
       "examples/workflows/setup-model-routing",
       "omniskill remove startup-team",
@@ -109,6 +117,22 @@ describe("README source contract", () => {
     expect(readme).not.toContain("omniskill dispatch");
     expect(readme).not.toContain("dispatch resume");
     expect(readme).not.toContain(".omniskills/runs/");
+  });
+
+  test("documents the opt-in visible Terra implementation boundary in public mirrors", () => {
+    for (const content of [
+      readReadme(),
+      readRepoFile("docs/landing-content.md"),
+      readRepoFile("docs/landing-content.zh-Hant.md"),
+    ]) {
+      expect(content).toContain("visible_task");
+      expect(content).toContain("gpt-5.6-terra");
+      expect(content).toContain("reasoning effort high");
+      expect(content).toContain("post-plan");
+      expect(content).toContain("creation failure");
+      expect(content).toContain("Prepared, not executed");
+      expect(content).toContain("public CLI dispatch stays disabled");
+    }
   });
 
   test("documents the latest locked startup lifecycle and CLI safety contract", () => {

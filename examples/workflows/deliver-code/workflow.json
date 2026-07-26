@@ -40,10 +40,6 @@
     {
       "source": "mattpocock:code-review",
       "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
     }
   ],
   "steps": [
@@ -112,8 +108,8 @@
     {
       "id": "verify",
       "title": "Collect fresh completion evidence",
-      "skill": "superpowers:verification-before-completion",
-      "instruction": "Run the approved focused and full commands and never use stale evidence for a completion claim."
+      "skill": "./skills/deliver-code",
+      "instruction": "Collect and evaluate native structured evidence for the approved focused and full commands; block completion on failed, stale, unavailable, mismatched-workspace, or partially mapped evidence."
     },
     {
       "id": "accept",

@@ -339,7 +339,7 @@ export const startupTeam: TeamCardContent = {
     name: "Startup Goal",
     skill: "startup-goal",
     description:
-      "Controls the Goal Tunnel and Evidence Ledger, runs selected installed roles as internal subagents with bounded stage packets, and holds both human approval gates. Prepared, not executed is the fallback when the host launch capability or role profile is unavailable; public CLI dispatch stays disabled.",
+      "Controls the Goal Tunnel and Evidence Ledger, runs selected installed roles as internal subagents by default, and holds both human approval gates. A run-scoped visible_task needs explicit post-plan confirmation and uses gpt-5.6-terra with reasoning effort high in a project/worktree-aware workspace-write boundary. Prepared, not executed names unavailable capability, exact-model, target/access, creation failure, reconciliation, or result collection; public CLI dispatch stays disabled.",
   },
   members: [
     { name: "CEO", skill: "ceo", description: "Company direction and tradeoffs" },
@@ -403,7 +403,6 @@ export const startupTeam: TeamCardContent = {
     { name: "founding-engineer", description: "Implementation framing and handoff" },
     { name: "deliver-code", description: "Deliver approved vertical code slices" },
     { name: "qa-lead", description: "Acceptance checks and release risk" },
-    { name: "superpowers:brainstorming", description: "Explore options before scope locks" },
     { name: "setup-model-routing", description: "Configure global Codex model roles" },
   ],
   diagramSteps: [
@@ -1012,10 +1011,8 @@ export const workflows: WorkflowCardContent[] = [
     installCommand: "npx omniskill@latest install product-manager",
     skills: [
       { name: "product-manager", description: "Frame the product problem" },
-      { name: "superpowers:brainstorming", description: "Explore product options" },
       { name: "mattpocock:to-spec", description: "Write the product specification" },
       { name: "mattpocock:to-tickets", description: "Slice delivery tickets" },
-      { name: "superpowers:writing-plans", description: "Write the delivery plan" },
     ],
     diagramSteps: [
       {
@@ -1060,7 +1057,6 @@ export const workflows: WorkflowCardContent[] = [
     installCommand: "npx omniskill@latest install engineering-manager",
     skills: [
       { name: "engineering-manager", description: "Set the delivery frame" },
-      { name: "superpowers:writing-plans", description: "Write the execution plan" },
       { name: "mattpocock:tdd", description: "Choose the test strategy" },
       { name: "mattpocock:diagnosing-bugs", description: "Triage blockers" },
       { name: "mattpocock:code-review", description: "Review behavior and risk" },
@@ -1111,10 +1107,6 @@ export const workflows: WorkflowCardContent[] = [
       { name: "mattpocock:tdd", description: "Identify required test seams" },
       { name: "mattpocock:diagnosing-bugs", description: "Frame failure evidence" },
       { name: "mattpocock:code-review", description: "Identify behavior and review risk" },
-      {
-        name: "superpowers:verification-before-completion",
-        description: "Define completion checks",
-      },
     ],
     diagramSteps: [
       {
@@ -1161,7 +1153,6 @@ export const workflows: WorkflowCardContent[] = [
       { name: "qa-lead", description: "Set the release-risk frame" },
       { name: "mattpocock:code-review", description: "Review behavior and risk" },
       { name: "mattpocock:diagnosing-bugs", description: "Diagnose failures" },
-      { name: "superpowers:verification-before-completion", description: "Verify before handoff" },
     ],
     diagramSteps: [
       {
