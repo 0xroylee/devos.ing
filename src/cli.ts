@@ -27,7 +27,7 @@ import { runSubprocess } from "./process";
 
 type SkillChangeOperation = "install" | "update";
 
-const CLI_VERSION = "0.6.0";
+const CLI_VERSION = "0.8.0";
 
 interface CommanderVersionInternals {
   _outputConfiguration: {
