@@ -26,12 +26,24 @@ const testCodexModelCatalog = async () => [
     slug: "gpt-5.5",
     visibility: "list",
     priority: 0,
-    supportedReasoningEfforts: ["low", "medium", "high"] as const,
+    supportedReasoningEfforts: ["low", "medium", "high", "xhigh"] as const,
+  },
+  {
+    slug: "gpt-5.6-sol",
+    visibility: "list",
+    priority: 1,
+    supportedReasoningEfforts: ["xhigh"] as const,
+  },
+  {
+    slug: "gpt-5.6-luna",
+    visibility: "list",
+    priority: 2,
+    supportedReasoningEfforts: ["xhigh"] as const,
   },
   {
     slug: "codex-auto-review",
     visibility: "hidden",
-    priority: 1,
+    priority: 3,
     supportedReasoningEfforts: ["high"] as const,
   },
 ];
@@ -252,7 +264,19 @@ describe("omniskill command module", () => {
             slug: "gpt-5.5",
             visibility: "list",
             priority: 0,
-            supportedReasoningEfforts: ["low", "medium", "high"],
+            supportedReasoningEfforts: ["low", "medium", "high", "xhigh"],
+          },
+          {
+            slug: "gpt-5.6-sol",
+            visibility: "list",
+            priority: 1,
+            supportedReasoningEfforts: ["xhigh"],
+          },
+          {
+            slug: "gpt-5.6-luna",
+            visibility: "list",
+            priority: 2,
+            supportedReasoningEfforts: ["xhigh"],
           },
         ],
       });
@@ -469,7 +493,19 @@ describe("omniskill command module", () => {
               slug: "gpt-5.5",
               visibility: "list",
               priority: 0,
-              supportedReasoningEfforts: ["low", "medium", "high"],
+              supportedReasoningEfforts: ["low", "medium", "high", "xhigh"],
+            },
+            {
+              slug: "gpt-5.6-sol",
+              visibility: "list",
+              priority: 1,
+              supportedReasoningEfforts: ["xhigh"],
+            },
+            {
+              slug: "gpt-5.6-luna",
+              visibility: "list",
+              priority: 2,
+              supportedReasoningEfforts: ["xhigh"],
             },
           ];
         },
@@ -1375,7 +1411,7 @@ describe("omniskill command module", () => {
       });
 
       const upgradedRecord = JSON.parse(await readFile(recordPath, "utf8"));
-      expect(upgradedRecord.version).toBe("0.7.3");
+      expect(upgradedRecord.version).toBe("0.7.4");
       expect(
         upgradedRecord.installArtifacts.some((artifact: { source: string }) =>
           artifact.source.startsWith("superpowers:"),

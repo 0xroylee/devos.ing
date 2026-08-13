@@ -349,8 +349,9 @@ describe("landing app source contract", () => {
     expect(content).toContain("Prepare selected specialist handoffs");
     expect(content).not.toContain("Dispatch selected analysts");
     expect(content).toContain("visible_task");
-    expect(content).toContain("gpt-5.6-terra");
-    expect(content).toContain("reasoning effort high");
+    expect(content).toContain("gpt-5.6-luna");
+    expect(content).toContain("reasoning effort xhigh");
+    expect(content).not.toContain("gpt-5.6-terra");
     expect(content).toContain("explicit post-plan confirmation");
     expect(content).toContain("creation failure");
 

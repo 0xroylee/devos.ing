@@ -140,6 +140,39 @@ async function writeInstalledFixture(homeDir: string) {
 }
 
 describe("model routing setup", () => {
+  test("creates a missing global config when the approved selections match generated content", async () => {
+    const homeDir = await mkdtemp(join(tmpdir(), "model-routing-create-config-"));
+    const configPath = join(homeDir, ".omniskills", "orchestration.json");
+    try {
+      const plan = await planModelRoutingSetup({ homeDir, catalog, selections });
+
+      expect(plan.config.status).toBe("create");
+      await executeModelRoutingSetup(plan);
+      expect(JSON.parse(await readFile(configPath, "utf8"))).toEqual(plan.config.config);
+    } finally {
+      await rm(homeDir, { recursive: true, force: true });
+    }
+  });
+
+  test("upgrades the exact legacy config when the approved selections match generated content", async () => {
+    const homeDir = await mkdtemp(join(tmpdir(), "model-routing-upgrade-config-"));
+    const configPath = join(homeDir, ".omniskills", "orchestration.json");
+    const legacyContent = `${JSON.stringify(LEGACY_DEFAULT_ORCHESTRATION_CONFIG, null, 2)}\n`;
+    try {
+      await mkdir(join(homeDir, ".omniskills"), { recursive: true });
+      await writeFile(configPath, legacyContent);
+
+      const plan = await planModelRoutingSetup({ homeDir, catalog, selections });
+
+      expect(plan.config.status).toBe("update");
+      await executeModelRoutingSetup(plan);
+      expect(JSON.parse(await readFile(configPath, "utf8"))).toEqual(plan.config.config);
+      expect(await readFile(configPath, "utf8")).not.toBe(legacyContent);
+    } finally {
+      await rm(homeDir, { recursive: true, force: true });
+    }
+  });
+
   test("plans a global config, Codex profiles, and workflow record together", async () => {
     const homeDir = await mkdtemp(join(tmpdir(), "model-routing-setup-"));
     try {

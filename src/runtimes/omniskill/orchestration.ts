@@ -149,6 +149,7 @@ export const OrchestrationConfigSchema = z
 
 export type OrchestrationConfig = z.infer<typeof OrchestrationConfigSchema>;
 export type EffectiveOrchestrationConfig = z.infer<typeof OrchestrationConfigV2Schema>;
+export type CodexModelRoleSelections = Record<ModelRole, z.infer<typeof CodexCandidateSchema>>;
 
 const defaultCodexModels = {
   deep: "gpt-5.6-sol",
@@ -199,12 +200,26 @@ export function toEffectiveOrchestrationConfig(
   });
 }
 
+const defaultCodexModelRoles = {
+  planning: { model: "gpt-5.6-sol", reasoningEffort: "xhigh" },
+  implementation: { model: "gpt-5.6-luna", reasoningEffort: "xhigh" },
+  verification: { model: "gpt-5.6-sol", reasoningEffort: "xhigh" },
+} as const satisfies Record<ModelRole, z.infer<typeof CodexCandidateSchema>>;
+
 export const DEFAULT_ORCHESTRATION_CONFIG: EffectiveOrchestrationConfig =
-  toEffectiveOrchestrationConfig(LEGACY_DEFAULT_ORCHESTRATION_CONFIG);
+  OrchestrationConfigV2Schema.parse({
+    ...LEGACY_DEFAULT_ORCHESTRATION_CONFIG,
+    schemaVersion: "0.2",
+    modelRoles: {
+      planning: { codex: [defaultCodexModelRoles.planning] },
+      implementation: { codex: [defaultCodexModelRoles.implementation] },
+      verification: { codex: [defaultCodexModelRoles.verification] },
+    },
+  });
 
 export function createModelRoleOrchestrationConfig(input: {
   config: OrchestrationConfig;
-  selections: Record<ModelRole, z.infer<typeof CodexCandidateSchema>>;
+  selections: CodexModelRoleSelections;
 }): EffectiveOrchestrationConfig {
   const effective = toEffectiveOrchestrationConfig(input.config);
   return OrchestrationConfigV2Schema.parse({
@@ -223,34 +238,85 @@ const codexTierEffort = {
   fast: "low",
 } as const;
 
-function selectCodexModel(
-  tier: OrchestrationTier,
-  catalog: readonly CodexModelCapability[],
-): { model: string; reasoningEffort: z.infer<typeof CodexReasoningEffortSchema> } {
-  const reasoningEffort = codexTierEffort[tier];
-  const selected = catalog
+function selectPreferredCodexModel(input: {
+  label: string;
+  preferredModel: string;
+  reasoningEffort: z.infer<typeof CodexReasoningEffortSchema>;
+  unavailableCode: OrchestrationModelCompatibilityErrorCode;
+  requirePreferred?: boolean;
+  catalog: readonly CodexModelCapability[];
+}): { model: string; reasoningEffort: z.infer<typeof CodexReasoningEffortSchema> } {
+  if (input.requirePreferred) {
+    const preferred = input.catalog.find(
+      (model) => model.visibility === "list" && model.slug === input.preferredModel,
+    );
+    if (!preferred) {
+      throw new OrchestrationModelCompatibilityError(
+        "model_unavailable",
+        `${input.label} model ${input.preferredModel} is unavailable. Update Codex or authenticate the intended identity.`,
+      );
+    }
+    if (!preferred.supportedReasoningEfforts.includes(input.reasoningEffort)) {
+      throw new OrchestrationModelCompatibilityError(
+        "effort_unsupported",
+        `${input.label} model ${input.preferredModel} does not support effort ${input.reasoningEffort}. Update Codex or select a supported configuration.`,
+      );
+    }
+    return { model: preferred.slug, reasoningEffort: input.reasoningEffort };
+  }
+
+  const selected = input.catalog
     .filter(
       (model) =>
-        model.visibility === "list" && model.supportedReasoningEfforts.includes(reasoningEffort),
+        model.visibility === "list" &&
+        model.supportedReasoningEfforts.includes(input.reasoningEffort),
     )
     .sort(
       (left, right) =>
-        Number(left.slug !== defaultCodexModels[tier]) -
-          Number(right.slug !== defaultCodexModels[tier]) ||
+        Number(left.slug !== input.preferredModel) - Number(right.slug !== input.preferredModel) ||
         left.priority - right.priority ||
         left.slug.localeCompare(right.slug),
     )[0];
   if (!selected) {
     throw new OrchestrationModelCompatibilityError(
-      "tier_effort_unavailable",
-      `${tier} requires Codex effort ${reasoningEffort}, but no visible model supports it. Update Codex or authenticate the intended identity.`,
+      input.unavailableCode,
+      `${input.label} requires Codex effort ${input.reasoningEffort}, but no visible model supports it. Update Codex or authenticate the intended identity.`,
     );
   }
-  return { model: selected.slug, reasoningEffort };
+  return { model: selected.slug, reasoningEffort: input.reasoningEffort };
+}
+
+function selectCodexModel(
+  tier: OrchestrationTier,
+  catalog: readonly CodexModelCapability[],
+): { model: string; reasoningEffort: z.infer<typeof CodexReasoningEffortSchema> } {
+  return selectPreferredCodexModel({
+    label: tier,
+    preferredModel: defaultCodexModels[tier],
+    reasoningEffort: codexTierEffort[tier],
+    unavailableCode: "tier_effort_unavailable",
+    catalog,
+  });
+}
+
+function selectCodexModelRole(
+  role: ModelRole,
+  catalog: readonly CodexModelCapability[],
+  selection: z.infer<typeof CodexCandidateSchema>,
+): { model: string; reasoningEffort: z.infer<typeof CodexReasoningEffortSchema> } {
+  return selectPreferredCodexModel({
+    label: `${role} model-role`,
+    preferredModel: selection.model,
+    reasoningEffort: selection.reasoningEffort,
+    unavailableCode: "tier_effort_unavailable",
+    requirePreferred: true,
+    catalog,
+  });
 }
 
 export function createCatalogOrchestrationConfig(
   catalog: readonly CodexModelCapability[],
+  modelRoleSelections: CodexModelRoleSelections = defaultCodexModelRoles,
 ): EffectiveOrchestrationConfig {
   return OrchestrationConfigSchema.parse({
     ...DEFAULT_ORCHESTRATION_CONFIG,
@@ -264,9 +330,17 @@ export function createCatalogOrchestrationConfig(
       ]),
     ),
     modelRoles: {
-      planning: { codex: [selectCodexModel("deep", catalog)] },
-      implementation: { codex: [selectCodexModel("standard", catalog)] },
-      verification: { codex: [selectCodexModel("deep", catalog)] },
+      planning: {
+        codex: [selectCodexModelRole("planning", catalog, modelRoleSelections.planning)],
+      },
+      implementation: {
+        codex: [
+          selectCodexModelRole("implementation", catalog, modelRoleSelections.implementation),
+        ],
+      },
+      verification: {
+        codex: [selectCodexModelRole("verification", catalog, modelRoleSelections.verification)],
+      },
     },
   }) as EffectiveOrchestrationConfig;
 }

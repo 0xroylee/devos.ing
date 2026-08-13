@@ -101,13 +101,13 @@ QA remains independently owned by `qa-lead`. User Outcome Replay and feature
 acceptance remain owned by `$startup-goal`; installing deliver-code does not
 collapse either human gate.
 
-### Optional visible Terra implementation task
+### Optional visible Luna xhigh implementation task
 
 `internal` remains the default execution mode. A run-scoped `visible_task` is
 available only after plan approval plus a separate explicit post-plan
 confirmation; an ambiguous `approve` or `yes` does not create a task. The
 confirmation shows `[startup-goal] Implement <milestone-id> — <milestone title>`,
-the exact `gpt-5.6-terra` model, reasoning effort high, project, filesystem
+the exact `gpt-5.6-luna` model, reasoning effort xhigh, project, filesystem
 target, and workspace-write boundary.
 
 Before confirmation or creation, the coordinator calls `list_projects`; the

@@ -27,7 +27,7 @@ bounded in-scope rework can return fresh evidence to QA when needed.
 
 Internal execution remains the default. After plan approval, a user may opt in
 to one run-scoped `visible_task` only through a separate explicit post-plan
-confirmation. It names the `gpt-5.6-terra` model, reasoning effort high,
+confirmation. It names the `gpt-5.6-luna` model, reasoning effort xhigh,
 project, filesystem target, and workspace-write boundary; plan approval or an
 ambiguous `approve` never creates a task. Git work defaults to an isolated
 worktree, dirty-state dependencies use `startingState: working-tree`, and QA

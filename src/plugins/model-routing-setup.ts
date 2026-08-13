@@ -99,6 +99,7 @@ export async function planModelRoutingSetup(input: {
   const current = await loadOrchestrationConfigPlan({
     homeDir: input.homeDir,
     codexCatalog: input.catalog,
+    modelRoleSelections: selections,
   });
   const nextConfig = createModelRoleOrchestrationConfig({
     config: current.config,
@@ -108,7 +109,12 @@ export async function planModelRoutingSetup(input: {
   const nextContent = `${JSON.stringify(nextConfig, null, 2)}\n`;
   const config = {
     path: current.path,
-    status: current.content === nextContent ? ("unchanged" as const) : ("update" as const),
+    status:
+      current.status === "unchanged"
+        ? current.content === nextContent
+          ? ("unchanged" as const)
+          : ("update" as const)
+        : current.status,
     config: nextConfig,
     content: nextContent,
   };

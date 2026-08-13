@@ -138,7 +138,7 @@ acceptance.
 Coordinator: `$startup-goal` — Controls the Goal Tunnel and Evidence Ledger,
 runs selected installed roles as internal subagents by default, and holds both
 human approval gates. A run-scoped visible_task needs explicit post-plan
-confirmation and uses gpt-5.6-terra with reasoning effort high in a
+confirmation and uses gpt-5.6-luna with reasoning effort xhigh in a
 project/worktree-aware workspace-write boundary. Prepared, not executed names
 unavailable capability, exact-model, target/access, creation failure, reconciliation, or result
 collection; public CLI dispatch stays disabled.

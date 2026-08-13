@@ -3,11 +3,12 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
   type CodexModelCapability,
+  type CodexModelRoleSelections,
   createCatalogOrchestrationConfig,
   DEFAULT_ORCHESTRATION_CONFIG,
+  type EffectiveOrchestrationConfig,
   hashAgentProfileContent,
   LEGACY_DEFAULT_ORCHESTRATION_CONFIG,
-  type OrchestrationConfig,
   OrchestrationConfigSchema,
   orchestrationConfigFileName,
   type PlannedAgentProfile,
@@ -54,16 +55,17 @@ export interface PlannedWorkflowRecordWrite {
 export async function loadOrchestrationConfigPlan(input: {
   homeDir: string;
   codexCatalog?: readonly CodexModelCapability[];
+  modelRoleSelections?: CodexModelRoleSelections;
 }): Promise<{
   path: string;
   status: "create" | "update" | "unchanged";
-  config: OrchestrationConfig;
+  config: EffectiveOrchestrationConfig;
   content: string;
 }> {
   const path = join(input.homeDir, ".omniskills", orchestrationConfigFileName);
   const legacyContent = `${JSON.stringify(LEGACY_DEFAULT_ORCHESTRATION_CONFIG, null, 2)}\n`;
   const generatedConfig = input.codexCatalog
-    ? createCatalogOrchestrationConfig(input.codexCatalog)
+    ? createCatalogOrchestrationConfig(input.codexCatalog, input.modelRoleSelections)
     : DEFAULT_ORCHESTRATION_CONFIG;
   const generatedContent = `${JSON.stringify(generatedConfig, null, 2)}\n`;
   if (!existsSync(path)) {

@@ -10,7 +10,10 @@ import {
   planAgentProfiles,
   validateCodexOrchestrationConfig,
 } from "../src/runtimes/omniskill/orchestration";
-import { WorkflowBundleManifestSchema } from "../src/runtimes/omniskill/workflow-bundles";
+import {
+  loadWorkflowBundle,
+  WorkflowBundleManifestSchema,
+} from "../src/runtimes/omniskill/workflow-bundles";
 
 const manifest = WorkflowBundleManifestSchema.parse({
   schemaVersion: "0.1",
@@ -69,6 +72,20 @@ const roleSkillNames = {
 };
 
 describe("orchestration configuration", () => {
+  test("defaults model roles to the approved Sol and Luna xhigh routing", () => {
+    expect(DEFAULT_ORCHESTRATION_CONFIG.modelRoles).toEqual({
+      planning: {
+        codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }],
+      },
+      implementation: {
+        codex: [{ model: "gpt-5.6-luna", reasoningEffort: "xhigh" }],
+      },
+      verification: {
+        codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }],
+      },
+    });
+  });
+
   test("rejects empty candidates and silent tier downgrades", () => {
     expect(() =>
       OrchestrationConfigSchema.parse({
@@ -135,7 +152,7 @@ describe("orchestration configuration", () => {
         slug: "gpt-high",
         visibility: "list",
         priority: 0,
-        supportedReasoningEfforts: ["high"],
+        supportedReasoningEfforts: ["high", "xhigh"],
       },
       {
         slug: "gpt-general",
@@ -155,9 +172,23 @@ describe("orchestration configuration", () => {
         priority: -1,
         supportedReasoningEfforts: ["low", "medium", "high"],
       },
+      {
+        slug: "gpt-5.6-sol",
+        visibility: "list",
+        priority: 2,
+        supportedReasoningEfforts: ["xhigh"],
+      },
+      {
+        slug: "gpt-5.6-luna",
+        visibility: "list",
+        priority: 3,
+        supportedReasoningEfforts: ["xhigh"],
+      },
     ] satisfies CodexModelCapability[];
 
-    expect(createCatalogOrchestrationConfig(catalog).tiers).toEqual({
+    const config = createCatalogOrchestrationConfig(catalog);
+
+    expect(config.tiers).toEqual({
       deep: {
         codex: [{ model: "gpt-high", reasoningEffort: "high" }],
         claude: DEFAULT_ORCHESTRATION_CONFIG.tiers.deep.claude,
@@ -171,9 +202,14 @@ describe("orchestration configuration", () => {
         claude: DEFAULT_ORCHESTRATION_CONFIG.tiers.fast.claude,
       },
     });
+    expect(config.modelRoles).toEqual({
+      planning: { codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }] },
+      implementation: { codex: [{ model: "gpt-5.6-luna", reasoningEffort: "xhigh" }] },
+      verification: { codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }] },
+    });
   });
 
-  test("prefers GPT-5.6 tier defaults over higher-priority GPT-5.5", () => {
+  test("prefers approved GPT-5.6 tier and model-role defaults over catalog priority", () => {
     const catalog = [
       {
         slug: "gpt-5.5",
@@ -185,7 +221,7 @@ describe("orchestration configuration", () => {
         slug: "gpt-5.6-sol",
         visibility: "list",
         priority: 1,
-        supportedReasoningEfforts: ["medium", "high"],
+        supportedReasoningEfforts: ["medium", "high", "xhigh"],
       },
       {
         slug: "gpt-5.6-terra",
@@ -193,9 +229,17 @@ describe("orchestration configuration", () => {
         priority: 2,
         supportedReasoningEfforts: ["low"],
       },
+      {
+        slug: "gpt-5.6-luna",
+        visibility: "list",
+        priority: 3,
+        supportedReasoningEfforts: ["xhigh"],
+      },
     ] satisfies CodexModelCapability[];
 
-    expect(createCatalogOrchestrationConfig(catalog).tiers).toEqual({
+    const config = createCatalogOrchestrationConfig(catalog);
+
+    expect(config.tiers).toEqual({
       deep: {
         codex: [{ model: "gpt-5.6-sol", reasoningEffort: "high" }],
         claude: DEFAULT_ORCHESTRATION_CONFIG.tiers.deep.claude,
@@ -209,6 +253,7 @@ describe("orchestration configuration", () => {
         claude: DEFAULT_ORCHESTRATION_CONFIG.tiers.fast.claude,
       },
     });
+    expect(config.modelRoles).toEqual(DEFAULT_ORCHESTRATION_CONFIG.modelRoles);
   });
 
   test("reports when no visible model supports a required tier effort", () => {
@@ -226,6 +271,58 @@ describe("orchestration configuration", () => {
       expect(error).toBeInstanceOf(OrchestrationModelCompatibilityError);
       expect((error as OrchestrationModelCompatibilityError).code).toBe("tier_effort_unavailable");
       expect((error as Error).message).toContain("deep requires Codex effort high");
+    }
+  });
+
+  test("rejects a catalog that omits an approved model-role model", () => {
+    try {
+      createCatalogOrchestrationConfig([
+        {
+          slug: "gpt-general",
+          visibility: "list",
+          priority: 0,
+          supportedReasoningEfforts: ["low", "medium", "high", "xhigh"],
+        },
+      ]);
+      throw new Error("Expected an exact model-role compatibility error");
+    } catch (error) {
+      expect(error).toBeInstanceOf(OrchestrationModelCompatibilityError);
+      expect((error as OrchestrationModelCompatibilityError).code).toBe("model_unavailable");
+      expect((error as Error).message).toContain(
+        "planning model-role model gpt-5.6-sol is unavailable",
+      );
+    }
+  });
+
+  test("rejects an approved model-role model that lacks xhigh", () => {
+    try {
+      createCatalogOrchestrationConfig([
+        {
+          slug: "gpt-general",
+          visibility: "list",
+          priority: 0,
+          supportedReasoningEfforts: ["low", "medium", "high"],
+        },
+        {
+          slug: "gpt-5.6-sol",
+          visibility: "list",
+          priority: 1,
+          supportedReasoningEfforts: ["high"],
+        },
+        {
+          slug: "gpt-5.6-luna",
+          visibility: "list",
+          priority: 2,
+          supportedReasoningEfforts: ["xhigh"],
+        },
+      ]);
+      throw new Error("Expected an exact model-role effort compatibility error");
+    } catch (error) {
+      expect(error).toBeInstanceOf(OrchestrationModelCompatibilityError);
+      expect((error as OrchestrationModelCompatibilityError).code).toBe("effort_unsupported");
+      expect((error as Error).message).toContain(
+        "planning model-role model gpt-5.6-sol does not support effort xhigh",
+      );
     }
   });
 
@@ -390,6 +487,45 @@ describe("orchestration configuration", () => {
       modelRole: "implementation",
       model: "builder",
       effort: "medium",
+    });
+  });
+
+  test("plans startup-team Codex profiles with the approved role routing", async () => {
+    const bundle = await loadWorkflowBundle(
+      join(import.meta.dir, "..", "examples", "teams", "startup-team"),
+    );
+    const profiles = planAgentProfiles({
+      manifest: bundle.manifest,
+      config: DEFAULT_ORCHESTRATION_CONFIG,
+      homeDir: "/tmp/orchestration-home",
+      targets: ["codex"],
+      roleSkillNames: {
+        "./skills/startup-goal": "startup-goal",
+        "../../workflows/ceo": "ceo",
+        "../../workflows/cto": "cto",
+        "../../workflows/product-manager": "product-manager",
+        "../../workflows/web-design": "web-design",
+        "../../workflows/engineering-manager": "engineering-manager",
+        "../../workflows/founding-engineer": "founding-engineer",
+        "../../workflows/deliver-code": "deliver-code",
+        "../../workflows/qa-lead": "qa-lead",
+      },
+    });
+
+    expect(profiles.find(({ source }) => source === "./skills/startup-goal")).toMatchObject({
+      modelRole: "planning",
+      model: "gpt-5.6-sol",
+      effort: "xhigh",
+    });
+    expect(profiles.find(({ source }) => source === "../../workflows/deliver-code")).toMatchObject({
+      modelRole: "implementation",
+      model: "gpt-5.6-luna",
+      effort: "xhigh",
+    });
+    expect(profiles.find(({ source }) => source === "../../workflows/qa-lead")).toMatchObject({
+      modelRole: "verification",
+      model: "gpt-5.6-sol",
+      effort: "xhigh",
     });
   });
 

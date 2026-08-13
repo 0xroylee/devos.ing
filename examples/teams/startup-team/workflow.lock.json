@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "startup-team",
-  "workflowVersion": "0.7.3",
-  "generatedAt": "2026-07-25T08:11:12.787Z",
+  "workflowVersion": "0.7.4",
+  "generatedAt": "2026-08-13T06:22:27.522Z",
   "workflows": [
     {
-      "id": "workflow:startup-team@0.7.3",
+      "id": "workflow:startup-team@0.7.4",
       "name": "startup-team",
-      "version": "0.7.3",
+      "version": "0.7.4",
       "source": {
         "kind": "root"
       }
@@ -87,35 +87,35 @@
   ],
   "edges": [
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:ceo@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:cto@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:product-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:web-design@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:engineering-manager@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:founding-engineer@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:deliver-code@0.1.0"
     },
     {
-      "from": "workflow:startup-team@0.7.3",
+      "from": "workflow:startup-team@0.7.4",
       "to": "workflow:qa-lead@0.2.0"
     }
   ],
@@ -124,7 +124,7 @@
       "source": "./skills/startup-goal",
       "resolvedName": "startup-goal",
       "kind": "local",
-      "hash": "sha256:b1469d9341cd59efddc24e19324bf3327e3573ba0f3c029cdc2574b75c93451d"
+      "hash": "sha256:46f52d94bc143d0a9cecb36a191c606eafe512aaad32c835873fc443b4671f17"
     },
     {
       "source": "../../workflows/ceo/skills/ceo",

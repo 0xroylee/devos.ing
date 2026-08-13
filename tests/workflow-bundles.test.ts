@@ -2195,7 +2195,7 @@ describe("workflow bundles", () => {
     expect(bundle.manifest).toMatchObject({
       kind: "team",
       name: "startup-team",
-      version: "0.7.3",
+      version: "0.7.4",
       coordinator: "./skills/startup-goal",
       members: canonicalMembers,
       loop: {
@@ -2341,8 +2341,8 @@ describe("workflow bundles", () => {
       "separate explicit post-plan confirmation",
       "Plan approval alone never authorizes visible task creation",
       "[startup-goal] Implement <milestone-id> — <milestone title>",
-      "gpt-5.6-terra",
-      "reasoning effort high",
+      "gpt-5.6-luna",
+      "reasoning effort xhigh",
       "list_projects",
       "selected returned opaque project identity",
       "resolve the visible task target",
@@ -2358,6 +2358,7 @@ describe("workflow bundles", () => {
     ]) {
       expect(normalizedVisibleTaskContract).toContain(contract);
     }
+    expect(normalizedVisibleTaskContract).not.toContain("gpt-5.6-terra");
     expect(skill).not.toContain(
       "Do not call the removed public CLI\ndispatcher, reconnect its dormant runtime, or create a separate user-owned\ntask.",
     );

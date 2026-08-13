@@ -23,7 +23,19 @@ const codexCatalog = [
     slug: "gpt-5.5",
     visibility: "list",
     priority: 0,
-    supportedReasoningEfforts: ["low", "medium", "high"],
+    supportedReasoningEfforts: ["low", "medium", "high", "xhigh"],
+  },
+  {
+    slug: "gpt-5.6-sol",
+    visibility: "list",
+    priority: 1,
+    supportedReasoningEfforts: ["xhigh"],
+  },
+  {
+    slug: "gpt-5.6-luna",
+    visibility: "list",
+    priority: 2,
+    supportedReasoningEfforts: ["xhigh"],
   },
 ] satisfies CodexModelCapability[];
 
@@ -81,6 +93,11 @@ describe("agent profile installer", () => {
           claude: DEFAULT_ORCHESTRATION_CONFIG.tiers.fast.claude,
         },
       });
+      expect(plan.config.modelRoles).toEqual({
+        planning: { codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }] },
+        implementation: { codex: [{ model: "gpt-5.6-luna", reasoningEffort: "xhigh" }] },
+        verification: { codex: [{ model: "gpt-5.6-sol", reasoningEffort: "xhigh" }] },
+      });
       await expect(readFile(plan.path, "utf8")).rejects.toThrow();
     } finally {
       await rm(homeDir, { recursive: true, force: true });
@@ -90,18 +107,29 @@ describe("agent profile installer", () => {
   test("plans GPT-5.6 tier defaults ahead of GPT-5.5 catalog priority", async () => {
     const homeDir = await mkdtemp(join(tmpdir(), "orchestration-preferred-config-"));
     const preferredCatalog = [
-      ...codexCatalog,
+      {
+        slug: "gpt-5.5",
+        visibility: "list",
+        priority: 0,
+        supportedReasoningEfforts: ["low", "medium", "high", "xhigh"],
+      },
       {
         slug: "gpt-5.6-sol",
         visibility: "list",
         priority: 1,
-        supportedReasoningEfforts: ["medium", "high"],
+        supportedReasoningEfforts: ["medium", "high", "xhigh"],
       },
       {
         slug: "gpt-5.6-terra",
         visibility: "list",
         priority: 2,
         supportedReasoningEfforts: ["low"],
+      },
+      {
+        slug: "gpt-5.6-luna",
+        visibility: "list",
+        priority: 3,
+        supportedReasoningEfforts: ["xhigh"],
       },
     ] satisfies CodexModelCapability[];
     try {
@@ -119,6 +147,7 @@ describe("agent profile installer", () => {
       expect(plan.config.tiers.fast.codex).toEqual([
         { model: "gpt-5.6-terra", reasoningEffort: "low" },
       ]);
+      expect(plan.config.modelRoles).toEqual(DEFAULT_ORCHESTRATION_CONFIG.modelRoles);
     } finally {
       await rm(homeDir, { recursive: true, force: true });
     }

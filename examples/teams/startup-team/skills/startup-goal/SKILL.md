@@ -105,7 +105,7 @@ Before asking for that confirmation, call the host capability `list_projects`.
 The selected returned opaque project identity must resolve the visible task
 target before confirmation or creation. Then show the deterministic title
 `[startup-goal] Implement <milestone-id> — <milestone title>`, the exact
-`gpt-5.6-terra` model, reasoning effort high, selected project, filesystem
+`gpt-5.6-luna` model, reasoning effort xhigh, selected project, filesystem
 target, and workspace-write boundary. Keep the root model and global routing
 unchanged. For a Git project, list projects first and default to an isolated worktree; use `startingState: working-tree` when the approved work depends on
 current uncommitted changes. Direct current-checkout execution requires explicit choice. For a non-Git project, use the saved project.
@@ -116,7 +116,7 @@ source coordinator and milestone ID, the approved Goal Tunnel, scope and non-goa
 acceptance criteria, the implementation-plan boundary, permissions,
 repository context, immutable decisions, and plan approval evidence. Send the
 bounded packet, never the full transcript. A visible task must be configured
-with `gpt-5.6-terra` and reasoning effort high.
+with `gpt-5.6-luna` and reasoning effort xhigh.
 
 Create exactly one visible implementation task per milestone. Persist and reuse
 the created task ID and workspace reference for result collection, one bounded
