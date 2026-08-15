@@ -210,7 +210,7 @@ The full guide is in [`docs/workflow-author-guide.md`](docs/workflow-author-guid
 | `examples/teams/startup-team` | Install a realistic startup operating team around one goal. | Includes the `$startup-goal` coordinator plus `$ceo`, `$cto`, `$product-manager`, `$web-design`, `$engineering-manager`, `$founding-engineer`, and `$qa-lead`. |
 | `examples/workflows/ceo` | Company direction, strategy, tradeoffs, and decision mapping. | Uses Matt Pocock decision and grilling skills. |
 | `examples/workflows/cto` | Architecture, domain model, technical risk, and review. | Uses Matt Pocock architecture/review skills. |
-| `examples/workflows/product-manager` | Discovery, PRD, issue slicing, and product planning. | Uses Superpowers plus Matt Pocock PRD/issue skills. |
+| `examples/workflows/product-manager` | Discovery, PRD, issue slicing, and product planning. | Uses native product framing plus Matt Pocock PRD/issue skills. |
 | `examples/workflows/web-design` | Interface direction, responsive interaction states, and animation review. | Uses the canonical Interface Craft skill identifiers. |
 | `examples/workflows/engineering-manager` | Delivery sequencing, quality gates, and execution risk. | Uses planning, TDD, diagnosing, and review skills. |
 | `examples/workflows/founding-engineer` | Implementation, tests, debugging, review, and final verification. | Uses `$implement` as the implementation role. |

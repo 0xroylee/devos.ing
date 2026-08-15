@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1",
   "name": "qa-lead",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Act as the startup QA lead for release risk, acceptance checks, regression focus, and verification evidence.",
   "skills": [
     {
@@ -15,10 +15,6 @@
     {
       "source": "mattpocock:diagnosing-bugs",
       "repo": "https://github.com/mattpocock/skills/tree/v1.1.0"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "repo": "obra/superpowers"
     }
   ],
   "steps": [

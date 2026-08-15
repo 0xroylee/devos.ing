@@ -5,10 +5,10 @@ organized around a goal. It installs `$startup-goal` as the coordinator plus
 role skills for CEO, CTO, product manager, web-design lead, engineering manager,
 founding engineer, and QA lead, with the companion skills those roles expect.
 
-The flow starts with `superpowers:brainstorming` as a one-question-at-a-time
-requirements interview. The coordinator prepares role handoffs only after the
-user approves the requirement brief, so vague startup asks become clear goals,
-constraints, success criteria, and manual briefs before execution.
+The coordinator starts with a one-question-at-a-time requirements interview.
+It prepares role handoffs only after the user approves the requirement brief,
+so vague startup asks become clear goals, constraints, success criteria, and
+manual briefs before execution.
 
 Install it from the repo root:
 

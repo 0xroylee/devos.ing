@@ -24,10 +24,10 @@ approved goal tunnel.
 
 ## Optional Methods
 
-- Use `superpowers:brainstorming` when material product options remain open.
+- Surface material product options and wait for scope approval when uncertainty remains.
 - Use `mattpocock:to-spec` when a durable product specification is needed.
 - Use `mattpocock:to-tickets` when approved scope needs tracer-bullet tickets.
-- Use `superpowers:writing-plans` when the product decision needs an executable delivery plan.
+- Turn an approved product decision into an executable delivery plan when needed.
 
 Use a method only when it materially helps the output. Missing an optional
 method does not block the role.

@@ -145,7 +145,7 @@ Members：
 Actions：`View team` 開啟 `/workflows/startup-team`；`View team source` 開啟
 `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/startup-team`。
 
-Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`qa-lead`、`emilkowalski:emil-design-eng`、`emilkowalski:animation-vocabulary`、`emilkowalski:apple-design`、`emilkowalski:review-animations`、`superpowers:brainstorming`、`superpowers:writing-plans`、`superpowers:verification-before-completion`、`mattpocock:wayfinder`、`mattpocock:grill-with-docs`、`mattpocock:to-spec`、`mattpocock:to-tickets`、`mattpocock:codebase-design`、`mattpocock:domain-modeling`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`、`mattpocock:implement`。
+Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`qa-lead`、`emilkowalski:emil-design-eng`、`emilkowalski:animation-vocabulary`、`emilkowalski:apple-design`、`emilkowalski:review-animations`、`mattpocock:wayfinder`、`mattpocock:grill-with-docs`、`mattpocock:to-spec`、`mattpocock:to-tickets`、`mattpocock:codebase-design`、`mattpocock:domain-modeling`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`、`mattpocock:implement`。
 
 Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `mattpocock:implement`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
 
@@ -232,9 +232,9 @@ npx omniskill@latest install product-manager
 
 Description：Product discovery、PRDs、acceptance criteria、roadmap tradeoffs、issue slicing。
 
-Skills：`product-manager`、`superpowers:brainstorming`、`mattpocock:to-spec`、`mattpocock:to-tickets`、`superpowers:writing-plans`。
+Skills：`product-manager`、`mattpocock:to-spec`、`mattpocock:to-tickets`。
 
-Ordered skill path：Brief -> `product-manager`；Brainstorm -> `superpowers:brainstorming`；PRD -> `mattpocock:to-spec`；Issues -> `mattpocock:to-tickets`；Plan -> `superpowers:writing-plans`。
+Ordered skill path：Brief -> `product-manager`；Explore -> `product-manager`；PRD -> `mattpocock:to-spec`；Issues -> `mattpocock:to-tickets`；Plan -> `product-manager`。
 
 ### Engineering Manager
 
@@ -252,9 +252,9 @@ npx omniskill@latest install engineering-manager
 
 Description：Delivery sequencing、execution risk、quality gates、blocker triage、engineering process。
 
-Skills：`engineering-manager`、`superpowers:writing-plans`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`。
+Skills：`engineering-manager`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`。
 
-Ordered skill path：Brief -> `engineering-manager`；Plan -> `superpowers:writing-plans`；Quality -> `mattpocock:tdd`；Debug -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`。
+Ordered skill path：Brief -> `engineering-manager`；Plan -> `engineering-manager`；Quality -> `mattpocock:tdd`；Debug -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`。
 
 ### Founding Engineer
 
@@ -272,9 +272,9 @@ npx omniskill@latest install founding-engineer
 
 Description：Implementation lane，聚焦 smallest correct change：tests、debugging、review、verification。
 
-Skills：`founding-engineer`、`mattpocock:implement`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`、`superpowers:verification-before-completion`。
+Skills：`founding-engineer`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`。
 
-Ordered skill path：Brief -> `founding-engineer`；Implement -> `mattpocock:implement`；TDD -> `mattpocock:tdd`；Debug -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`；Verify -> `superpowers:verification-before-completion`。
+Ordered skill path：Brief -> `founding-engineer`；TDD -> `mattpocock:tdd`；Debug -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`；Verify -> `founding-engineer`。
 
 ### QA Lead
 
@@ -292,9 +292,9 @@ npx omniskill@latest install qa-lead
 
 Description：Release-risk lens，處理 acceptance checks、regression focus、reproduction gaps、verification evidence。
 
-Skills：`qa-lead`、`mattpocock:code-review`、`mattpocock:diagnosing-bugs`、`superpowers:verification-before-completion`。
+Skills：`qa-lead`、`mattpocock:code-review`、`mattpocock:diagnosing-bugs`。
 
-Ordered skill path：Brief -> `qa-lead`；Review -> `mattpocock:code-review`；Debug -> `mattpocock:diagnosing-bugs`；Verify -> `superpowers:verification-before-completion`。
+Ordered skill path：Brief -> `qa-lead`；Review -> `mattpocock:code-review`；Debug -> `mattpocock:diagnosing-bugs`；Verify -> `qa-lead`。
 
 ### Codex Input Preview
 

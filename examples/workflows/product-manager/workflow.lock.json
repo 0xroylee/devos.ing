@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "product-manager",
-  "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-16T11:07:29.406Z",
+  "workflowVersion": "0.3.0",
+  "generatedAt": "2026-08-15T05:43:14.398Z",
   "workflows": [
     {
-      "id": "workflow:product-manager@0.2.0",
+      "id": "workflow:product-manager@0.3.0",
       "name": "product-manager",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": {
         "kind": "root"
       }
@@ -19,14 +19,7 @@
       "source": "./skills/product-manager",
       "resolvedName": "product-manager",
       "kind": "local",
-      "hash": "sha256:35b234429d541940ac942f1f631e76b573a97a29ce8200c57776b68dd6eae6e2"
-    },
-    {
-      "source": "superpowers:brainstorming",
-      "resolvedName": "superpowers-brainstorming",
-      "kind": "external",
-      "repo": "obra/superpowers",
-      "hash": "sha256:a688fac4f89e4b3481c2a2804c54872ef5186ee8ab50103b5ac9777737234387"
+      "hash": "sha256:926e94920e97c02869b818342e1e5206cc61dfc5048fc69a379f2a31d38c963b"
     },
     {
       "source": "mattpocock:to-spec",
@@ -41,13 +34,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
       "hash": "sha256:49679c184e8970591136c431ba4fa00a4890aff23a2701c194465f79007a23c9"
-    },
-    {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
-      "kind": "external",
-      "repo": "obra/superpowers",
-      "hash": "sha256:af085fb88831241d778d94c43b0f2b8ecdddfa250851dc08a977233d031dede6"
     }
   ]
 }

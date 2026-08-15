@@ -24,6 +24,7 @@ function lockPath(entry: CatalogEntryContent) {
 function displayName(source: string) {
   if (source.startsWith("./skills/")) return source.slice("./skills/".length);
   if (source.startsWith("catalog:")) return source.slice("catalog:".length);
+  if (source.startsWith("../../workflows/")) return source.slice("../../workflows/".length);
   return source;
 }
 

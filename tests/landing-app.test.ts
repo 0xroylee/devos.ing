@@ -311,14 +311,14 @@ describe("landing app source contract", () => {
 
     expect(startupCardStart).toBeGreaterThan(-1);
     expect(nextCardStart).toBeGreaterThan(startupCardStart);
-    expect(manifest.members).toEqual(memberSkills.map((skill) => `catalog:${skill}`));
+    expect(manifest.members).toEqual(memberSkills.map((skill) => `../../workflows/${skill}`));
     expect(startupTeam.localSkillNames).toEqual(["startup-goal"]);
     for (const skill of memberSkills) {
       expect(startupTeam.skillSourceUrls?.[skill]).toBe(
         `${githubUrl}/blob/main/examples/workflows/${skill}/skills/${skill}/SKILL.md`,
       );
     }
-    expect(expectedNames).toHaveLength(25);
+    expect(expectedNames).toHaveLength(22);
     for (const name of expectedNames) {
       expect(startupCard).toContain(`name: "${name}"`);
     }

@@ -159,12 +159,6 @@ export const startupTeam: TeamCardContent = {
     },
     { name: "emilkowalski:apple-design", description: "Apply Apple design principles" },
     { name: "emilkowalski:review-animations", description: "Review motion quality" },
-    { name: "superpowers:brainstorming", description: "Explore options before scope locks" },
-    { name: "superpowers:writing-plans", description: "Create executable plans" },
-    {
-      name: "superpowers:verification-before-completion",
-      description: "Verify before claiming done",
-    },
     { name: "mattpocock:wayfinder", description: "Map decisions and uncertainty" },
     { name: "mattpocock:grill-with-docs", description: "Stress-test direction" },
     { name: "mattpocock:to-spec", description: "Write product requirements" },
@@ -356,10 +350,8 @@ export const workflows: WorkflowCardContent[] = [
     installCommand: "npx omniskill@latest install product-manager",
     skills: [
       { name: "product-manager", description: "Frame the product problem" },
-      { name: "superpowers:brainstorming", description: "Explore product options" },
       { name: "mattpocock:to-spec", description: "Write the product specification" },
       { name: "mattpocock:to-tickets", description: "Slice delivery tickets" },
-      { name: "superpowers:writing-plans", description: "Write the delivery plan" },
     ],
     diagramSteps: [
       {
@@ -368,8 +360,8 @@ export const workflows: WorkflowCardContent[] = [
         description: "Name the user, pain, and desired behavior change.",
       },
       {
-        label: "Brainstorm",
-        skill: "superpowers:brainstorming",
+        label: "Explore",
+        skill: "product-manager",
         description: "Explore product options before locking scope.",
       },
       {
@@ -384,7 +376,7 @@ export const workflows: WorkflowCardContent[] = [
       },
       {
         label: "Plan",
-        skill: "superpowers:writing-plans",
+        skill: "product-manager",
         description: "Turn scope into executable delivery steps.",
       },
     ],
@@ -404,7 +396,6 @@ export const workflows: WorkflowCardContent[] = [
     installCommand: "npx omniskill@latest install engineering-manager",
     skills: [
       { name: "engineering-manager", description: "Set the delivery frame" },
-      { name: "superpowers:writing-plans", description: "Write the execution plan" },
       { name: "mattpocock:tdd", description: "Choose the test strategy" },
       { name: "mattpocock:diagnosing-bugs", description: "Triage blockers" },
       { name: "mattpocock:code-review", description: "Review behavior and risk" },
@@ -417,7 +408,7 @@ export const workflows: WorkflowCardContent[] = [
       },
       {
         label: "Plan",
-        skill: "superpowers:writing-plans",
+        skill: "engineering-manager",
         description: "Sequence work into verifiable steps.",
       },
       {
@@ -452,21 +443,15 @@ export const workflows: WorkflowCardContent[] = [
     installCommand: "npx omniskill@latest install founding-engineer",
     skills: [
       { name: "founding-engineer", description: "Set the implementation frame" },
-      { name: "mattpocock:tdd", description: "Use test-first development" },
+      { name: "mattpocock:tdd", description: "Choose the test strategy" },
       { name: "mattpocock:diagnosing-bugs", description: "Diagnose failures" },
       { name: "mattpocock:code-review", description: "Review behavior and risk" },
-      { name: "superpowers:verification-before-completion", description: "Verify completion" },
     ],
     diagramSteps: [
       {
         label: "Brief",
         skill: "founding-engineer",
         description: "Read the plan and acceptance criteria.",
-      },
-      {
-        label: "Implement",
-        skill: "mattpocock:implement",
-        description: "Ship the smallest correct slice.",
       },
       {
         label: "TDD",
@@ -485,7 +470,7 @@ export const workflows: WorkflowCardContent[] = [
       },
       {
         label: "Verify",
-        skill: "superpowers:verification-before-completion",
+        skill: "founding-engineer",
         description: "Run final checks before handoff.",
       },
     ],
@@ -507,7 +492,6 @@ export const workflows: WorkflowCardContent[] = [
       { name: "qa-lead", description: "Set the release-risk frame" },
       { name: "mattpocock:code-review", description: "Review behavior and risk" },
       { name: "mattpocock:diagnosing-bugs", description: "Diagnose failures" },
-      { name: "superpowers:verification-before-completion", description: "Verify before handoff" },
     ],
     diagramSteps: [
       {
@@ -527,7 +511,7 @@ export const workflows: WorkflowCardContent[] = [
       },
       {
         label: "Verify",
-        skill: "superpowers:verification-before-completion",
+        skill: "qa-lead",
         description: "Separate verified facts from residual risk.",
       },
     ],

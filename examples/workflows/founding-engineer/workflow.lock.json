@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "founding-engineer",
-  "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-16T11:07:44.743Z",
+  "workflowVersion": "0.3.0",
+  "generatedAt": "2026-08-15T05:43:14.360Z",
   "workflows": [
     {
-      "id": "workflow:founding-engineer@0.2.0",
+      "id": "workflow:founding-engineer@0.3.0",
       "name": "founding-engineer",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": {
         "kind": "root"
       }
@@ -19,7 +19,7 @@
       "source": "./skills/founding-engineer",
       "resolvedName": "founding-engineer",
       "kind": "local",
-      "hash": "sha256:105be4fb3dd371d6c9b1c6c207b29291493899fd64ccb34a4651ffa2fd421f83"
+      "hash": "sha256:ac03fae80e71966affc883f1812380a8d897a41e5f59fd5e8cc725e677425b06"
     },
     {
       "source": "mattpocock:tdd",
@@ -41,13 +41,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
       "hash": "sha256:913b01e36a6d3e28173b68e3147295754dd1ff2b91dbc23ebb1161cc687c91e6"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
-      "kind": "external",
-      "repo": "obra/superpowers",
-      "hash": "sha256:26401a7561086d127295b4267e19ccbc44a8b0d04ca519723a8a70301ae6efdf"
     }
   ]
 }

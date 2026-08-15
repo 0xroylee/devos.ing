@@ -24,7 +24,7 @@ actually deliver.
 
 ## Optional Methods
 
-- Use `superpowers:writing-plans` when the approved direction needs an executable plan.
+- Turn the approved direction into an executable plan when needed.
 - Use `mattpocock:tdd` when test-first seams materially reduce delivery risk.
 - Use `mattpocock:diagnosing-bugs` for blocker triage.
 - Use `mattpocock:code-review` when delivery risk depends on existing or proposed code.

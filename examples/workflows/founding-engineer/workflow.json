@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1",
   "name": "founding-engineer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Act as the startup founding engineer for read-only implementation framing, affected seams, test strategy, and technical risk before execution handoff.",
   "skills": [
     {
@@ -19,10 +19,6 @@
     {
       "source": "mattpocock:code-review",
       "repo": "https://github.com/mattpocock/skills/tree/v1.1.0"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "repo": "obra/superpowers"
     }
   ],
   "steps": [

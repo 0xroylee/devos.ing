@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
-import { cp, mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -28,20 +28,39 @@ import {
 } from "../src/runtimes/omniskill/workflow-bundles";
 
 const startupRoleContracts = [
-  { role: "ceo", phrases: ["company-level decision", "reversibility", "evidence-gathering"] },
-  { role: "product-manager", phrases: ["customer outcome", "must-have", "acceptance criteria"] },
-  { role: "cto", phrases: ["architecture decision", "technical risk", "verification gate"] },
+  {
+    role: "ceo",
+    version: "0.2.0",
+    phrases: ["company-level decision", "reversibility", "evidence-gathering"],
+  },
+  {
+    role: "product-manager",
+    version: "0.3.0",
+    phrases: ["customer outcome", "must-have", "acceptance criteria"],
+  },
+  {
+    role: "cto",
+    version: "0.2.0",
+    phrases: ["architecture decision", "technical risk", "verification gate"],
+  },
   {
     role: "engineering-manager",
+    version: "0.3.0",
     phrases: ["smallest shippable sequence", "ownership", "proportional quality gates"],
   },
   {
     role: "founding-engineer",
+    version: "0.3.0",
     phrases: ["read-only implementation frame", "affected seams", "test strategy"],
   },
-  { role: "qa-lead", phrases: ["acceptance evidence", "untested areas", "residual risk"] },
+  {
+    role: "qa-lead",
+    version: "0.3.0",
+    phrases: ["acceptance evidence", "untested areas", "residual risk"],
+  },
   {
     role: "web-design",
+    version: "0.2.0",
     phrases: ["information hierarchy", "responsive", "accessibility", "motion changed"],
   },
 ] as const;
@@ -1627,29 +1646,29 @@ describe("workflow bundles", () => {
           access: "read-only",
           consultation: "receive",
         },
-        "catalog:ceo": { tier: "deep", access: "read-only", consultation: "request" },
-        "catalog:cto": { tier: "deep", access: "read-only", consultation: "request" },
-        "catalog:product-manager": {
+        "../../workflows/ceo": { tier: "deep", access: "read-only", consultation: "request" },
+        "../../workflows/cto": { tier: "deep", access: "read-only", consultation: "request" },
+        "../../workflows/product-manager": {
           tier: "deep",
           access: "read-only",
           consultation: "request",
         },
-        "catalog:web-design": {
+        "../../workflows/web-design": {
           tier: "deep",
           access: "read-only",
           consultation: "request",
         },
-        "catalog:engineering-manager": {
+        "../../workflows/engineering-manager": {
           tier: "deep",
           access: "read-only",
           consultation: "request",
         },
-        "catalog:founding-engineer": {
+        "../../workflows/founding-engineer": {
           tier: "deep",
           access: "read-only",
           consultation: "request",
         },
-        "catalog:qa-lead": {
+        "../../workflows/qa-lead": {
           tier: "deep",
           access: "read-only",
           consultation: "request",
@@ -1679,10 +1698,35 @@ describe("workflow bundles", () => {
       ]);
       expect(startupTeam.lock.edges).toHaveLength(7);
       expect(startupTeam.lock.skills.map((skill) => skill.source)).toContain(
-        "workflow:ceo@0.1.1#./skills/ceo",
+        "../../workflows/ceo/skills/ceo",
       );
     }
     expect(startupTeam.manifest.skills.map((skill) => skill.source)).not.toContain("pony-trail");
+  });
+
+  test("keeps default startup workflows free of Superpowers dependencies", async () => {
+    const defaultWorkflowPaths = [
+      join(import.meta.dir, "..", "examples", "teams", "startup-team"),
+      join(import.meta.dir, "..", "examples", "workflows", "product-manager"),
+      join(import.meta.dir, "..", "examples", "workflows", "engineering-manager"),
+      join(import.meta.dir, "..", "examples", "workflows", "founding-engineer"),
+      join(import.meta.dir, "..", "examples", "workflows", "qa-lead"),
+    ];
+
+    for (const workflowPath of defaultWorkflowPaths) {
+      const bundle = await loadWorkflowBundle(workflowPath);
+      expect(
+        bundle.manifest.skills.filter((skill) => skill.source.startsWith("superpowers:")),
+      ).toEqual([]);
+      expect(
+        bundle.lock?.skills.filter((skill) => skill.source.startsWith("superpowers:")),
+      ).toEqual([]);
+      const graph = await resolveWorkflowDependencyGraph({ bundle });
+      expect(
+        graph.dependencies.filter((dependency) => dependency.source.startsWith("superpowers:")),
+      ).toEqual([]);
+      await graph.cleanup?.();
+    }
   });
 
   test("pins every Matt Pocock example dependency to the v1.1.0 catalog", async () => {
@@ -1781,13 +1825,13 @@ describe("workflow bundles", () => {
 
   test("startup team entry skill stages evidence-backed feature milestones", async () => {
     const canonicalMembers = [
-      "catalog:ceo",
-      "catalog:cto",
-      "catalog:product-manager",
-      "catalog:web-design",
-      "catalog:engineering-manager",
-      "catalog:founding-engineer",
-      "catalog:qa-lead",
+      "../../workflows/ceo",
+      "../../workflows/cto",
+      "../../workflows/product-manager",
+      "../../workflows/web-design",
+      "../../workflows/engineering-manager",
+      "../../workflows/founding-engineer",
+      "../../workflows/qa-lead",
     ];
     const bundle = await loadWorkflowBundle(
       join(import.meta.dir, "..", "examples", "teams", "startup-team"),
@@ -1809,7 +1853,7 @@ describe("workflow bundles", () => {
     expect(bundle.manifest).toMatchObject({
       kind: "team",
       name: "startup-team",
-      version: "0.5.0",
+      version: "0.6.0",
       coordinator: "./skills/startup-goal",
       members: canonicalMembers,
       loop: {
@@ -1818,14 +1862,14 @@ describe("workflow bundles", () => {
         milestone: {
           coordinator: "./skills/startup-goal",
           implementer: "mattpocock:implement",
-          verifier: "catalog:qa-lead",
+          verifier: "../../workflows/qa-lead",
         },
       },
     });
     expect(
       bundle.manifest.skills.find((candidate) => candidate.source === bundle.manifest.coordinator),
     ).toEqual({ source: "./skills/startup-goal", entry: true });
-    expect(bundle.lock).toBeUndefined();
+    expect(bundle.lock?.workflow).toBe("startup-team");
 
     expect(bundle.manifest.steps.map((step) => [step.id, step.skill, step.gate ?? null])).toEqual([
       ["preparing", "./skills/startup-goal", null],
@@ -1833,7 +1877,7 @@ describe("workflow bundles", () => {
       ["awaiting_plan_approval", "./skills/startup-goal", "human_approval"],
       ["implementing", "mattpocock:implement", null],
       ["rework", "mattpocock:implement", null],
-      ["verifying", "catalog:qa-lead", null],
+      ["verifying", "../../workflows/qa-lead", null],
       ["evaluating", "./skills/startup-goal", null],
       ["awaiting_acceptance", "./skills/startup-goal", "human_approval"],
     ]);
@@ -1844,7 +1888,6 @@ describe("workflow bundles", () => {
     expect(bundle.manifest.skills).toEqual([
       { source: "./skills/startup-goal", entry: true },
       ...canonicalMembers.map((source) => ({ source })),
-      { source: "superpowers:brainstorming", repo: "obra/superpowers" },
       {
         source: "mattpocock:implement",
         repo: "https://github.com/mattpocock/skills/tree/v1.1.0",
@@ -1855,23 +1898,13 @@ describe("workflow bundles", () => {
     const graph = await resolveWorkflowDependencyGraph({
       bundle,
       ignoreLockValidation: true,
-      runGitCommand: async (command) => {
-        if (command.args[0] === "clone") {
-          const checkoutDir = command.args.at(-1) ?? "";
-          await cp(join(import.meta.dir, "..", "examples"), join(checkoutDir, "examples"), {
-            recursive: true,
-          });
-          return { stdout: "", stderr: "", exitCode: 0 };
-        }
-        return { stdout: "fixture-commit\n", stderr: "", exitCode: 0 };
-      },
     });
     expect(graph.workflows.map(({ name }) => name)).toEqual([
       "startup-team",
-      ...canonicalMembers.map((source) => source.slice("catalog:".length)),
+      ...canonicalMembers.map((source) => source.slice("../../workflows/".length)),
     ]);
     expect(graph.edges).toHaveLength(7);
-    for (const role of canonicalMembers.map((source) => source.slice("catalog:".length))) {
+    for (const role of canonicalMembers.map((source) => source.slice("../../workflows/".length))) {
       expect(
         graph.dependencies.filter(({ source }) => source.endsWith(`/skills/${role}`)),
       ).toHaveLength(1);
@@ -1945,7 +1978,7 @@ describe("workflow bundles", () => {
       );
 
       expect(skill).toContain(`name: ${contract.role}`);
-      expect(bundle.manifest.version).toBe("0.2.0");
+      expect(bundle.manifest.version).toBe(contract.version);
       expect(bundle.manifest.steps.map((step) => step.skill)).toEqual([
         `./skills/${contract.role}`,
       ]);

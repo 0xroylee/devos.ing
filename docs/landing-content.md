@@ -193,9 +193,6 @@ Skills:
 - `emilkowalski:animation-vocabulary`: Name and select motion patterns
 - `emilkowalski:apple-design`: Apply Apple design principles
 - `emilkowalski:review-animations`: Review motion quality
-- `superpowers:brainstorming`: Explore options before scope locks
-- `superpowers:writing-plans`: Create executable plans
-- `superpowers:verification-before-completion`: Verify before claiming done
 - `mattpocock:wayfinder`: Map decisions and uncertainty
 - `mattpocock:grill-with-docs`: Stress-test direction
 - `mattpocock:to-spec`: Write product requirements
@@ -347,22 +344,20 @@ and issue slicing.
 Skills:
 
 - `product-manager`: Frame the product problem
-- `superpowers:brainstorming`: Explore product options
 - `mattpocock:to-spec`: Write the product specification
 - `mattpocock:to-tickets`: Slice delivery tickets
-- `superpowers:writing-plans`: Write the delivery plan
 
 Ordered skill path:
 
 1. Brief -> `product-manager`
    - Name the user, pain, and desired behavior change.
-2. Brainstorm -> `superpowers:brainstorming`
+2. Explore -> `product-manager`
    - Explore product options before locking scope.
 3. PRD -> `mattpocock:to-spec`
    - Write the requirement and acceptance criteria.
 4. Issues -> `mattpocock:to-tickets`
    - Slice the PRD into visible progress.
-5. Plan -> `superpowers:writing-plans`
+5. Plan -> `product-manager`
    - Turn scope into executable delivery steps.
 
 ### Engineering Manager
@@ -385,7 +380,6 @@ triage, and engineering process.
 Skills:
 
 - `engineering-manager`: Set the delivery frame
-- `superpowers:writing-plans`: Write the execution plan
 - `mattpocock:tdd`: Choose the test strategy
 - `mattpocock:diagnosing-bugs`: Triage blockers
 - `mattpocock:code-review`: Review behavior and risk
@@ -394,7 +388,7 @@ Ordered skill path:
 
 1. Brief -> `engineering-manager`
    - Identify the shippable outcome and delivery risk.
-2. Plan -> `superpowers:writing-plans`
+2. Plan -> `engineering-manager`
    - Sequence work into verifiable steps.
 3. Quality -> `mattpocock:tdd`
    - Pick test gates by blast radius.
@@ -423,25 +417,21 @@ debugging, review, and verification.
 Skills:
 
 - `founding-engineer`: Set the implementation frame
-- `mattpocock:implement`: Implement the planned change
 - `mattpocock:tdd`: Use test-first development
 - `mattpocock:diagnosing-bugs`: Diagnose failures
 - `mattpocock:code-review`: Review behavior and risk
-- `superpowers:verification-before-completion`: Verify completion
 
 Ordered skill path:
 
 1. Brief -> `founding-engineer`
    - Read the plan and acceptance criteria.
-2. Implement -> `mattpocock:implement`
-   - Ship the smallest correct slice.
-3. TDD -> `mattpocock:tdd`
+2. TDD -> `mattpocock:tdd`
    - Keep tests close to changed behavior.
-4. Debug -> `mattpocock:diagnosing-bugs`
+3. Debug -> `mattpocock:diagnosing-bugs`
    - Debug from evidence when checks fail.
-5. Review -> `mattpocock:code-review`
+4. Review -> `mattpocock:code-review`
    - Review risks and behavior.
-6. Verify -> `superpowers:verification-before-completion`
+5. Verify -> `founding-engineer`
    - Run final checks before handoff.
 
 ### QA Lead
@@ -466,7 +456,6 @@ Skills:
 - `qa-lead`: Set the release-risk frame
 - `mattpocock:code-review`: Review behavior and risk
 - `mattpocock:diagnosing-bugs`: Diagnose failures
-- `superpowers:verification-before-completion`: Verify before handoff
 
 Ordered skill path:
 
@@ -476,7 +465,7 @@ Ordered skill path:
    - Review acceptance and release risk.
 3. Debug -> `mattpocock:diagnosing-bugs`
    - Identify reproduction gaps and failure evidence.
-4. Verify -> `superpowers:verification-before-completion`
+4. Verify -> `qa-lead`
    - Separate verified facts from residual risk.
 
 ### Codex Input Preview

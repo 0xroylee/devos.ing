@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "qa-lead",
-  "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-16T11:07:48.868Z",
+  "workflowVersion": "0.3.0",
+  "generatedAt": "2026-08-15T05:43:14.466Z",
   "workflows": [
     {
-      "id": "workflow:qa-lead@0.2.0",
+      "id": "workflow:qa-lead@0.3.0",
       "name": "qa-lead",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": {
         "kind": "root"
       }
@@ -19,7 +19,7 @@
       "source": "./skills/qa-lead",
       "resolvedName": "qa-lead",
       "kind": "local",
-      "hash": "sha256:7560f9837f16a770f47b2520a30d1d69d8aa8e37d47019698a70b35887da8297"
+      "hash": "sha256:2dca8c5bd0d8b55a19a2eee43fe729fd41f136b71487de7279e5719e76183e46"
     },
     {
       "source": "mattpocock:code-review",
@@ -34,13 +34,6 @@
       "kind": "external",
       "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
       "hash": "sha256:8148a4181f76442579999629563f08f31fa3784955584e781a190b64d65a1501"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
-      "kind": "external",
-      "repo": "obra/superpowers",
-      "hash": "sha256:26401a7561086d127295b4267e19ccbc44a8b0d04ca519723a8a70301ae6efdf"
     }
   ]
 }

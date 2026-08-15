@@ -1,0 +1,257 @@
+{
+  "schemaVersion": "0.2",
+  "workflow": "startup-team",
+  "workflowVersion": "0.6.0",
+  "generatedAt": "2026-08-15T05:54:36.321Z",
+  "workflows": [
+    {
+      "id": "workflow:startup-team@0.6.0",
+      "name": "startup-team",
+      "version": "0.6.0",
+      "source": {
+        "kind": "root"
+      }
+    },
+    {
+      "id": "workflow:ceo@0.2.0",
+      "name": "ceo",
+      "version": "0.2.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/ceo"
+      }
+    },
+    {
+      "id": "workflow:cto@0.2.0",
+      "name": "cto",
+      "version": "0.2.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/cto"
+      }
+    },
+    {
+      "id": "workflow:product-manager@0.3.0",
+      "name": "product-manager",
+      "version": "0.3.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/product-manager"
+      }
+    },
+    {
+      "id": "workflow:web-design@0.2.0",
+      "name": "web-design",
+      "version": "0.2.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/web-design"
+      }
+    },
+    {
+      "id": "workflow:engineering-manager@0.3.0",
+      "name": "engineering-manager",
+      "version": "0.3.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/engineering-manager"
+      }
+    },
+    {
+      "id": "workflow:founding-engineer@0.3.0",
+      "name": "founding-engineer",
+      "version": "0.3.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/founding-engineer"
+      }
+    },
+    {
+      "id": "workflow:qa-lead@0.3.0",
+      "name": "qa-lead",
+      "version": "0.3.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/qa-lead"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:ceo@0.2.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:cto@0.2.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:product-manager@0.3.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:web-design@0.2.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:engineering-manager@0.3.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:founding-engineer@0.3.0"
+    },
+    {
+      "from": "workflow:startup-team@0.6.0",
+      "to": "workflow:qa-lead@0.3.0"
+    }
+  ],
+  "skills": [
+    {
+      "source": "./skills/startup-goal",
+      "resolvedName": "startup-goal",
+      "kind": "local",
+      "hash": "sha256:2f4c5a789a3cf06c67eec1aae5fa7a7a8dc2c97b81d8a4ff0dd1de3cba21871a"
+    },
+    {
+      "source": "../../workflows/ceo/skills/ceo",
+      "resolvedName": "ceo",
+      "kind": "local",
+      "hash": "sha256:a82229ee95b5a664d8035acc8117c60bce44cc9204db1df067f15bbd13fb3e7d"
+    },
+    {
+      "source": "mattpocock:wayfinder",
+      "resolvedName": "wayfinder",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:296041b6482c9c100620f2216c9e41ac31d304a70179f4307462294563c806ff"
+    },
+    {
+      "source": "mattpocock:grill-with-docs",
+      "resolvedName": "grill-with-docs",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:a7e2ffc2e216483f140c486c5e1b5e3e66d6ca7cf47980357069b21887645069"
+    },
+    {
+      "source": "../../workflows/cto/skills/cto",
+      "resolvedName": "cto",
+      "kind": "local",
+      "hash": "sha256:4f7e793578f2d1e014653bae4430cf659cbcef89ce003bcb565b5c610164f11b"
+    },
+    {
+      "source": "mattpocock:codebase-design",
+      "resolvedName": "codebase-design",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:452bfb044551a8177528b7df68e204e6a77b8a7f89daa741ef659f652c441376"
+    },
+    {
+      "source": "mattpocock:domain-modeling",
+      "resolvedName": "domain-modeling",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:f01e41e3fdaf3c4d4c20ddea9eb00e8330003d91bb564ef4518aaee856d4bf69"
+    },
+    {
+      "source": "mattpocock:diagnosing-bugs",
+      "resolvedName": "diagnosing-bugs",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:8148a4181f76442579999629563f08f31fa3784955584e781a190b64d65a1501"
+    },
+    {
+      "source": "mattpocock:code-review",
+      "resolvedName": "code-review",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:913b01e36a6d3e28173b68e3147295754dd1ff2b91dbc23ebb1161cc687c91e6"
+    },
+    {
+      "source": "../../workflows/product-manager/skills/product-manager",
+      "resolvedName": "product-manager",
+      "kind": "local",
+      "hash": "sha256:926e94920e97c02869b818342e1e5206cc61dfc5048fc69a379f2a31d38c963b"
+    },
+    {
+      "source": "mattpocock:to-spec",
+      "resolvedName": "to-spec",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:1cf05443c48f01b135983e7382cbb1cfed1b54b0caf5bd400067632355f15726"
+    },
+    {
+      "source": "mattpocock:to-tickets",
+      "resolvedName": "to-tickets",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:49679c184e8970591136c431ba4fa00a4890aff23a2701c194465f79007a23c9"
+    },
+    {
+      "source": "../../workflows/web-design/skills/web-design",
+      "resolvedName": "web-design",
+      "kind": "local",
+      "hash": "sha256:7c430fd13ca1f01841f4da9dac4e62402c2db432b27909475d5f11adff588488"
+    },
+    {
+      "source": "emilkowalski:emil-design-eng",
+      "resolvedName": "emilkowalski:emil-design-eng",
+      "kind": "external",
+      "repo": "emilkowalski/skills",
+      "hash": "sha256:c98e0e85967f367ece5fd23f9b2bcef62c1a9d548579472bb829464c3ebdf461"
+    },
+    {
+      "source": "emilkowalski:animation-vocabulary",
+      "resolvedName": "emilkowalski:animation-vocabulary",
+      "kind": "external",
+      "repo": "emilkowalski/skills",
+      "hash": "sha256:17043916f71310aff8b03af847f4cf1280496807113072ff9fb836e64f90f133"
+    },
+    {
+      "source": "emilkowalski:apple-design",
+      "resolvedName": "emilkowalski:apple-design",
+      "kind": "external",
+      "repo": "emilkowalski/skills",
+      "hash": "sha256:4f2d0e6e554a9b8d313ae3b32a66f9e4f1ba4c9f491e0f050ad077e100eeefa3"
+    },
+    {
+      "source": "emilkowalski:review-animations",
+      "resolvedName": "emilkowalski:review-animations",
+      "kind": "external",
+      "repo": "emilkowalski/skills",
+      "hash": "sha256:f9266e7cdefa9ceadc60558f201618755382f03b06d5ab37d2ac73bdb7807b98"
+    },
+    {
+      "source": "../../workflows/engineering-manager/skills/engineering-manager",
+      "resolvedName": "engineering-manager",
+      "kind": "local",
+      "hash": "sha256:a87545ec6e0cfd7cfc21f04ee94a477efad80b8cc13ddfd37ece4cc964b02aa7"
+    },
+    {
+      "source": "mattpocock:tdd",
+      "resolvedName": "tdd",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:e845c35d776277cb08cbf3b68ea32b28e181069620c4a6b9d9642871184105f8"
+    },
+    {
+      "source": "../../workflows/founding-engineer/skills/founding-engineer",
+      "resolvedName": "founding-engineer",
+      "kind": "local",
+      "hash": "sha256:ac03fae80e71966affc883f1812380a8d897a41e5f59fd5e8cc725e677425b06"
+    },
+    {
+      "source": "../../workflows/qa-lead/skills/qa-lead",
+      "resolvedName": "qa-lead",
+      "kind": "local",
+      "hash": "sha256:2dca8c5bd0d8b55a19a2eee43fe729fd41f136b71487de7279e5719e76183e46"
+    },
+    {
+      "source": "mattpocock:implement",
+      "resolvedName": "implement",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
+      "hash": "sha256:1ad478cef4ccf1cde4cfff91cd551cb781e21da4e6d4940ef4df64c209db35cc"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ approved execution handoff. Do not edit files or run implementation commands.
 - Use `mattpocock:tdd` to identify valuable public test seams.
 - Use `mattpocock:diagnosing-bugs` when the frame depends on an observed failure.
 - Use `mattpocock:code-review` to inspect design or implementation risk without changing files.
-- Use `superpowers:verification-before-completion` to define completion evidence, not to claim execution occurred.
+- Define fresh completion evidence without claiming execution occurred.
 
 Use a method only when it materially helps the frame. Missing an optional
 method does not block the role.

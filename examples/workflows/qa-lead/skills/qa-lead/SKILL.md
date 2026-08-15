@@ -26,7 +26,7 @@ user behavior.
 
 - Use `mattpocock:code-review` when changed code needs risk-ordered review.
 - Use `mattpocock:diagnosing-bugs` when a failure or reproduction gap needs diagnosis.
-- Use `superpowers:verification-before-completion` when fresh completion evidence is required.
+- Require fresh completion evidence before recommending handoff.
 
 Use a method only when it materially helps verification. Missing an optional
 method does not block the role.

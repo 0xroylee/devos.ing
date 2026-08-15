@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "engineering-manager",
-  "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-16T11:07:41.182Z",
+  "workflowVersion": "0.3.0",
+  "generatedAt": "2026-08-15T05:43:14.434Z",
   "workflows": [
     {
-      "id": "workflow:engineering-manager@0.2.0",
+      "id": "workflow:engineering-manager@0.3.0",
       "name": "engineering-manager",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": {
         "kind": "root"
       }
@@ -19,14 +19,7 @@
       "source": "./skills/engineering-manager",
       "resolvedName": "engineering-manager",
       "kind": "local",
-      "hash": "sha256:131b5b93a8e804064c8a2e9784cbf2f034f42be2bc380b57251d7d99924d1928"
-    },
-    {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
-      "kind": "external",
-      "repo": "obra/superpowers",
-      "hash": "sha256:af085fb88831241d778d94c43b0f2b8ecdddfa250851dc08a977233d031dede6"
+      "hash": "sha256:a87545ec6e0cfd7cfc21f04ee94a477efad80b8cc13ddfd37ece4cc964b02aa7"
     },
     {
       "source": "mattpocock:tdd",
