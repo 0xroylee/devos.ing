@@ -28,9 +28,9 @@ roles with evidence and re-entry conditions. Work on only one milestone at a
 time; wait for plan approval before implementation and feature acceptance
 before activating the next milestone.
 
-## 3. Prepare role input packets
+## 3. Execute roles through bounded packets
 
-Every selected expert receives the same **Input Packet** interface:
+Give every selected expert the same bounded **Input Packet** interface:
 
 - approved Goal Tunnel and current feature outcome;
 - accountable outcome role and decision required;
@@ -39,9 +39,32 @@ Every selected expert receives the same **Input Packet** interface:
 - expected artifact and acceptance criteria;
 - prior approved decisions that may not be silently reopened.
 
-Describe what the role must achieve, not how it must think. Label every manual
-handoff `Prepared, not executed` and stop until the user supplies the completed
-role output.
+Describe what the role must achieve, not how it must think. Before launch,
+classify each selected role as dependency-free or dependent, name every required
+role, and capture the selected roles' stable pre-launch order. A dependency-free
+role needs no other role's Output Packet; a dependent review or repair names the
+prerequisite packet it needs and runs only after that prerequisite completes.
+
+When the host exposes an internal agent-launch capability and the installed
+startup-team role profiles are available, submit every dependency-free selected
+role before awaiting any result; submit all dependency-free selected roles
+before the first await. The coordinator owns classification,
+packets, required-role validation, and deterministic synthesis; the host owns
+capacity and may schedule the submitted work as it can. Use one logical
+all-settled barrier to collect the wave: keep healthy siblings running after one
+role fails, record every success or failure, and never let completion timing
+change the result. At that barrier, wait for its completed Output Packet from
+each submitted role. Synthesize in captured pre-launch order, using conforming
+packets only and never completion order, while preserving material disagreements.
+Launch dependent reviews or repairs only after their prerequisites and the
+relevant packet validation complete.
+
+Every required planning role must produce a conforming Output Packet before plan
+approval. Required planning role failure blocks plan approval after the
+all-settled barrier; it does not cancel healthy siblings. If the launch
+capability or a requested profile is unavailable, return a bounded Input Packet
+labeled `Prepared, not executed`, name the unavailable capability or profile,
+and stop without implying that the role ran.
 
 ## 4. Validate role output packets
 
@@ -72,19 +95,54 @@ when explicit and testable. Missing critical evidence blocks the milestone;
 never invent support. Present the plan boundary, evidence, risks, assumptions,
 and acceptance criteria, then wait for explicit human plan approval.
 
-## 6. Prepare implementation and QA handoffs
+## 6. Execute implementation and QA roles
 
-After plan approval, prepare a separate `mattpocock:implement` handoff limited to
-the approved plan. Record its implementation result: summary, changed files,
-and verification commands. Then prepare a `qa-lead` handoff for acceptance,
-regression, release risk, and verification evidence. A QA failure permits one
-bounded rework inside the approved plan; a new requirement returns to planning.
+Implementation execution modes are `internal` and run-scoped `visible_task`;
+internal remains the default. After plan approval, the coordinator may offer
+`visible_task` only for the active milestone and only after a separate explicit post-plan confirmation. Plan approval alone never authorizes visible task creation, and ambiguous `approve` or `yes` is never task authorization.
+
+Before asking for that confirmation, call the host capability `list_projects`.
+The selected returned opaque project identity must resolve the visible task
+target before confirmation or creation. Then show the deterministic title
+`[startup-goal] Implement <milestone-id> — <milestone title>`, the exact
+`gpt-5.6-terra` model, reasoning effort high, selected project, filesystem
+target, and workspace-write boundary. Keep the root model and global routing
+unchanged. For a Git project, list projects first and default to an isolated worktree; use `startingState: working-tree` when the approved work depends on
+current uncommitted changes. Direct current-checkout execution requires explicit choice. For a non-Git project, use the saved project.
+
+After both gates, send the configured `deliver-code` profile the existing
+stage-specific delegated delivery packet containing `mode: delegated`, the
+source coordinator and milestone ID, the approved Goal Tunnel, scope and non-goals,
+acceptance criteria, the implementation-plan boundary, permissions,
+repository context, immutable decisions, and plan approval evidence. Send the
+bounded packet, never the full transcript. A visible task must be configured
+with `gpt-5.6-terra` and reasoning effort high.
+
+Create exactly one visible implementation task per milestone. Persist and reuse
+the created task ID and workspace reference for result collection, one bounded
+correction request, and the single permitted rework. If creation is ambiguous,
+reconcile the same title, project, workspace, model, and task identity before
+continuing; do not silently duplicate, replace, blindly retry, or fall back
+modes. Re-entry and rework use the same visible task, not a replacement.
+
+Wait for and validate its result: summary, changed files, review findings,
+fresh verification commands, and exact workspace identity. QA may start only
+after a conforming implementation result and exact workspace identity validate.
+The implementation role may clarify execution details but may not reopen
+approved product scope; scope drift returns to planning.
+
+Next launch the configured `qa-lead` profile with the approved acceptance
+criteria, changed artifacts, and verification evidence; wait for and validate
+its acceptance, regression, release-risk, and verification packet. A QA failure
+permits one bounded deliver-code rework inside the approved plan; a new
+requirement returns to planning.
 
 ## 7. Reconstruct and evaluate the user outcome
 
-After QA passes, prepare the accountable outcome role handoff for a **User
-Outcome Replay**. The coordinator validates the returned interface; it does not
-perform the role's content analysis.
+After QA passes, launch the installed profile for the accountable outcome role
+with the original requirements and verified result evidence, then wait for its
+**User Outcome Replay**. The coordinator validates the returned interface; it
+does not perform the role's content analysis.
 
 The evaluator recreates the original user or customer, their expectations,
 required needs, non-required wishes, and intended journey steps from the Goal
@@ -102,13 +160,25 @@ wishes. Activate the next dependency-ready milestone without silently reopening
 accepted decisions. A scope change requires human approval and invalidates only
 affected downstream plans.
 
-## Manual execution policy
+## Internal role execution policy
 
-Automatic role launch is disabled. Do not call an agent-launch or dispatch API.
-Human approval authorizes only the next declared lifecycle transition. Never
-claim that a prepared handoff ran, and do not disclose a model, runtime,
-receipt, or run ID for work that was not launched.
-Stop after presenting the handoffs and wait for completed outputs from the user.
+Use the host's internal agent-launch capability and the installed
+`omniskills-startup-team-*` profiles for `internal` mode. `visible_task` is the
+narrow opt-in exception described above; it never changes the root/coordinator
+model, global routing, public CLI dispatch, QA, evaluation, or acceptance.
+Never call the removed public CLI dispatcher or reconnect its dormant runtime.
+Give each role only its bounded, stage-specific packet and wait for its
+completed Output Packet.
+
+Human approval authorizes only the next declared lifecycle transition. Stop at
+plan approval and feature acceptance. Launch no implementation before plan
+approval and activate no later milestone before feature acceptance.
+
+When internal launch is unavailable, or visible-task capability, exact model,
+target/access, creation failure, creation reconciliation, or result collection
+fails, label the handoff `Prepared, not executed` and name the failed boundary. Never claim that
+a fallback handoff ran, and do not invent a model, runtime, receipt, run ID, or
+result.
 
 ## Loop limits
 

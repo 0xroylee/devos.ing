@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deliver Code"
+  short_description: "Deliver code through governed vertical slices"
+  default_prompt: "Use $deliver-code to plan and deliver this coding change through approved tests and review."

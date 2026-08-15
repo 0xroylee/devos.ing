@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
-import { isAbsolute, join, resolve } from "node:path";
+import { basename, isAbsolute, join, resolve } from "node:path";
 import { cancel as clackCancel, confirm as clackConfirm, isCancel } from "@clack/prompts";
 import type { Command } from "commander";
 import {
@@ -16,21 +16,44 @@ import {
   type AgentProfileArtifact,
   type CodexModelCatalogProvider,
   executeAgentProfilePlan,
-  getInterfaceCraftInstalledSkillName,
+  executeModelRoutingSetup,
+  getSkillInstallArtifactPaths,
+  getSkillsCliPackageForDependency,
+  getSkillsCliSkillNameForSource,
+  getVisibleCodexModels,
+  installExternalSkillDependencyWithSkillsCli,
   loadOrchestrationConfigPlan,
   MissingInterfaceCraftSkillError,
   MissingMattPocockSkillError,
   MissingSuperpowersSkillError,
+  ModelRoutingSelectionsSchema,
+  type ModelRoutingSetupPlan,
+  type OmniskillExternalSkillDependencyInstaller,
   parseSkillInstallAgents,
+  planModelRoutingSetup,
   preflightAgentProfiles,
   resolveInstallSkillName,
   type SkillInstallResult,
   SkillSourceNotFoundError,
 } from "./plugins";
+
 import { runSubprocess } from "./process";
+
+export {
+  getSkillsCliPackageForSource,
+  installExternalSkillDependencyWithSkillsCli,
+  type OmniskillExternalSkillCommand,
+  type OmniskillExternalSkillCommandResult,
+  type OmniskillExternalSkillCommandRunner,
+  type OmniskillExternalSkillDependencyInstaller,
+  type OmniskillExternalSkillDependencyInstallInput,
+} from "./plugins";
+
 import {
   type AgentProfileTarget,
+  appendWorkflowInstallJournal,
   type CodexModelCapability,
+  clearWorkflowInstallJournal,
   createWorkflowBundleScaffold,
   createWorkflowRemovalPlan,
   executeWorkflowRemovalPlan,
@@ -39,6 +62,8 @@ import {
   installWorkflowBundle,
   listInstalledWorkflowBundles,
   loadWorkflowBundle,
+  loadWorkflowInstallJournal,
+  mergeWorkflowInstallArtifacts,
   planAgentProfiles,
   resolveWorkflowDependencyGraph,
   type WorkflowGitCommandRunner,
@@ -56,6 +81,8 @@ export interface OmniskillInstallSkillInput {
   dryRun: false;
   force: boolean;
   refreshExisting: boolean;
+  refreshExistingArtifactPaths?: string[];
+  forceExistingArtifactPaths?: string[];
 }
 
 export interface OmniskillInstallSkillResult {
@@ -75,34 +102,6 @@ export type OmniskillSkillInstallPrinter = (
   operation: "install",
   options: OmniskillSkillInstallPrintOptions,
 ) => void;
-
-export interface OmniskillExternalSkillDependencyInstallInput {
-  source: string;
-  repo?: string;
-  homeDir: string;
-  runCommand?: OmniskillExternalSkillCommandRunner;
-}
-
-export type OmniskillExternalSkillDependencyInstaller = (
-  input: OmniskillExternalSkillDependencyInstallInput,
-) => Promise<void>;
-
-export interface OmniskillExternalSkillCommand {
-  executable: string;
-  args: string[];
-  cwd: string;
-  env: Record<string, string | undefined>;
-}
-
-export interface OmniskillExternalSkillCommandResult {
-  stdout: string;
-  stderr: string;
-  exitCode: number;
-}
-
-export type OmniskillExternalSkillCommandRunner = (
-  command: OmniskillExternalSkillCommand,
-) => Promise<OmniskillExternalSkillCommandResult>;
 
 export interface OmniskillOnboardPrompt {
   confirm(input: { message: string; defaultValue: boolean }): Promise<boolean>;
@@ -164,6 +163,8 @@ export interface ConfigureOmniskillCommandOptions {
   onboardPrompt?: OmniskillOnboardPrompt;
   onboardCommandRunner?: OmniskillOnboardCommandRunner;
   codexModelCatalog?: CodexModelCatalogProvider;
+  planModelRoutingSetup?: typeof planModelRoutingSetup;
+  executeModelRoutingSetup?: typeof executeModelRoutingSetup;
 }
 
 interface OmniskillInstallCommandOptions {
@@ -179,6 +180,20 @@ interface OmniskillRemoveCommandOptions {
   home: string;
   dryRun: boolean;
   yes: boolean;
+}
+
+interface OmniskillModelRoutingCommandOptions {
+  listModels: boolean;
+  planningModel?: string;
+  planningEffort?: string;
+  implementationModel?: string;
+  implementationEffort?: string;
+  verificationModel?: string;
+  verificationEffort?: string;
+  home: string;
+  dryRun: boolean;
+  apply: boolean;
+  json: boolean;
 }
 
 type OmniskillLoopCommandName = "start" | "status" | "log" | "advance" | "summary";
@@ -243,7 +258,88 @@ function configureOmniskillCommands(
   configureRemoveCommand(command, options);
   configureDependencyCommand(command, options);
   configureOnboardCommand(command, options);
+  configureModelRoutingCommand(command, options);
   configureLoopCommand(command, options);
+}
+
+function configureModelRoutingCommand(
+  command: Command,
+  options: ConfigureOmniskillCommandOptions,
+): void {
+  command
+    .command("setup-model-routing")
+    .description("Configure global Codex models for planning, implementation, and verification.")
+    .option("--list-models", "print visible Codex models and supported efforts", false)
+    .option("--planning-model <model>")
+    .option("--planning-effort <effort>")
+    .option("--implementation-model <model>")
+    .option("--implementation-effort <effort>")
+    .option("--verification-model <model>")
+    .option("--verification-effort <effort>")
+    .option("--home <dir>", "home directory with global Omniskills state", homedir())
+    .option("--dry-run", "print the complete update plan without writing", false)
+    .option("--apply", "apply the validated update plan", false)
+    .option("--json", "print machine-readable output", false)
+    .action(async (input: OmniskillModelRoutingCommandOptions) => {
+      const catalog = getVisibleCodexModels(
+        await requireCodexModelCatalog(options.codexModelCatalog, options.rootDir),
+      );
+      if (input.listModels) {
+        if (!input.json) throw new Error("--list-models requires --json");
+        console.log(JSON.stringify({ models: catalog }, null, 2));
+        return;
+      }
+      if (input.dryRun === input.apply) {
+        throw new Error("Choose exactly one of --dry-run or --apply");
+      }
+      const selections = ModelRoutingSelectionsSchema.parse({
+        planning: { model: input.planningModel, reasoningEffort: input.planningEffort },
+        implementation: {
+          model: input.implementationModel,
+          reasoningEffort: input.implementationEffort,
+        },
+        verification: { model: input.verificationModel, reasoningEffort: input.verificationEffort },
+      });
+      const plan = await (options.planModelRoutingSetup ?? planModelRoutingSetup)({
+        homeDir: resolveHomePath(input.home),
+        catalog,
+        selections,
+      });
+      if (input.apply) {
+        await (options.executeModelRoutingSetup ?? executeModelRoutingSetup)(plan);
+      }
+      printModelRoutingSetupPlan(plan, input.apply ? "applied" : "planned", input.json);
+    });
+}
+
+function printModelRoutingSetupPlan(
+  plan: ModelRoutingSetupPlan,
+  status: "planned" | "applied",
+  json: boolean,
+): void {
+  const summary = {
+    status,
+    configPath: plan.config.path,
+    affectedWorkflows: plan.affectedWorkflows,
+    profiles: plan.profileWrites.map((write) => ({
+      status: write.status,
+      path: write.artifact.path,
+    })),
+    records: plan.recordWrites.map((write) => ({
+      status: write.status,
+      workflowName: write.workflowName,
+      path: write.path,
+    })),
+  };
+  if (json) {
+    console.log(JSON.stringify(summary, null, 2));
+    return;
+  }
+  console.log(success(`Model routing ${status}`));
+  console.log(keyValue("Config", plan.config.path));
+  console.log(keyValue("Affected workflows", plan.affectedWorkflows.join(", ") || "none"));
+  console.log(keyValue("Profile writes", String(plan.profileWrites.length)));
+  console.log(keyValue("Record writes", String(plan.recordWrites.length)));
 }
 
 function configureAuthorCommands(
@@ -347,7 +443,7 @@ function configureInstallCommand(
     .option("--dir <dir>", "override directory that receives .omniskills/workflows")
     .option(
       "--agents <agents>",
-      "comma-separated skill install targets: codex,claude,cursor,copilot,opencode (aliases: github-copilot,opencodex)",
+      "comma-separated skill install targets: codex,claude,cursor,copilot,hermes,openclaw,opencode (aliases: github-copilot,opencodex)",
       "codex,claude,cursor",
     )
     .option(
@@ -428,9 +524,14 @@ async function runOmniskillInstall(
     const installedWorkflow = (await listInstalledWorkflowBundles({ rootDir: targetDir })).find(
       (workflow) => workflow.name === bundle.manifest.name,
     );
-    const previousProfiles = (installedWorkflow?.installArtifacts ?? []).filter(
-      (artifact): artifact is AgentProfileArtifact => artifact.kind === "agent_profile",
-    );
+    let installJournal = await loadWorkflowInstallJournal({
+      rootDir: targetDir,
+      workflowName: bundle.manifest.name,
+    });
+    const previousProfiles = [
+      ...(installedWorkflow?.installArtifacts ?? []),
+      ...(installJournal?.artifacts ?? []),
+    ].filter((artifact): artifact is AgentProfileArtifact => artifact.kind === "agent_profile");
     const profilePlan = await preflightAgentProfiles({
       profiles: plannedProfiles,
       previousArtifacts: previousProfiles,
@@ -467,16 +568,29 @@ async function runOmniskillInstall(
 
     console.log(success("Installing skills..."));
 
-    const versionRefreshSources = await getWorkflowVersionRefreshSources({
+    const refreshPlan = await getWorkflowInstallRefreshPlan({
       rootDir: targetDir,
       workflowName: bundle.manifest.name,
       workflowVersion: bundle.manifest.version,
     });
     const skillDependencies = preparedDependencies.dependencies;
     const installArtifacts: WorkflowInstallArtifact[] = [];
+    const installedRoleSkillNames: Record<string, string> = {
+      ...(installedWorkflow?.installedRoleSkillNames ?? {}),
+    };
     for (const [index, skillDependency] of skillDependencies.entries()) {
       const manifestSource = preparedDependencies.displaySources[index] ?? skillDependency.source;
       const displaySkill = manifestSource;
+      const roleSkill = Object.values(preparedDependencies.roleSkills).find(
+        (candidate) => candidate.source === skillDependency.source,
+      );
+      const roleSkillName =
+        roleSkill?.installedName ?? (roleSkill ? basename(roleSkill.source) : undefined);
+      const ownedArtifactPaths =
+        refreshPlan.ownedArtifactPathsBySource.get(manifestSource) ??
+        (roleSkillName
+          ? (refreshPlan.ownedArtifactPathsByRoleSkillName.get(roleSkillName) ?? [])
+          : []);
       console.log(`Processing ${index + 1}/${skillDependencies.length}: ${displaySkill}`);
       const skillResult = await installOmniskillSkillDependency({
         rootDir: targetDir,
@@ -491,7 +605,9 @@ async function runOmniskillInstall(
         installExternalSkillDependency:
           options.installExternalSkillDependency ?? installExternalSkillDependencyWithSkillsCli,
         installedExternalPackages,
-        forceRefreshExisting: versionRefreshSources.has(manifestSource),
+        forceRefreshExisting: refreshPlan.versionChanged && ownedArtifactPaths.length > 0,
+        refreshExisting: ownedArtifactPaths.length > 0,
+        ownedArtifactPaths,
       });
 
       if (
@@ -504,13 +620,31 @@ async function runOmniskillInstall(
       }
 
       for (const target of skillResult.skillInstall.targets) {
-        installArtifacts.push({
+        const wasPreviouslyOwned =
+          target.artifactPaths.length > 0 &&
+          target.artifactPaths.every((path) => ownedArtifactPaths.includes(path));
+        const artifact: WorkflowInstallArtifact = {
           source: manifestSource,
           skillName: skillResult.skillInstall.skillName,
           agent: target.agent,
-          status: target.status,
+          status: wasPreviouslyOwned ? "installed" : target.status,
           paths: target.artifactPaths,
-        });
+          ...(target.createdByBootstrap ? { createdByBootstrap: true } : {}),
+        };
+        installArtifacts.push(artifact);
+        if (artifact.status === "installed" || artifact.createdByBootstrap) {
+          installJournal = await appendWorkflowInstallJournal({
+            rootDir: targetDir,
+            workflowName: bundle.manifest.name,
+            artifacts: [artifact],
+          });
+        }
+      }
+
+      for (const [roleSource, roleSkill] of Object.entries(preparedDependencies.roleSkills)) {
+        if (roleSkill.source === skillDependency.source) {
+          installedRoleSkillNames[roleSource] = skillResult.skillInstall.skillName;
+        }
       }
 
       options.printSkillInstallResult(skillResult.skillInstall, "install", {
@@ -525,9 +659,31 @@ async function runOmniskillInstall(
         config: configPlan,
       });
       installArtifacts.push(...profileArtifacts);
+      const createdProfiles = profileArtifacts.filter(
+        (artifact) => artifact.status === "installed",
+      );
+      if (createdProfiles.length > 0) {
+        installJournal = await appendWorkflowInstallJournal({
+          rootDir: targetDir,
+          workflowName: bundle.manifest.name,
+          artifacts: createdProfiles,
+        });
+      }
     }
 
-    const install = await installWorkflowBundle({ rootDir: targetDir, bundle, installArtifacts });
+    const install = await installWorkflowBundle({
+      rootDir: targetDir,
+      bundle,
+      installArtifacts: mergeWorkflowInstallArtifacts(
+        installJournal?.artifacts ?? [],
+        installArtifacts,
+      ),
+      installedRoleSkillNames,
+    });
+    await clearWorkflowInstallJournal({
+      rootDir: targetDir,
+      workflowName: bundle.manifest.name,
+    });
 
     console.log(success(`Omniskills installed: ${install.workflow.name}`));
     console.log(keyValue("Omniskills file", install.path));
@@ -549,19 +705,69 @@ async function runOmniskillInstall(
   }
 }
 
-async function getWorkflowVersionRefreshSources(input: {
+async function getWorkflowInstallRefreshPlan(input: {
   rootDir: string;
   workflowName: string;
   workflowVersion: string;
-}): Promise<Set<string>> {
+}): Promise<{
+  versionChanged: boolean;
+  ownedArtifactPathsBySource: Map<string, string[]>;
+  ownedArtifactPathsByRoleSkillName: Map<string, string[]>;
+}> {
   const installedWorkflow = (await listInstalledWorkflowBundles({ rootDir: input.rootDir })).find(
     (workflow) => workflow.name === input.workflowName,
   );
-  if (!installedWorkflow || installedWorkflow.version === input.workflowVersion) {
-    return new Set();
+  if (!installedWorkflow) {
+    return {
+      versionChanged: false,
+      ownedArtifactPathsBySource: new Map(),
+      ownedArtifactPathsByRoleSkillName: new Map(),
+    };
   }
 
-  return new Set((installedWorkflow.installArtifacts ?? []).map((artifact) => artifact.source));
+  const ownedArtifactPathsBySource = new Map<string, string[]>();
+  const ownedArtifactPathsByRoleSkillName = new Map<string, string[]>();
+  const installedRoleSkillNames = new Set(
+    Object.values(installedWorkflow.installedRoleSkillNames ?? {}),
+  );
+  for (const artifact of installedWorkflow.installArtifacts ?? []) {
+    if (
+      artifact.kind !== "agent_profile" ||
+      artifact.status !== "installed" ||
+      artifact.taskClass !== "role" ||
+      !existsSync(artifact.path)
+    ) {
+      continue;
+    }
+    const roleSkillName = artifact.instructions?.match(
+      /installed `\$([a-z0-9]+(?:-[a-z0-9]+)*)` skill/,
+    )?.[1];
+    if (roleSkillName) installedRoleSkillNames.add(roleSkillName);
+  }
+  for (const artifact of installedWorkflow.installArtifacts ?? []) {
+    if (
+      artifact.kind === "agent_profile" ||
+      (artifact.status !== "installed" && artifact.createdByBootstrap !== true)
+    ) {
+      continue;
+    }
+    const paths = ownedArtifactPathsBySource.get(artifact.source) ?? [];
+    paths.push(...artifact.paths);
+    ownedArtifactPathsBySource.set(artifact.source, paths);
+    if (
+      installedRoleSkillNames.has(artifact.skillName) &&
+      artifact.paths.some((path) => existsSync(path))
+    ) {
+      const rolePaths = ownedArtifactPathsByRoleSkillName.get(artifact.skillName) ?? [];
+      rolePaths.push(...artifact.paths);
+      ownedArtifactPathsByRoleSkillName.set(artifact.skillName, rolePaths);
+    }
+  }
+  return {
+    versionChanged: installedWorkflow.version !== input.workflowVersion,
+    ownedArtifactPathsBySource,
+    ownedArtifactPathsByRoleSkillName,
+  };
 }
 
 function printOmniskillInstallPlan(input: {
@@ -642,6 +848,8 @@ async function installOmniskillSkillDependency(input: {
   installExternalSkillDependency: OmniskillExternalSkillDependencyInstaller;
   installedExternalPackages: Set<string>;
   forceRefreshExisting: boolean;
+  refreshExisting: boolean;
+  ownedArtifactPaths: string[];
 }): Promise<OmniskillInstallSkillResult> {
   try {
     return await installWorkflowSkillDependency(input);
@@ -661,12 +869,43 @@ async function installOmniskillSkillDependency(input: {
 
     if (!input.installedExternalPackages.has(externalInstallKey)) {
       console.log(keyValue("Installing external skill dependency", externalPackage));
+      const bootstrapArtifactPaths = getExternalBootstrapArtifactPaths(input);
+      const artifactPathsBeforeBootstrap = new Set(
+        bootstrapArtifactPaths.filter((path) => existsSync(path)),
+      );
       await input.installExternalSkillDependency({
         source: input.source,
         ...(input.repo ? { repo: input.repo } : {}),
         homeDir: input.homeDir,
       });
       input.installedExternalPackages.add(externalInstallKey);
+
+      const createdArtifactPaths = new Set(
+        bootstrapArtifactPaths.filter(
+          (path) => !artifactPathsBeforeBootstrap.has(path) && existsSync(path),
+        ),
+      );
+
+      try {
+        return markBootstrapCreatedTargets(
+          await installWorkflowSkillDependency(input),
+          createdArtifactPaths,
+        );
+      } catch (retryError) {
+        if (
+          isMissingBootstrappableSkillError(retryError, {
+            ...(input.repo ? { repo: input.repo } : {}),
+            ...(input.expectedInstalledName
+              ? { expectedInstalledName: input.expectedInstalledName }
+              : {}),
+          })
+        ) {
+          throw new Error(
+            `The skills CLI ran for ${externalPackage}, but ${input.source} is still missing. ${retryError.message}`,
+          );
+        }
+        throw retryError;
+      }
     }
 
     try {
@@ -689,6 +928,39 @@ async function installOmniskillSkillDependency(input: {
   }
 }
 
+function getExternalBootstrapArtifactPaths(input: {
+  source: string;
+  expectedInstalledName?: string;
+  homeDir: string;
+  agents: ReturnType<typeof parseSkillInstallAgents>;
+}): string[] {
+  const skillName = getSkillsCliSkillNameForSource(input.source) ?? input.expectedInstalledName;
+  if (!skillName) return [];
+  return input.agents.flatMap((agent) =>
+    getSkillInstallArtifactPaths(input.homeDir, agent, skillName),
+  );
+}
+
+function markBootstrapCreatedTargets(
+  result: OmniskillInstallSkillResult,
+  bootstrapCreatedArtifactPaths: Set<string>,
+): OmniskillInstallSkillResult {
+  if (bootstrapCreatedArtifactPaths.size === 0) return result;
+
+  return {
+    skillInstall: {
+      ...result.skillInstall,
+      targets: result.skillInstall.targets.map((target) => ({
+        ...target,
+        ...(target.createdByBootstrap ||
+        target.artifactPaths.some((path) => bootstrapCreatedArtifactPaths.has(path))
+          ? { createdByBootstrap: true }
+          : {}),
+      })),
+    },
+  };
+}
+
 function installWorkflowSkillDependency(input: {
   rootDir: string;
   source: string;
@@ -696,6 +968,8 @@ function installWorkflowSkillDependency(input: {
   agents: ReturnType<typeof parseSkillInstallAgents>;
   installSkill: OmniskillSkillInstaller;
   forceRefreshExisting: boolean;
+  refreshExisting: boolean;
+  ownedArtifactPaths: string[];
 }): Promise<OmniskillInstallSkillResult> {
   return input.installSkill({
     rootDir: input.rootDir,
@@ -705,7 +979,13 @@ function installWorkflowSkillDependency(input: {
     agents: input.agents,
     dryRun: false,
     force: input.forceRefreshExisting,
-    refreshExisting: !input.forceRefreshExisting,
+    refreshExisting: input.refreshExisting && !input.forceRefreshExisting,
+    ...(input.ownedArtifactPaths.length > 0
+      ? {
+          refreshExistingArtifactPaths: input.ownedArtifactPaths,
+          forceExistingArtifactPaths: input.ownedArtifactPaths,
+        }
+      : {}),
   });
 }
 
@@ -745,60 +1025,6 @@ function isMissingBootstrappableSkillError(
   );
 }
 
-export function getSkillsCliPackageForSource(source: string): string | null {
-  if (isBareSkillsCliPackage(source)) {
-    return source;
-  }
-
-  if (source.startsWith("superpowers:")) {
-    return "obra/superpowers";
-  }
-
-  if (source.startsWith("mattpocock:")) {
-    return "mattpocock/skills";
-  }
-
-  if (getInterfaceCraftInstalledSkillName(source)) {
-    return "emilkowalski/skills";
-  }
-
-  const githubPrefix = "github:";
-  if (!source.startsWith(githubPrefix)) {
-    return null;
-  }
-
-  const [owner, repo] = source.slice(githubPrefix.length).split("/");
-  if (!owner || !repo) {
-    return null;
-  }
-
-  return `${owner}/${repo}`;
-}
-
-function getSkillsCliPackageForDependency(source: string, repo: string | undefined): string | null {
-  return normalizeSkillsCliRepoSource(repo) ?? getSkillsCliPackageForSource(source);
-}
-
-function normalizeSkillsCliRepoSource(repo: string | undefined): string | null {
-  const trimmed = repo?.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const markdownLinkMatch = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(trimmed);
-  if (!markdownLinkMatch) {
-    return trimmed;
-  }
-
-  const label = markdownLinkMatch[1]?.trim();
-  const url = markdownLinkMatch[2]?.trim();
-  if (label && isBareSkillsCliPackage(label)) {
-    return label;
-  }
-
-  return url || null;
-}
-
 function getSkillsCliInstallKeyForSource(source: string, repo?: string): string | null {
   const skillName = getSkillsCliSkillNameForSource(source);
   if (!skillName) {
@@ -807,75 +1033,6 @@ function getSkillsCliInstallKeyForSource(source: string, repo?: string): string 
 
   const packageName = getSkillsCliPackageForDependency(source, repo);
   return packageName ? `${packageName}:${skillName}` : null;
-}
-
-function getSkillsCliSkillNameForSource(source: string): string | null {
-  const interfaceCraftSkillName = getInterfaceCraftInstalledSkillName(source);
-  if (interfaceCraftSkillName) {
-    return interfaceCraftSkillName;
-  }
-
-  if (source.startsWith("superpowers:")) {
-    return source.slice("superpowers:".length).trim() || null;
-  }
-
-  if (source.startsWith("mattpocock:")) {
-    return source.slice("mattpocock:".length).trim() || null;
-  }
-
-  const mattPocockGithubPrefix = "github:mattpocock/skills/";
-  if (source.startsWith(mattPocockGithubPrefix)) {
-    const suffix = source.slice(mattPocockGithubPrefix.length);
-    const skillPath = suffix.startsWith("skills/") ? suffix.slice("skills/".length) : suffix;
-    return skillPath.trim() || null;
-  }
-
-  return null;
-}
-
-function isBareSkillsCliPackage(source: string): boolean {
-  return /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(source);
-}
-
-export async function installExternalSkillDependencyWithSkillsCli(
-  input: OmniskillExternalSkillDependencyInstallInput,
-): Promise<void> {
-  const packageName = getSkillsCliPackageForDependency(input.source, input.repo);
-  if (!packageName) {
-    throw new Error(`No skills CLI package is known for dependency: ${input.source}`);
-  }
-
-  const args = ["--yes", "skills@latest", "add", packageName, "--yes", "--global"];
-  const skillName = getSkillsCliSkillNameForSource(input.source);
-  if (skillName) {
-    args.push("--skill", skillName, "--agent", "codex");
-  }
-
-  const result = await (input.runCommand ?? runExternalSkillCommand)({
-    executable: "npx",
-    args,
-    cwd: input.homeDir,
-    env: {
-      ...process.env,
-      HOME: input.homeDir,
-    },
-  });
-
-  if (result.stdout.trim()) {
-    console.log(result.stdout.trim());
-  }
-  if (result.stderr.trim()) {
-    console.error(result.stderr.trim());
-  }
-  if (result.exitCode !== 0) {
-    throw new Error(`skills CLI failed while installing ${packageName} (exit ${result.exitCode})`);
-  }
-}
-
-async function runExternalSkillCommand(
-  command: OmniskillExternalSkillCommand,
-): Promise<OmniskillExternalSkillCommandResult> {
-  return runSubprocess(command);
 }
 
 function configureListCommand(command: Command, rootDir: string): void {
@@ -960,6 +1117,11 @@ function printOmniskillRemovePlan(plan: WorkflowRemovalPlan, dryRun: boolean): v
   console.log(keyValue("Workflow record", plan.workflowRecordPath));
   if (plan.legacy) {
     console.log(warning("Legacy workflow record detected; removal paths are inferred."));
+  }
+  if (plan.incomplete) {
+    console.log(
+      warning("Incomplete install journal detected; only journal-owned artifacts are removable."),
+    );
   }
 
   const removeHeading = dryRun ? "Artifacts that would be removed:" : "Artifacts to remove:";
@@ -1184,7 +1346,7 @@ async function runOmniskillOnboard(
   }
 
   const prompt = options.onboardPrompt ?? createDefaultOnboardPrompt();
-  const runCommand = options.onboardCommandRunner ?? runExternalSkillCommand;
+  const runCommand = options.onboardCommandRunner ?? runOmniskillOnboardCommand;
 
   console.log(success("Omniskills onboard"));
   console.log(keyValue("Workspace", targetDir));
@@ -1224,6 +1386,12 @@ async function runOmniskillOnboard(
   }
 
   console.log(success("Omniskills onboard complete"));
+}
+
+async function runOmniskillOnboardCommand(
+  command: OmniskillOnboardCommand,
+): Promise<OmniskillOnboardCommandResult> {
+  return runSubprocess(command);
 }
 
 function printRtkSetupGuidance(): void {

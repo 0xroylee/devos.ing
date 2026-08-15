@@ -13,10 +13,16 @@ habits 交給你的 agent。核心很簡單：3x your ability，而不用手動�
 Startup Team 會把一個已核准的 startup goal 拆成一次一個、可檢查的功能里程碑；每個
 plan 都在 implementation 前審核，結果通過 verification 後，再以使用者結果重演重建原始的
 expectations、needs、wishes 與 journey，最後才進入 feature acceptance。證據帳本會清楚區分
-Verified、Inferred、Assumed。所有 handoffs 都是 manual 且標記為 `Prepared, not executed`，
-不代表 browser 或 CLI 已自動啟動 agent。
+Verified、Inferred、Assumed。在支援的 host 上，系統會以內部 subagents 執行選定的
+startup-team 角色，且每個階段只傳遞有限的資料包。流程仍會在計畫核准及功能驗收時
+暫停；只有當內部啟動能力或已安裝的角色 profile 不可用時，才回退為
+`Prepared, not executed`。公開 CLI dispatch 仍維持停用。
 
-`Prepare -> Plan -> Plan approval -> Implement -> Verify -> User Outcome Replay -> Feature acceptance`
+已安裝的 team 也包含 `$deliver-code`。只有 deliver-code 取得 workspace-write
+權限；它接收已核准的 Goal Tunnel、scope、non-goals、acceptance criteria 與
+permissions。任何 scope drift 都回到 planning，QA 與兩個 human gates 不會被合併。
+
+`Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance`
 
 
 ## 快速開始
@@ -39,6 +45,33 @@ $startup-goal I have an AI bookkeeping idea; help me choose the wedge and ship a
 npx omniskill@latest install 'https://github.com/devos-ing/omni-skills.git#examples/teams/startup-team'
 ```
 
+### Finance Team（local preview）
+
+`finance-team` 尚未透過 `omniskill@latest` 發布。從這個 repository 預覽安裝後，
+呼叫 `$finance-research`，由 coordinator 準備 company、financial、valuation、risk
+specialists 的 handoff，並在收到已完成的 outputs 後產出有來源依據的 public-company brief。
+
+```bash
+bun run dev -- install examples/teams/finance-team
+```
+
+### Market Team（local preview）
+
+`market-team` 尚未透過 `omniskill@latest` 發布。從這個 repository 預覽安裝後，
+呼叫 `$market-research`，由 coordinator 準備 macro、rates、market-structure、sector、risk
+specialists 的 handoff，並在收到已完成的 outputs 後產出有來源依據的 market-regime brief。
+
+```bash
+bun run dev -- install examples/teams/market-team
+```
+
+兩個 teams 都使用 host-provided browsing 與 public sources，不需要 market-data API，
+也不提供個人化投資建議。
+
+這些 previews 不會自動啟動 specialists。Coordinator 只會準備 manual specialist
+handoffs；當 host launch capability 或 role profile 無法使用時，會回傳
+`Prepared, not executed`，並且只組合已完成的 outputs。
+
 如果你只需要單一 specialist workflow，也可以安裝個別 startup roles：
 
 ```bash
@@ -53,6 +86,19 @@ npx omniskill@latest install qa-lead
 
 安裝 skills 後，請重新啟動你的 agent，讓它重新載入新的 entry skills。
 
+### 安裝事實
+
+Startup Team 已包含 checked-in schema `0.2` lock。External GitHub locators
+使用 exact commits，且所有宣告的 team members 都會從 root team 的 same
+checkout 解析。Lock 會 fingerprint 已宣告的 dependency graph 與 locators；
+它不會獨立 snapshot 已下載的 remote contents。
+
+重新安裝時，Omniskills 只會在 recorded artifact paths 能證明 ownership 時
+refresh existing target。若 target 存在 mixed ownership，例如 managed primary
+搭配 user-owned mirror，系統會跳過該 target，不會取代 user-owned copy。
+Finance Team 與 Market Team 仍是無 lock 的 local previews，直到完整 graph
+通過 publication smoke。
+
 ## Workflow Registry
 
 使用 registry view 挑選一個 Omniskills workflow、檢視它的 role workflow，並複製 install command。
@@ -63,18 +109,33 @@ npx omniskill@latest install qa-lead
 
 | Omniskills workflow | Entry skill | 用途 |
 | --- | --- | --- |
-| Startup Team | `$startup-goal` | 一次推進一個有證據支持的功能里程碑，經過 plan approval、implementation、verification、使用者結果重演與 feature acceptance。 |
+| Startup Team | `$startup-goal` | 一次推進一個有證據支持的功能里程碑，經過 plan approval、implementation、conditional rework、verification、使用者結果重演與 feature acceptance。 |
+| Finance Team（local preview） | `$finance-research` | 準備 company、financial、valuation、risk specialists 的 manual handoff，收到已完成 outputs 後產出有來源依據的 public-company brief。 |
+| Market Team（local preview） | `$market-research` | 準備 macro、rates、market-structure、sector、risk specialists 的 manual handoff，收到已完成 outputs 後產出有來源依據的 market-regime brief。 |
 | CEO | `$ceo` | Direction、hard tradeoffs、fundraising/customer framing、company decisions。 |
 | CTO | `$cto` | Architecture、domain model、platform direction、engineering risk。 |
 | Product Manager | `$product-manager` | Product discovery、PRDs、acceptance criteria、roadmap tradeoffs、issue slicing。 |
 | Web Design | `$web-design` | 可實作的 interface direction、responsive interaction states，以及嚴格的 animation review。 |
 | Engineering Manager | `$engineering-manager` | Delivery sequencing、execution risk、quality gates、blocker triage、engineering process。 |
-| Founding Engineer | `$founding-engineer` | The smallest correct implementation change：tests、debugging、review、verification。 |
+| Founding Engineer | `$founding-engineer` | Read-only implementation frame：定位 seams、tests、risk 與 handoff；不修改檔案。 |
+| Deliver Code | `$deliver-code` | 透過 TDD、review 與 fresh verification 交付已核准的垂直切片。 |
 | QA Lead | `$qa-lead` | Release-risk review、acceptance checks、regression focus、reproduction gaps、verification evidence。 |
 
 每個 workflow 仍然只是你可以檢查的檔案：`workflow.json`、選用的
 `workflow.lock.json`、README、local skills。它的力量來自於一次安裝 skill tree，然後呼叫知道該使用哪些
 companion skills 的 entry skill。
+
+### 我應該使用哪個 workflow？
+
+| 如果你需要... | 使用 |
+| --- | --- |
+| 一個經過 brainstorm、plan approval、implementation、QA 與 feature acceptance 的完整 milestone | `startup-team` |
+| Discovery、PRD、acceptance criteria 或 issue slicing | `product-manager` |
+| 把模糊的 product-development goal 推進成 approved plan 的可恢復 loop | `grilled-product-dev` |
+| 示範 product-minded engineering composition 與 verification | `development-design-delivery` |
+| 示範如何組合 RTK、Superpowers 與 Matt Pocock skills | `real-engineering` |
+
+`founding-engineer` 只產出 read-only implementation frame；它不會實作工作。
 
 ## Goal Loops
 
@@ -100,17 +161,20 @@ Omniskills workflows 可以組合 local skills、bundled skills、external skill
 
 - Matt Pocock skills：TDD、review、design pressure-testing、domain modeling、PRDs、issue slicing。
 - Superpowers skills：brainstorming、planning、execution、verification。
-- Interface Craft skills：提供 design engineering 與 motion 能力。Canonical identifiers 是
-  `interface-craft:design-engineering`、`interface-craft:motion-vocabulary`、
-  `interface-craft:fluid-interface-design`、`interface-craft:motion-review`，並從
-  `emilkowalski/skills` 安裝。較舊的 `emilkowalski:*` identifiers 僅保留為 compatibility aliases。
+- Emil Kowalski skills：提供 design engineering 與 motion 能力。Canonical identifiers 是
+  `emilkowalski:emil-design-eng`、`emilkowalski:animation-vocabulary`、
+  `emilkowalski:apple-design`、`emilkowalski:review-animations`，並從
+  `https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6`
+  的已稽核 commit 安裝。較舊的 `interface-craft:*` identifiers 僅保留為 compatibility aliases。
 - More workflow packs are coming.
 
 `omniskill install` 會使用每個 workflow skill 的 `repo` metadata，透過 Skills CLI 抓取缺少的 external
 skills。例如：
-`{ "source": "superpowers:brainstorming", "repo": "obra/superpowers" }`
-會在 `source` 保留原始 skill name，並用
-`npx skills add obra/superpowers --skill brainstorming` 安裝它。
+`{ "source": "superpowers:brainstorming", "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99" }`
+會在 `source` 保留原始 skill name。若 repo 指向 40 字元的 exact commit，
+Omniskills 會在暫存 checkout 中 fetch 並驗證 detached commit，再把本地 checkout
+交給 `npx skills add --copy --skill brainstorming`。這可避免把 commit SHA
+誤當成 branch name，並會在安裝後移除暫存 checkout。
 
 如果 automatic bootstrap 失敗，請透過 Omniskills 執行 package install，然後重試：
 
@@ -128,6 +192,7 @@ npx omniskill@latest lock <source>
 npx omniskill@latest loop <start|status|log|advance|summary> <source>
 npx omniskill@latest remove <workflow-name>
 npx omniskill@latest onboard
+npx omniskill@latest setup-model-routing
 npx omniskill@latest init <name>
 npx omniskill@latest validate <source>
 npx omniskill@latest skills install
@@ -190,13 +255,14 @@ npx omniskill@latest deps ./release-review
 
 | Example | 適合用途 | Notes |
 | --- | --- | --- |
-| `examples/teams/startup-team` | 圍繞一個 goal 安裝 realistic startup operating team。 | 包含 `$startup-goal` coordinator，以及 `$ceo`、`$cto`、`$product-manager`、`$web-design`、`$engineering-manager`、`$founding-engineer`、`$qa-lead`。 |
+| `examples/teams/startup-team` | 圍繞一個 goal 安裝 realistic startup operating team。 | 包含 `$startup-goal` coordinator，以及 `$ceo`、`$cto`、`$product-manager`、`$web-design`、`$engineering-manager`、`$founding-engineer`、`$deliver-code`、`$qa-lead`。 |
+| `examples/workflows/deliver-code` | 交付已核准的垂直工程切片。 | 使用 TDD、review、fresh verification，coverage 以 90% 為底線，不追求 100%。 |
 | `examples/workflows/ceo` | Company direction、strategy、tradeoffs、decision mapping。 | Uses Matt Pocock decision and grilling skills. |
 | `examples/workflows/cto` | Architecture、domain model、technical risk、review。 | Uses Matt Pocock architecture/review skills. |
-| `examples/workflows/product-manager` | Discovery、PRD、issue slicing、product planning。 | Uses Superpowers plus Matt Pocock PRD/issue skills. |
-| `examples/workflows/web-design` | Interface direction、responsive interaction states、animation review。 | 使用 canonical Interface Craft skill identifiers。 |
+| `examples/workflows/product-manager` | Discovery、PRD、issue slicing、product planning。 | Uses native product framing plus Matt Pocock PRD/issue skills. |
+| `examples/workflows/web-design` | Interface direction、responsive interaction states、animation review。 | 使用 canonical Emil Kowalski skill identifiers。 |
 | `examples/workflows/engineering-manager` | Delivery sequencing、quality gates、execution risk。 | Uses planning, TDD, diagnosing, and review skills. |
-| `examples/workflows/founding-engineer` | Implementation、tests、debugging、review、final verification。 | Uses `$implement` as the implementation role. |
+| `examples/workflows/founding-engineer` | Read-only implementation framing、test seams、debugging evidence、review risk。 | Handoff 給獨立 implementer；不修改檔案。 |
 | `examples/workflows/qa-lead` | Acceptance checks、regression focus、release verification。 | Uses review, diagnosing, and verification skills. |
 | `examples/workflows/grilled-product-dev` | 將 product-development work 形成 approved plan 的 goal loops。 | Provides `loop start`, `loop status`, and `loop advance`. |
 | `examples/workflows/openspec-superpowers` | OpenSpec delivery 的 compatibility/demo workflow。 | Kept for one release while the role catalog becomes the primary example set. |

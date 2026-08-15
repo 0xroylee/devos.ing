@@ -2,8 +2,8 @@
   "schemaVersion": "0.1",
   "kind": "team",
   "name": "startup-team",
-  "version": "0.6.0",
-  "description": "Install a startup team as one goal-oriented Omniskills bundle: a startup-goal coordinator plus CEO, CTO, product manager, web-design lead, engineering manager, founding engineer, and QA lead.",
+  "version": "0.8.0",
+  "description": "Install a startup team as one goal-oriented Omniskills bundle: a startup-goal coordinator plus CEO, CTO, product manager, web-design lead, engineering manager, founding engineer, deliver-code implementation, and QA lead.",
   "coordinator": "./skills/startup-goal",
   "loop": {
     "script": "./loop.mjs",
@@ -15,7 +15,7 @@
     "stop_when": ["human_stops", "critical_evidence_missing", "milestone_blocked"],
     "milestone": {
       "coordinator": "./skills/startup-goal",
-      "implementer": "mattpocock:implement",
+      "implementer": "../../workflows/deliver-code",
       "verifier": "../../workflows/qa-lead"
     }
   },
@@ -26,59 +26,70 @@
     "../../workflows/web-design",
     "../../workflows/engineering-manager",
     "../../workflows/founding-engineer",
+    "../../workflows/deliver-code",
     "../../workflows/qa-lead"
   ],
   "orchestration": {
     "roles": {
       "./skills/startup-goal": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "receive"
       },
       "../../workflows/ceo": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       },
       "../../workflows/cto": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       },
       "../../workflows/product-manager": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       },
       "../../workflows/web-design": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       },
       "../../workflows/engineering-manager": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       },
       "../../workflows/founding-engineer": {
         "tier": "deep",
+        "modelRole": "planning",
         "access": "read-only",
+        "consultation": "request"
+      },
+      "../../workflows/deliver-code": {
+        "tier": "standard",
+        "modelRole": "implementation",
+        "access": "workspace-write",
         "consultation": "request"
       },
       "../../workflows/qa-lead": {
         "tier": "deep",
+        "modelRole": "verification",
         "access": "read-only",
-        "consultation": "request"
-      },
-      "mattpocock:implement": {
-        "tier": "standard",
-        "access": "workspace-write",
         "consultation": "request"
       }
     },
     "support": {
       "explorer": {
         "tier": "fast",
+        "modelRole": "planning",
         "access": "read-only",
         "consultation": "request"
       }
@@ -108,11 +119,13 @@
       "source": "../../workflows/founding-engineer"
     },
     {
+      "source": "../../workflows/deliver-code"
+    },
+    {
       "source": "../../workflows/qa-lead"
     },
     {
-      "source": "mattpocock:implement",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0"
+      "source": "../../workflows/setup-model-routing/skills/setup-model-routing"
     }
   ],
   "steps": [
@@ -120,13 +133,13 @@
       "id": "preparing",
       "title": "Prepare the goal tunnel and feature milestones",
       "skill": "./skills/startup-goal",
-      "instruction": "Clarify the goal tunnel, decompose it into ordered feature milestones, select the smallest accountable role set, and prepare manual input packets without launching any role."
+      "instruction": "Clarify the Goal Tunnel, decompose it into ordered feature milestones, select the smallest accountable role set, and create bounded stage-specific Input Packets."
     },
     {
       "id": "planning",
       "title": "Collect and validate the milestone plan",
       "skill": "./skills/startup-goal",
-      "instruction": "Accept completed expert outputs supplied by the user, validate their output packets and evidence ledgers, preserve material disagreements, and assemble the active milestone plan without rewriting expert conclusions."
+      "instruction": "Classify selected roles by dependency before launch. Capture their stable pre-launch order, submit every dependency-free selected role before awaiting, then collect one all-settled barrier: healthy siblings continue after a failure, but every required role needs a conforming Output Packet and any required planning role failure blocks plan approval. Synthesize deterministically in captured pre-launch order, never completion order; launch dependent reviews or repairs only after their prerequisites. The host owns capacity. When host capability or a requested profile is unavailable, emit the bounded packets honestly as Prepared, not executed."
     },
     {
       "id": "awaiting_plan_approval",
@@ -138,28 +151,28 @@
     {
       "id": "implementing",
       "title": "Implement the approved milestone",
-      "skill": "mattpocock:implement",
+      "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "Prepare and manually execute only the separately approved implementation handoff; remain inside the approved plan and record the changed artifacts and verification evidence."
+      "instruction": "Internal remains the default. An opt-in run-scoped visible_task requires plan approval plus a separate explicit post-plan confirmation; plan approval or ambiguous approve/yes never creates a task. Call the host capability list_projects and require the selected returned opaque project identity to resolve the visible task target before confirmation or creation. Show the deterministic title, exact gpt-5.6-terra model, reasoning effort high, project, filesystem target, and workspace-write boundary. For Git, default to an isolated worktree; use startingState: working-tree for approved dirty-state dependencies, and require explicit choice for the current checkout. Create exactly one visible implementation task with the bounded delegated packet, persist its task ID and workspace reference, reconcile ambiguity without duplication or mode fallback, and block QA until a conforming result and exact workspace identity validate. Capability, exact-model, target/access, creation failure, reconciliation, or collection failure is Prepared, not executed naming the boundary. Public CLI dispatch stays disabled."
     },
     {
       "id": "rework",
       "title": "Repair the approved milestone implementation",
-      "skill": "mattpocock:implement",
+      "skill": "../../workflows/deliver-code",
       "phase": "implementation",
-      "instruction": "Apply one bounded repair for verification failures that remain inside the approved plan; return newly discovered requirements to planning instead of expanding scope."
+      "instruction": "For internal mode, launch the configured internal deliver-code profile for one bounded repair when verification failures remain inside the approved plan. For visible_task, use the same visible task and persisted workspace reference for one bounded correction request and the single permitted rework; never create a replacement, silently retry, or switch modes. Wait for a conforming result and exact workspace identity before QA, and return scope drift or newly discovered requirements to planning instead of expanding scope."
     },
     {
       "id": "verifying",
       "title": "Verify the milestone result",
       "skill": "../../workflows/qa-lead",
-      "instruction": "Prepare the QA handoff, accept the completed QA output supplied by the user, and record acceptance, regression, release-risk, and verification evidence without claiming an automatic role launch."
+      "instruction": "After implementation, launch the configured internal QA profile with the approved acceptance criteria and changed-artifact evidence, wait for its Output Packet, and record acceptance, regression, release-risk, and verification evidence; otherwise emit an honest Prepared, not executed fallback."
     },
     {
       "id": "evaluating",
       "title": "Replay the verified user outcome",
       "skill": "./skills/startup-goal",
-      "instruction": "After QA, prepare the accountable outcome role handoff for a User Outcome Replay; validate the returned expectations, needs, wishes, journey steps, evidence, and acceptance recommendation without performing the role's content analysis."
+      "instruction": "After QA passes, launch the installed profile for the accountable outcome role with original requirements and verified result evidence, wait for its User Outcome Replay, and validate expectations, needs, wishes, journey steps, evidence, and acceptance recommendation without performing the role's content analysis; otherwise emit an honest Prepared, not executed fallback."
     },
     {
       "id": "awaiting_acceptance",

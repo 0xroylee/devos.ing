@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "0.1",
+  "name": "deliver-code",
+  "version": "0.1.0",
+  "description": "Scaffold durable engineering context and deliver approved vertical code slices through TDD, review, and verification.",
+  "skills": [
+    { "source": "./skills/deliver-code", "entry": true },
+    {
+      "source": "mattpocock:grill-with-docs",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:domain-modeling",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:to-spec",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:codebase-design",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:implement",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:tdd",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:diagnosing-bugs",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    },
+    {
+      "source": "mattpocock:code-review",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+    }
+  ],
+  "steps": [
+    {
+      "id": "prepare",
+      "title": "Inspect the repository and reconcile the safe scaffold",
+      "skill": "./skills/deliver-code",
+      "instruction": "Identify direct or delegated mode, show the status header, and perform only authorized additive scaffold writes."
+    },
+    {
+      "id": "grill",
+      "title": "Clarify an ambiguous engineering request",
+      "skill": "mattpocock:grill-with-docs",
+      "instruction": "Run only when material ambiguity could change the engineering boundary; direct mode may clarify scope, while delegated mode may not reopen product scope."
+    },
+    {
+      "id": "domain",
+      "title": "Sharpen changed domain language and qualifying decisions",
+      "skill": "mattpocock:domain-modeling",
+      "instruction": "Run only when vocabulary changes or a qualifying durable decision crystallizes."
+    },
+    {
+      "id": "design",
+      "title": "Define a bounded architecture or design change",
+      "skill": "mattpocock:codebase-design",
+      "instruction": "Run only when the approved change alters module, API, data, or interaction boundaries; update current architecture separately from durable ADR rationale."
+    },
+    {
+      "id": "spec",
+      "title": "Create or reuse the canonical approved specification",
+      "skill": "mattpocock:to-spec",
+      "instruction": "Store the canonical specification under docs/specs and reuse an existing approved request for a clear small fix."
+    },
+    {
+      "id": "tickets",
+      "title": "Create dependency-aware vertical delivery tickets",
+      "skill": "mattpocock:to-tickets",
+      "instruction": "Prefer authorized GitHub Issues; otherwise store stable local tickets under .scratch/deliver-code/<work-id>."
+    },
+    {
+      "id": "approve",
+      "title": "Approve the delivery plan and mutation envelope",
+      "skill": "./skills/deliver-code",
+      "gate": "human_approval",
+      "instruction": "Present scope, route, test seams, tickets, verification commands, and separately authorized mutations before implementation."
+    },
+    {
+      "id": "implement",
+      "title": "Implement one dependency-ready ticket with TDD",
+      "skill": "mattpocock:implement",
+      "phase": "implementation",
+      "instruction": "Invoke this skill only when commit permission is explicit; otherwise execute the approved implementation phase with mattpocock:tdd and do not commit. Work one approved vertical ticket at a time."
+    },
+    {
+      "id": "debug",
+      "title": "Diagnose an unexpected failure inside the approved ticket",
+      "skill": "mattpocock:diagnosing-bugs",
+      "instruction": "Run only when implementation or verification fails; do not expand scope."
+    },
+    {
+      "id": "review",
+      "title": "Review repository standards and specification fidelity",
+      "skill": "mattpocock:code-review",
+      "instruction": "Run both review axes against the approved fixed point; prepare a review handoff and pause when subagent execution is unavailable."
+    },
+    {
+      "id": "verify",
+      "title": "Collect fresh completion evidence",
+      "skill": "./skills/deliver-code",
+      "instruction": "Collect and evaluate native structured evidence for the approved focused and full commands; block completion on failed, stale, unavailable, mismatched-workspace, or partially mapped evidence."
+    },
+    {
+      "id": "accept",
+      "title": "Accept or rework the direct delivery result",
+      "skill": "./skills/deliver-code",
+      "gate": "human_approval",
+      "instruction": "Present implemented behavior, review findings, verification evidence, residual risk, and the exact re-entry point."
+    }
+  ]
+}

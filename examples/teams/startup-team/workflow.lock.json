@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "startup-team",
-  "workflowVersion": "0.6.0",
-  "generatedAt": "2026-08-15T05:54:36.321Z",
+  "workflowVersion": "0.8.0",
+  "generatedAt": "2026-08-15T06:08:51.972Z",
   "workflows": [
     {
-      "id": "workflow:startup-team@0.6.0",
+      "id": "workflow:startup-team@0.8.0",
       "name": "startup-team",
-      "version": "0.6.0",
+      "version": "0.8.0",
       "source": {
         "kind": "root"
       }
@@ -67,6 +67,15 @@
       }
     },
     {
+      "id": "workflow:deliver-code@0.1.0",
+      "name": "deliver-code",
+      "version": "0.1.0",
+      "source": {
+        "kind": "local",
+        "path": "../../workflows/deliver-code"
+      }
+    },
+    {
       "id": "workflow:qa-lead@0.3.0",
       "name": "qa-lead",
       "version": "0.3.0",
@@ -78,31 +87,35 @@
   ],
   "edges": [
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:ceo@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:cto@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:product-manager@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:web-design@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:engineering-manager@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:founding-engineer@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.6.0",
+      "from": "workflow:startup-team@0.8.0",
+      "to": "workflow:deliver-code@0.1.0"
+    },
+    {
+      "from": "workflow:startup-team@0.8.0",
       "to": "workflow:qa-lead@0.3.0"
     }
   ],
@@ -111,7 +124,7 @@
       "source": "./skills/startup-goal",
       "resolvedName": "startup-goal",
       "kind": "local",
-      "hash": "sha256:2f4c5a789a3cf06c67eec1aae5fa7a7a8dc2c97b81d8a4ff0dd1de3cba21871a"
+      "hash": "sha256:b1469d9341cd59efddc24e19324bf3327e3573ba0f3c029cdc2574b75c93451d"
     },
     {
       "source": "../../workflows/ceo/skills/ceo",
@@ -123,15 +136,15 @@
       "source": "mattpocock:wayfinder",
       "resolvedName": "wayfinder",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:296041b6482c9c100620f2216c9e41ac31d304a70179f4307462294563c806ff"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:76fbb585ccb89c21ab7d6f8e044515b28a903f2a811b248221bf34b8b1ad79e0"
     },
     {
       "source": "mattpocock:grill-with-docs",
       "resolvedName": "grill-with-docs",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:a7e2ffc2e216483f140c486c5e1b5e3e66d6ca7cf47980357069b21887645069"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:e66c375b2cfede6816c802ae0b8d8bf8c02f5e40a6f0bdb8737c8fff19636c17"
     },
     {
       "source": "../../workflows/cto/skills/cto",
@@ -143,29 +156,29 @@
       "source": "mattpocock:codebase-design",
       "resolvedName": "codebase-design",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:452bfb044551a8177528b7df68e204e6a77b8a7f89daa741ef659f652c441376"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:45f1f27c670c4065170eb689a04235e84982f87f133f537f55b12329ff5fec1a"
     },
     {
       "source": "mattpocock:domain-modeling",
       "resolvedName": "domain-modeling",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:f01e41e3fdaf3c4d4c20ddea9eb00e8330003d91bb564ef4518aaee856d4bf69"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:0573fd6a60918e5280ce20409cdcb30eed03ec64550404c28dc1f825b3b43276"
     },
     {
       "source": "mattpocock:diagnosing-bugs",
       "resolvedName": "diagnosing-bugs",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:8148a4181f76442579999629563f08f31fa3784955584e781a190b64d65a1501"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:0ce16c85852384eae72203418ea0d45145b86b8a04bb6a9d3693def451e08b89"
     },
     {
       "source": "mattpocock:code-review",
       "resolvedName": "code-review",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:913b01e36a6d3e28173b68e3147295754dd1ff2b91dbc23ebb1161cc687c91e6"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:4281a8bb8667c7c46ca512cc19782af9606876d9bab13d306688829783ebfa13"
     },
     {
       "source": "../../workflows/product-manager/skills/product-manager",
@@ -177,15 +190,15 @@
       "source": "mattpocock:to-spec",
       "resolvedName": "to-spec",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:1cf05443c48f01b135983e7382cbb1cfed1b54b0caf5bd400067632355f15726"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:ca71d81c69e99abad7d3e730d3cdc87e90ac4efac1edae94ee82e16890fb8b84"
     },
     {
       "source": "mattpocock:to-tickets",
       "resolvedName": "to-tickets",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:49679c184e8970591136c431ba4fa00a4890aff23a2701c194465f79007a23c9"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:5d9c9aa0dc2ed6b52784fd50a9bd5c9355d0ef64312c49d506e18449893c76a2"
     },
     {
       "source": "../../workflows/web-design/skills/web-design",
@@ -197,29 +210,29 @@
       "source": "emilkowalski:emil-design-eng",
       "resolvedName": "emilkowalski:emil-design-eng",
       "kind": "external",
-      "repo": "emilkowalski/skills",
-      "hash": "sha256:c98e0e85967f367ece5fd23f9b2bcef62c1a9d548579472bb829464c3ebdf461"
+      "repo": "https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6",
+      "hash": "sha256:feb1b26a393cf3aa4ab606b7333dc7cebaa9f107111aa98b6efb70beac4d06f8"
     },
     {
       "source": "emilkowalski:animation-vocabulary",
       "resolvedName": "emilkowalski:animation-vocabulary",
       "kind": "external",
-      "repo": "emilkowalski/skills",
-      "hash": "sha256:17043916f71310aff8b03af847f4cf1280496807113072ff9fb836e64f90f133"
+      "repo": "https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6",
+      "hash": "sha256:2dfcb9f8e96061da95947de644e05344f657aef42494c83bf4912b0473aed22f"
     },
     {
       "source": "emilkowalski:apple-design",
       "resolvedName": "emilkowalski:apple-design",
       "kind": "external",
-      "repo": "emilkowalski/skills",
-      "hash": "sha256:4f2d0e6e554a9b8d313ae3b32a66f9e4f1ba4c9f491e0f050ad077e100eeefa3"
+      "repo": "https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6",
+      "hash": "sha256:57c6e2cb5c1f8681bab63259561e1f7c09e691e116879de45c934edb97b60eb7"
     },
     {
       "source": "emilkowalski:review-animations",
       "resolvedName": "emilkowalski:review-animations",
       "kind": "external",
-      "repo": "emilkowalski/skills",
-      "hash": "sha256:f9266e7cdefa9ceadc60558f201618755382f03b06d5ab37d2ac73bdb7807b98"
+      "repo": "https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6",
+      "hash": "sha256:52a924e51ecf6b189f5fa1cd688195992965409c3cc6d54fc22e784b73e6807d"
     },
     {
       "source": "../../workflows/engineering-manager/skills/engineering-manager",
@@ -231,8 +244,8 @@
       "source": "mattpocock:tdd",
       "resolvedName": "tdd",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:e845c35d776277cb08cbf3b68ea32b28e181069620c4a6b9d9642871184105f8"
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:eab427de166cfaf4270e836894e605677fccf1a8d6db9c249fb3c800bcda40d7"
     },
     {
       "source": "../../workflows/founding-engineer/skills/founding-engineer",
@@ -241,17 +254,29 @@
       "hash": "sha256:ac03fae80e71966affc883f1812380a8d897a41e5f59fd5e8cc725e677425b06"
     },
     {
+      "source": "../../workflows/deliver-code/skills/deliver-code",
+      "resolvedName": "deliver-code",
+      "kind": "local",
+      "hash": "sha256:d4e6fce27040479054c1fc39e25a583ecc0a422be262c4bbe03e6a4eef45a3b5"
+    },
+    {
+      "source": "mattpocock:implement",
+      "resolvedName": "implement",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+      "hash": "sha256:62933cc0179d730078cd1e284e965c43ed04bac7910aee05a1d47506e56c1d7c"
+    },
+    {
       "source": "../../workflows/qa-lead/skills/qa-lead",
       "resolvedName": "qa-lead",
       "kind": "local",
       "hash": "sha256:2dca8c5bd0d8b55a19a2eee43fe729fd41f136b71487de7279e5719e76183e46"
     },
     {
-      "source": "mattpocock:implement",
-      "resolvedName": "implement",
-      "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/v1.1.0",
-      "hash": "sha256:1ad478cef4ccf1cde4cfff91cd551cb781e21da4e6d4940ef4df64c209db35cc"
+      "source": "../../workflows/setup-model-routing/skills/setup-model-routing",
+      "resolvedName": "setup-model-routing",
+      "kind": "local",
+      "hash": "sha256:15d8a5fdc19f62423f83425b5cae0917e7b560817f4fda359c4e30e0c68f4a22"
     }
   ]
 }

@@ -9,17 +9,16 @@ Component-local page copy 也來自 `landing/components/landing-page.tsx`、
 
 ## Hero
 
-Eyebrow：Works with Claude, Codex, Cursor, opencode, and GitHub Copilot.
+Eyebrow：Orchestration for Codex。
 
 Headline：
 
 ```text
-Power your ability.
-Install the workflow.
+One goal. A team of agents. One verified result.
 ```
 
-Body：Omniskills 是給 AI agents 使用的 many-skill bank。安裝一個 workflow skill
-tree，帶著 goal 呼叫一個 entry skill，讓 agent 取得能 3x your ability 的 roles、playbooks、verification habits。
+Body：把 Codex 變成一個協作團隊。單一 entry skill 會釐清 goal、分派正確的
+specialists、收斂成果並完成驗證；Claude、Cursor、opencode、GitHub Copilot 也持續支援。
 
 Primary command preview：
 
@@ -27,7 +26,7 @@ Primary command preview：
 npx omniskill@latest install startup-team
 ```
 
-Primary action：Explore teams & skills。
+Primary action：Watch a team run。
 
 ## 支援的 Agents
 
@@ -40,72 +39,78 @@ Primary action：Explore teams & skills。
 - Cursor
   - id: `cursor`
   - logo: `/agent-logos/cursor.svg`
-- opencode
+- OpenCode
   - id: `opencode`
+- Hermes
+  - id: `hermes`
+- OpenClaw
+  - id: `openclaw`
 - GitHub Copilot
   - id: `github-copilot`
   - logo: `/agent-logos/github-copilot.svg`
 
 ## 運作方式
 
-Section label：How it works。
+Section label：How orchestration works。
 
-Heading：One entry skill. Many specialist skills.
+1. Install a real team
+   - 一個 manifest 同時安裝 coordinator、specialist roles、source-linked playbooks。
+2. Give the coordinator one goal
+   - Coordinator 釐清 scope、等待 approval，只 route 必要 roles。
+3. Verify before feature acceptance
+   - Implementation 與任何 bounded rework 都會把 evidence 送回 QA；再由 User Outcome Replay
+     檢查 verified result，最後才通過 final human gate。
 
-1. Install a many-skill bank
+### Two human gates
 
-   workflow manifest 會定義 callable entry skill，以及它需要的每個 local 或 external
-   specialist skill。
+You approve the plan and accept the feature. Milestone 會在 implementation 前以及 QA 與
+User Outcome Replay 後再次停下；任何 material scope change 都會回到 planning，而不會成為
+隱藏假設。
 
-2. Call one entry skill with a goal
+## FAQ
 
-   使用者呼叫單一 skill，例如 `$startup-goal`，workflow 會把 goal route 到正確 roles。
+### How are Startup Team installs and local research previews kept safe?
 
-3. Compound specialist judgment
+Startup Team carries a checked-in schema 0.2 lock with exact-commit external
+locators, and its declared members resolve from the same checkout. Managed
+refreshes require recorded ownership; mixed ownership fails closed. Finance Team
+and Market Team remain lockless local previews.
 
-   Strategy、product、architecture、delivery、implementation、QA roles 會保持對齊，讓
-   agent 在不用手動 juggling skills 的情況下 3x your ability。Looped workflows 可以透過 CLI
-   追蹤 resumable、action-only workflow state。
+### Which CLI command installs a workflow or team?
 
-## Workflow Run Demo
+Use install as the public install command. bundle and workflow remain
+compatibility aliases.
 
-Section label：Try it live。
+## Control Tower Demo
 
-Heading：Watch the workflow run。
+Section label：Control tower。
 
-Body：模擬呼叫 `$startup-goal`，並看到每個 role skill 回傳 combined answer 的一部分。
+Heading：Watch Codex orchestrate a real team.
 
-Prompt：
+Disclosure：`Example run · hardcoded preview`。以下是 real installable manifests
+的 deterministic preview，不是 live agents 或 live market data。
 
-```text
-> $startup-goal help me launch this product from idea to shipped v1
-```
+Cases：
 
-Demo steps：
-
-1. Route Goal
-   - skill: `startup-goal`
-2. Strategy
-   - skill: `ceo`
-3. Product Scope
-   - skill: `product-manager`
-4. Architecture
-   - skill: `cto`
-5. Implementation
-   - skill: `founding-engineer`
-6. QA Review
-   - skill: `qa-lead`
-
-Completion copy：Workflow complete - all 6 role steps returned. Startup answer ready.
+1. Build a landing page — `$startup-goal`
+   - Coordinator activity：Launch selected installed roles。
+   - Product、design、engineering planning 平行執行，再依序通過 implementation 與 QA gates。
+   - Implement source：`https://github.com/mattpocock/skills/blob/d574778f94cf620fcc8ce741584093bc650a61d3/skills/engineering/implement/SKILL.md`。
+2. Research a stock — `$finance-research`
+   - Coordinator activity：Prepare selected specialist handoffs。
+   - Company、financial、valuation specialists 平行執行，`$risk-analysis` 挑戰 thesis。
+3. Research the market — `$market-research`
+   - Coordinator activity：Prepare selected specialist handoffs。
+   - Macro、rates、market-structure、sector specialists 平行執行，`$risk-analysis` 驗證 regime。
 
 ## Omniskills Teams
 
 Section label：Omniskills Teams。
 
-Heading：Pick an Omniskills team。
+Heading：Pick the team for the goal。
 
-Body：當單一 role 不足以完成目標時，先選擇 coordinated team。一次安裝即可讓 agent
-取得 coordinator、specialist roles，以及連接這些 roles 的 playbooks。
+Body：一次安裝 real coordinator 與 specialist roles。Startup Team 負責 product delivery；
+Finance Team 研究 public companies；Market Team 建立 sourced regime view。
 
 ### Startup Team
 
@@ -121,13 +126,18 @@ Body：當單一 role 不足以完成目標時，先選擇 coordinated team。�
 npx omniskill@latest install startup-team
 ```
 
-Runtime description：Break one approved startup goal into evidence-backed feature
-milestones, review each plan before implementation, verify the result, and replay
-the user's expectations, needs, wishes, and journey before acceptance.
+Runtime description：Move one approved startup feature at a time through plan approval,
+implementation, conditional rework, QA, User Outcome Replay, and human feature
+acceptance.
 
-Coordinator：`$startup-goal` — Controls the Goal Tunnel and Evidence Ledger,
-prepares manual handoffs marked Prepared, not executed, and holds both human
-approval gates. No browser or CLI agent launch is implied.
+Coordinator：`$startup-goal` — 預設以 internal subagents 執行 selected installed
+roles，並持有兩個 human approval gates。run-scoped visible_task 必須有 explicit
+post-plan confirmation，使用 gpt-5.6-terra 與 reasoning effort high，並保留
+project/worktree-aware workspace-write boundary。capability、exact-model、
+target/access、creation failure、reconciliation 或 result collection 不可用時，回傳
+Prepared, not executed 並標明邊界；public CLI dispatch stays disabled.
+
+Source coordinator description: Controls the Goal Tunnel and Evidence Ledger, runs selected installed roles as internal subagents by default, and holds both human approval gates. A run-scoped visible_task needs explicit post-plan confirmation and uses gpt-5.6-terra with reasoning effort high in a project/worktree-aware workspace-write boundary. Prepared, not executed names unavailable capability, exact-model, target/access, creation failure, reconciliation, or result collection; public CLI dispatch stays disabled.
 
 Startup Team 一次只推進一個功能里程碑；證據帳本區分 Verified、Inferred、Assumed，
 QA 完成後再執行使用者結果重演，最後由 human 決定是否接受功能。
@@ -140,14 +150,57 @@ Members：
 - Web Design — Interface direction and motion quality
 - Engineering Manager — Delivery sequencing and quality gates
 - Founding Engineer — Implementation framing and handoff
+- Deliver Code — Approved vertical slices through TDD, review, and verification
 - QA Lead — Acceptance checks and release risk
 
 Actions：`View team` 開啟 `/workflows/startup-team`；`View team source` 開啟
 `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/startup-team`。
 
-Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`qa-lead`、`emilkowalski:emil-design-eng`、`emilkowalski:animation-vocabulary`、`emilkowalski:apple-design`、`emilkowalski:review-animations`、`mattpocock:wayfinder`、`mattpocock:grill-with-docs`、`mattpocock:to-spec`、`mattpocock:to-tickets`、`mattpocock:codebase-design`、`mattpocock:domain-modeling`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`、`mattpocock:implement`。
+Skills：`startup-goal`、`ceo`、`cto`、`product-manager`、`web-design`、`engineering-manager`、`founding-engineer`、`deliver-code`、`qa-lead`、`setup-model-routing`。
 
-Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `mattpocock:implement`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
+Ordered milestone path：Prepare -> `startup-goal`；Plan -> `startup-goal`；Plan approval -> `startup-goal`；Implement -> `deliver-code`；Rework if needed -> `deliver-code`；Verify -> `qa-lead`；User Outcome Replay -> `startup-goal`；Feature acceptance -> `startup-goal`。
+
+Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance
+
+Distribution and safety：Startup Team 包含 checked-in schema `0.2` lock、使用
+exact-commit external locators，且所有宣告的 members 都從 same checkout
+解析。Managed refresh 必須能從 existing paths 的 records 證明 ownership；
+mixed ownership 會 fail closed。Finance Team 與 Market Team 仍是無 lock 的
+local previews。
+
+### Finance Team（local preview）
+
+- slug: `finance-team`
+- entry skill: `$finance-research`
+- source: `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/finance-team`
+- repository-local install:
+
+```bash
+bun run dev -- install examples/teams/finance-team
+```
+
+Coordinator：`$finance-research`。Members：`$company-analysis`、
+`$financial-analysis`、`$valuation-analysis`、shared `$risk-analysis`。
+這個 alias 尚未透過 `omniskill@latest` 發布。Coordinator 會準備 manual specialist handoff、
+回傳 `Prepared, not executed`，且只組合已完成的 outputs。使用 host browsing 與 public
+sources，不需要 market-data API，也不提供個人化投資建議。
+
+### Market Team（local preview）
+
+- slug: `market-team`
+- entry skill: `$market-research`
+- source: `https://github.com/devos-ing/omni-skills/tree/main/examples/teams/market-team`
+- repository-local install:
+
+```bash
+bun run dev -- install examples/teams/market-team
+```
+
+Coordinator：`$market-research`。Members：`$macro-analysis`、`$rates-analysis`、
+`$market-structure`、`$sector-analysis`、shared `$risk-analysis`。
+這個 alias 尚未透過 `omniskill@latest` 發布。Coordinator 會準備 manual specialist handoff、
+回傳 `Prepared, not executed`，且只組合已完成的 outputs。使用 host browsing 與 public
+sources，不需要 market-data API，也不提供個人化投資建議。
 
 ## Skill Hub
 
@@ -159,7 +212,7 @@ Tabs：
 
 - Workflows
   - Search placeholder：Search workflows, entry skills, or tags...
-  - Results 不包含 Startup Team，因為它已在上方 featured section 顯示。
+  - Results 不包含 Startup、Finance、Market teams，因為它們已在上方 featured section 顯示。
   - 每個 result 透過 `View workflow` 開啟 workflow detail route。
   - Empty state：沒有 workflow 符合目前 query；`Clear search` 會重設 query。
 - Skills
@@ -174,7 +227,7 @@ Query 會在 Workflows 與 Skills 之間保留。Canonical source identity 會�
 
 ### Workflows
 
-以下是可獨立安裝的 workflow catalog；Startup Team 不會在此重複。
+以下是可獨立安裝的 workflow catalog；featured teams 不會在此重複。
 
 ### CEO
 
@@ -259,7 +312,7 @@ Ordered skill path：Brief -> `engineering-manager`；Plan -> `engineering-manag
 ### Founding Engineer
 
 - slug: `founding-engineer`
-- tag: Build
+- tag: Plan
 - entry skill: `$founding-engineer`
 - avatar seed: `sha256:2c1ee7f8710c90004a958f81aa84321fad2efc83d8839fede97689f6ebf1b078`
 - accent: `text-[#c83c24]`
@@ -270,11 +323,12 @@ Ordered skill path：Brief -> `engineering-manager`；Plan -> `engineering-manag
 npx omniskill@latest install founding-engineer
 ```
 
-Description：Implementation lane，聚焦 smallest correct change：tests、debugging、review、verification。
+Description：為 smallest correct change 產出 read-only implementation frame：定位 seams、tests、
+failure evidence、review risk，以及交給獨立 implementer 的 handoff；不修改檔案或執行 implementation commands。
 
 Skills：`founding-engineer`、`mattpocock:tdd`、`mattpocock:diagnosing-bugs`、`mattpocock:code-review`。
 
-Ordered skill path：Brief -> `founding-engineer`；TDD -> `mattpocock:tdd`；Debug -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`；Verify -> `founding-engineer`。
+Ordered skill path：Brief -> `founding-engineer`；Tests -> `mattpocock:tdd`；Diagnose -> `mattpocock:diagnosing-bugs`；Review -> `mattpocock:code-review`。
 
 ### QA Lead
 
@@ -295,6 +349,33 @@ Description：Release-risk lens，處理 acceptance checks、regression focus、
 Skills：`qa-lead`、`mattpocock:code-review`、`mattpocock:diagnosing-bugs`。
 
 Ordered skill path：Brief -> `qa-lead`；Review -> `mattpocock:code-review`；Debug -> `mattpocock:diagnosing-bugs`；Verify -> `qa-lead`。
+
+### Codex Input Preview
+
+- slug: `codex-input-preview`
+- tag: Workflow
+- entry skill: `$codex-input-preview`
+- avatar seed: `sha256:badcaa276e46a5648ede65d2d0cb3429ca4dd81b0443420b9c72ad704d79a1bd`
+- accent: `text-[#5f5ce6]`
+- source: `https://github.com/devos-ing/omni-skills/tree/main/examples/workflows/codex-input-preview`
+- install:
+
+```bash
+npx omniskill@latest install codex-input-preview
+```
+
+Description：把 prompt、model label、reasoning effort 轉成忠實的 1200 × 675 simulated Codex composer PNG。
+
+Skills：`codex-input-preview` — Render one verified Codex composer PNG。
+
+Ordered skill path：Render -> `codex-input-preview` — Fit the prompt, capture the composer, and verify exact PNG dimensions.
+
+Example output：
+
+- image：`/examples/codex-input-preview.png`
+- alt：Simulated Codex input showing “Help me announce that I’m joining the Codex team!” with GPT-5.6 and high effort.
+- invocation：`$codex-input-preview Draw “Help me announce that I’m joining the Codex team!” using GPT-5.6 with high effort.`
+- disclosure：Simulated Codex composer preview — not a live Codex session.
 
 ### Codex Input Preview
 
@@ -356,6 +437,7 @@ metadata bootstrap missing external skills，並預設把 installed Omniskills w
 ```bash
 npx omniskill@latest install startup-team
 npx omniskill@latest deps startup-team
+npx omniskill@latest setup-model-routing
 npx omniskill@latest lock examples/teams/startup-team
 npx omniskill@latest loop status grilled-product-dev --latest --json
 npx omniskill@latest init my-workflow

@@ -86,19 +86,96 @@ describe("README source contract", () => {
     }
   });
 
-  test("documents manual startup-team execution while preserving configuration", () => {
+  test("documents internal startup-team role execution with a manual fallback", () => {
     const readme = readRepoFile("examples/teams/startup-team/README.md");
 
     for (const contract of [
-      "Automatic role launch is disabled",
+      "internal subagents",
+      "host's agent-launch capability",
       "Prepared, not executed",
+      "plan approval",
+      "feature acceptance",
+      "deliver-code",
+      "approved Goal Tunnel",
+      "scope and non-goals",
+      "scope drift returns to planning",
+      "visible_task",
+      "gpt-5.6-terra",
+      "reasoning effort high",
+      "list_projects",
+      "creation failure",
+      "post-plan",
+      "isolated worktree",
+      "Prepared, not executed",
+      "../../workflows/setup-model-routing/skills/setup-model-routing",
+      "examples/workflows/setup-model-routing",
       "omniskill remove startup-team",
     ]) {
       expect(readme).toContain(contract);
     }
+    expect(readme).not.toContain("Automatic role launch is disabled");
     expect(readme).not.toContain("omniskill dispatch");
     expect(readme).not.toContain("dispatch resume");
     expect(readme).not.toContain(".omniskills/runs/");
+  });
+
+  test("documents the opt-in visible Terra implementation boundary in public mirrors", () => {
+    for (const content of [
+      readReadme(),
+      readRepoFile("docs/landing-content.md"),
+      readRepoFile("docs/landing-content.zh-Hant.md"),
+    ]) {
+      expect(content).toContain("visible_task");
+      expect(content).toContain("gpt-5.6-terra");
+      expect(content).toContain("reasoning effort high");
+      expect(content).toContain("post-plan");
+      expect(content).toContain("creation failure");
+      expect(content).toContain("Prepared, not executed");
+      expect(content).toContain("public CLI dispatch stays disabled");
+    }
+  });
+
+  test("documents the latest locked startup lifecycle and CLI safety contract", () => {
+    const english = readReadme();
+    const traditionalChinese = readRepoFile("README.zh-Hant.md");
+
+    expect(english).toContain(
+      "Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance",
+    );
+    expect(traditionalChinese).toContain(
+      "Prepare -> Plan -> Plan approval -> Implement -> Rework if needed -> Verify -> User Outcome Replay -> Feature acceptance",
+    );
+
+    for (const content of [english, traditionalChinese]) {
+      expect(content).toContain("schema `0.2`");
+      expect(content).toMatch(/same\s+checkout/);
+      expect(content).toMatch(/mixed\s+ownership/);
+      expect(content).toContain("npx omniskill@latest setup-model-routing");
+      expect(content).toContain("npx skills add --copy --skill brainstorming");
+      expect(content).toMatch(/commit SHA/);
+    }
+
+    expect(english).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
+    expect(traditionalChinese).not.toContain(
+      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+    );
+
+    expect(english).toContain("Finance Team and Market Team remain lockless local previews");
+    expect(traditionalChinese).toMatch(
+      /Finance Team 與 Market Team 仍是無 lock 的\s+local previews/,
+    );
+  });
+
+  test("gives Traditional Chinese readers the manual Finance and Market preview boundary", () => {
+    const traditionalChinese = readRepoFile("README.zh-Hant.md");
+
+    expect(traditionalChinese).toContain("不會自動啟動 specialists");
+    expect(traditionalChinese).toMatch(/manual specialist\s+handoffs/);
+    expect(traditionalChinese).toMatch(/host launch capability 或 role profile 無法使用/);
+    expect(traditionalChinese).toContain("Prepared, not executed");
+    expect(traditionalChinese).toMatch(/只組合已完成的 outputs/);
   });
 
   test("documents action-only goal loops", () => {
@@ -142,6 +219,48 @@ describe("README source contract", () => {
     expect(architecture).toMatch(/startup-goal remains the\s+callable coordinator/);
     expect(architecture).toContain("The coordinator is one declared local entry skill.");
     expect(architecture).not.toContain("the coordinator must also be the callable entry skill");
+  });
+
+  test("documents the professional research teams without API or advice claims", () => {
+    const readme = readReadme();
+    for (const value of [
+      "Finance Team",
+      "Market Team",
+      "bun run dev -- install examples/teams/finance-team",
+      "bun run dev -- install examples/teams/market-team",
+      "$finance-research",
+      "$market-research",
+      "public sources",
+      "not published through `omniskill@latest` yet",
+    ]) {
+      expect(readme).toContain(value);
+    }
+    expect(readme).not.toContain("FMP_API_KEY");
+    expect(readme).not.toMatch(/guaranteed return|personalized buy|personalized sell/i);
+
+    for (const team of ["finance-team", "market-team"]) {
+      const teamReadme = readRepoFile(`examples/teams/${team}/README.md`);
+      expect(teamReadme).toContain("Automatic role launch is disabled");
+      expect(teamReadme).toContain("Prepared, not executed");
+      expect(teamReadme).not.toContain("omniskill dispatch");
+      expect(teamReadme).not.toContain("launch_configured");
+    }
+  });
+
+  test("distinguishes overlapping product and engineering workflows", () => {
+    const readme = readReadme();
+
+    expect(readme).toContain("### Which workflow should I use?");
+    for (const workflow of [
+      "startup-team",
+      "product-manager",
+      "grilled-product-dev",
+      "development-design-delivery",
+      "real-engineering",
+    ]) {
+      expect(readme).toContain(`\`${workflow}\``);
+    }
+    expect(readme).toContain("it does not implement the work");
   });
 
   test("records the clean-install amendment to the approved startup-team plan", () => {

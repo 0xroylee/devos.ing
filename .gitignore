@@ -4,6 +4,7 @@ dist/
 coverage/
 .getsuperpower/
 .superpowers/
+.scratch/
 .omniskill/
 .ponyrace/
 work/
