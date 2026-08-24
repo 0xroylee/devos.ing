@@ -8,32 +8,32 @@ resolve it to the canonical public examples repository path
 
 #### Scenario: user installs the OpenSpec workflow by alias
 
-- **WHEN** the user runs `omniskill install openspec-superpowers`
+- **WHEN** the user runs `omniskill install openspec-delivery`
 - **THEN** the CLI resolves the source to
-  `https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers`
+  `https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery`
 - **AND** installs the workflow using the same behavior as the explicit public
   git URL.
 
 #### Scenario: user inspects an alias before installing
 
-- **WHEN** the user runs `omniskill validate openspec-superpowers`
+- **WHEN** the user runs `omniskill validate openspec-delivery`
 - **THEN** the CLI validates the workflow at
-  `examples/workflows/openspec-superpowers` in the canonical public examples
+  `examples/workflows/openspec-delivery` in the canonical public examples
   repository.
-- **WHEN** the user runs `omniskill deps openspec-superpowers`
+- **WHEN** the user runs `omniskill deps openspec-delivery`
 - **THEN** the CLI lists that workflow's declared skill dependencies.
 
 #### Scenario: explicit public git source remains supported
 
 - **WHEN** the user runs
-  `omniskill install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers'`
+  `omniskill install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery'`
 - **THEN** the CLI uses the existing public git source path without treating the
   URL as an alias.
 
 #### Scenario: alias folder name differs from manifest name
 
-- **WHEN** the user runs `omniskill install openspec-superpowers`
-- **THEN** alias resolution uses the `openspec-superpowers` folder name under
+- **WHEN** the user runs `omniskill install openspec-delivery`
+- **THEN** alias resolution uses the `openspec-delivery` folder name under
   `examples/workflows`.
 - **AND** the installed workflow may still use its manifest `name`, such as
   `openspec-delivery`, for display and workflow record filenames.

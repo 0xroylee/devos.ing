@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "ceo",
   "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-17T16:23:33.591Z",
+  "generatedAt": "2026-08-24T07:12:18.824Z",
   "workflows": [
     {
       "id": "workflow:ceo@0.2.0",
@@ -25,15 +25,15 @@
       "source": "mattpocock:wayfinder",
       "resolvedName": "wayfinder",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:76fbb585ccb89c21ab7d6f8e044515b28a903f2a811b248221bf34b8b1ad79e0"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:edf75d60e9116e25ad8a1ab1a543cd5beb3c43180db3a753f922c99c33e109e3"
     },
     {
       "source": "mattpocock:grill-with-docs",
       "resolvedName": "grill-with-docs",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:e66c375b2cfede6816c802ae0b8d8bf8c02f5e40a6f0bdb8737c8fff19636c17"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:8e0bd82fb9121467633dbeb53a42464d67fd442428a434d1f434d4655d0e1f81"
     }
   ]
 }

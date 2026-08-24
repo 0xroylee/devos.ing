@@ -13,11 +13,11 @@
 - [x] Explore current CLI command registration and docs.
 - [x] Present 2-3 command-model approaches with trade-offs.
 - [x] Get explicit design approval before implementation.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for command registration, install/clone behavior, docs,
       and smoke checks.
 

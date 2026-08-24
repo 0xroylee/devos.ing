@@ -97,7 +97,7 @@ Cases:
    - Coordinator activity: Launch selected installed roles.
    - Product, design, and engineering planning run in parallel.
    - Implementation and QA run as sequential gates before the verified result.
-   - Implement source: `https://github.com/mattpocock/skills/blob/d574778f94cf620fcc8ce741584093bc650a61d3/skills/engineering/implement/SKILL.md`.
+   - Implement source: `https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering/implement/SKILL.md`.
 2. Research a stock — `$finance-research`
    - Coordinator activity: Prepare selected specialist handoffs.
    - Company, financial, and valuation specialists work in parallel.

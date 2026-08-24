@@ -18,7 +18,7 @@ describe("CLI sandbox evaluation", () => {
       });
 
       expect(report.sandboxRoot).toBe(sandboxRoot);
-      expect(report.workflowSource).toBe("examples/workflows/openspec-superpowers");
+      expect(report.workflowSource).toBe("examples/workflows/openspec-delivery");
       expect(report.runs.map((run) => run.mode)).toEqual(["baseline", "workflow"]);
       expect(report.runs.every((run) => run.projectDir.startsWith(sandboxRoot))).toBe(true);
       expect(report.runs.every((run) => run.homeDir.startsWith(sandboxRoot))).toBe(true);

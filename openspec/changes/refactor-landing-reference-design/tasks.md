@@ -26,7 +26,7 @@
 ## 3. Plan Implementation
 
 - [x] Confirm public test seams for the TDD pass.
-- [x] Write an implementation plan in `docs/superpowers/plans/`.
+- [x] Write an implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for design-doc coverage, hidden placeholder metrics,
       search behavior, route links, responsive row layout, and
       existing behavior preservation.

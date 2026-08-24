@@ -14,13 +14,13 @@
 
 - [x] Explore 2-3 onboard flow approaches with trade-offs.
 - [x] Confirm the recommended design with the human owner.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 - [x] Re-review the written design for placeholders, contradictions, and scope
       creep.
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for command registration, prompt branching, RTK checks,
       CodeGraph checks, confirmed indexing, failure messages, and smoke checks.
 

@@ -1,75 +1,18 @@
 # Development Design Delivery Omniskills Workflow
 
-This example combines product/design shaping with implementation discipline.
-Use it when a change needs more than a quick patch: clarify the request, build a
-throwaway interface prototype, pressure-test the plan, implement with tests, review the result,
-and keep rollback evidence.
-
-The callable entry skill is:
+Use `$development-design-delivery` when a product change has one uncertain
+interface worth prototyping.
 
 ```text
-skills/development-design-delivery/SKILL.md
+Clarify -> Prototype -> Spec -> Tickets -> Implement -> Verify
 ```
 
-After install and agent restart, invoke:
-
-```text
-$development-design-delivery build this product feature
-```
-
-## Flow
-
-| Stage | Skill | Gate |
-| --- | --- | --- |
-| Shape success criteria | `superpowers:brainstorming` | Human approval |
-| Build a throwaway interface prototype | `mattpocock:prototype` | Human approval |
-| Stress-test the requirement | `mattpocock:grill-with-docs` | Human approval |
-| Write implementation plan | `superpowers:writing-plans` | None |
-| Check architecture boundary | `mattpocock:codebase-design` | None |
-| Build with tests | `mattpocock:tdd` | None |
-| Debug when blocked | `mattpocock:diagnosing-bugs` | None |
-| Review the change | `mattpocock:code-review` | None |
-| Verify completion | `superpowers:verification-before-completion` | None |
-
-## Dependencies
-
-This Omniskills workflow combines reusable agent skills:
-
-- `./skills/development-design-delivery`
-- `superpowers:brainstorming`
-- `mattpocock:prototype`
-- `mattpocock:grill-with-docs`
-- `superpowers:writing-plans`
-- `mattpocock:codebase-design`
-- `mattpocock:tdd`
-- `mattpocock:diagnosing-bugs`
-- `mattpocock:code-review`
-- `superpowers:verification-before-completion`
-
-`omniskill install` automatically uses the Skills CLI to fetch missing
-`mattpocock:*` dependencies. If that automatic bootstrap fails, run the same
-package install through the CLI and retry:
-
-```bash
-bun run dev -- skills install mattpocock/skills
-```
-
-## Try It
-
-Validate this Omniskills workflow from the repo root:
+Only the prototype and ticket set need approval. The entry skill skips the
+prototype when no material interface uncertainty exists and invokes
+`mattpocock:implement` only when commit permission is explicit.
 
 ```bash
 bun run dev -- validate examples/workflows/development-design-delivery
-```
-
-List its dependencies:
-
-```bash
 bun run dev -- deps examples/workflows/development-design-delivery
-```
-
-Install it into a project:
-
-```bash
 bun run dev -- install examples/workflows/development-design-delivery
 ```

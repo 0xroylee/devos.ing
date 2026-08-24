@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildProgram } from "../src/cli";
 
-async function writeSuperpowersSkill(
+async function writeSkill(
   path: string,
   input: { name: string; description: string },
 ): Promise<void> {
@@ -22,30 +22,13 @@ async function writeSuperpowersSkill(
   );
 }
 
-async function writeSuperpowersProcessSkills(homeDir: string): Promise<void> {
-  const baseDir = join(
-    homeDir,
-    ".codex",
-    "plugins",
-    "cache",
-    "openai-curated",
-    "superpowers",
-    "fake-plugin",
-    "skills",
-  );
-
-  await writeSuperpowersSkill(join(baseDir, "brainstorming"), {
-    name: "brainstorming",
-    description: "You MUST use this before any creative work.",
-  });
-  await writeSuperpowersSkill(join(baseDir, "writing-plans"), {
-    name: "writing-plans",
-    description: "Use when you have a spec or requirements for a multi-step task.",
-  });
-  await writeSuperpowersSkill(join(baseDir, "verification-before-completion"), {
-    name: "verification-before-completion",
-    description: "Verify results before claiming completion.",
-  });
+async function writeMattPocockSkills(homeDir: string): Promise<void> {
+  for (const name of ["grilling", "to-tickets", "code-review"]) {
+    await writeSkill(join(homeDir, ".agents", "skills", name), {
+      name,
+      description: `Test Matt Pocock ${name} skill.`,
+    });
+  }
 }
 
 async function writeLoopedWorkflowFixture(workflowDir: string): Promise<void> {
@@ -335,7 +318,7 @@ describe("cli", () => {
     };
 
     try {
-      await writeSuperpowersProcessSkills(homeDir);
+      await writeMattPocockSkills(homeDir);
 
       await buildProgram({ cwd: rootDir }).parseAsync(
         ["workflow", "install", releaseReviewWorkflow, "--home", homeDir, "--agents", "codex"],
@@ -348,18 +331,13 @@ describe("cli", () => {
       await expect(
         stat(join(homeDir, ".omniskills", "workflows", "release-review.json")),
       ).resolves.toBeTruthy();
-      for (const skill of [
-        "release-risk-review",
-        "superpowers-brainstorming",
-        "superpowers-writing-plans",
-        "superpowers-verification-before-completion",
-      ]) {
+      for (const skill of ["release-risk-review", "grilling", "to-tickets", "code-review"]) {
         await expect(
           stat(join(homeDir, ".agents", "skills", skill, "SKILL.md")),
         ).resolves.toBeTruthy();
       }
       expect(stripAnsiLines(logs)).toContain("Omniskills installed: release-review");
-      expect(stripAnsiLines(logs)).toContain("release-review 0.1.0");
+      expect(stripAnsiLines(logs)).toContain("release-review 0.2.0");
     } finally {
       console.log = originalLog;
       await rm(rootDir, { recursive: true, force: true });
@@ -446,13 +424,13 @@ describe("cli", () => {
       expect(startPayload.runId).toBe("cli-smoke");
       expect(startPayload.goal).toMatchObject({
         type: "goal_based",
-        goal: "Produce an approved implementation plan for a product-development request.",
+        goal: "Produce an approved specification and ticket set for a product-development request.",
       });
-      expect(startPayload.step.id).toBe("grill");
+      expect(startPayload.step.id).toBe("clarify");
       expect(startPayload.step.verify.type).toBe("human_approval");
       expect(startPayload.actions).toContainEqual({
         type: "verify",
-        step: "grill",
+        step: "clarify",
         verify: {
           type: "human_approval",
           event: "approval",
@@ -479,7 +457,7 @@ describe("cli", () => {
       expect(JSON.parse(status.stdout)).toMatchObject({
         selectedByLatest: true,
         runId: "cli-smoke",
-        step: { id: "grill" },
+        step: { id: "clarify" },
       });
 
       const log = await captureProgramOutput(() =>
@@ -508,7 +486,7 @@ describe("cli", () => {
         runId: "cli-smoke",
         event: {
           type: "phase_result",
-          step: "grill",
+          step: "clarify",
           message: "CLI loop event",
           metadata: { ok: true },
         },
@@ -524,7 +502,7 @@ describe("cli", () => {
       expect(JSON.parse(advance.stdout)).toMatchObject({
         runId: "cli-smoke",
         status: "active",
-        step: { id: "shape" },
+        step: { id: "spec" },
       });
 
       const summary = await captureProgramOutput(() =>
@@ -536,7 +514,7 @@ describe("cli", () => {
       expect(summary.stderr).toBe("");
       const summaryPayload = JSON.parse(summary.stdout) as { summaryPath: string };
       await expect(readFile(summaryPayload.summaryPath, "utf8")).resolves.toContain(
-        "Current step: shape",
+        "Current step: spec",
       );
     } finally {
       await rm(homeDir, { recursive: true, force: true });
@@ -575,8 +553,8 @@ describe("cli", () => {
 
       expect(stripAnsiLines(logs)).toContain("Omniskills dependencies: real-engineering");
       expect(stripAnsiLines(logs)).toContain("- ./skills/rtk-command-discipline");
-      expect(stripAnsiLines(logs)).toContain("- superpowers:verification-before-completion");
-      expect(stripAnsiLines(logs)).toContain("- superpowers:brainstorming");
+      expect(stripAnsiLines(logs)).toContain("- mattpocock:grilling");
+      expect(stripAnsiLines(logs)).toContain("- mattpocock:implement");
       expect(stripAnsiLines(logs)).toContain("- mattpocock:tdd");
     } finally {
       console.log = originalLog;

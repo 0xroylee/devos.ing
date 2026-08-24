@@ -20,7 +20,7 @@
       .call { fill: #0f172a; stroke: #111827; }
       .openspec { stroke: #2563eb; }
       .gate { stroke: #d97706; }
-      .superpowers { stroke: #059669; }
+      .matt { stroke: #059669; }
       .build { stroke: #7c3aed; }
       .evidence { stroke: #e11d48; }
       .archive { stroke: #0891b2; }
@@ -55,24 +55,24 @@
   <text x="546" y="309" class="body">/opsx:archive</text>
   <text x="546" y="329" class="body">specs and knowledge updated</text>
 
-  <rect x="70" y="402" width="180" height="94" class="card superpowers" />
-  <text x="94" y="436" class="label">3. Deepen Design</text>
-  <text x="94" y="461" class="body">superpowers:brainstorming</text>
-  <text x="94" y="481" class="body">approved technical shape</text>
+  <rect x="70" y="402" width="180" height="94" class="card matt" />
+  <text x="94" y="436" class="label">3. Check Boundary</text>
+  <text x="94" y="461" class="body">mattpocock:codebase-design</text>
+  <text x="94" y="481" class="body">bounded technical shape</text>
 
-  <rect x="296" y="402" width="180" height="94" class="card superpowers" />
-  <text x="320" y="436" class="label">4. Write Plan</text>
-  <text x="320" y="461" class="body">superpowers:writing-plans</text>
-  <text x="320" y="481" class="body">small executable tasks</text>
+  <rect x="296" y="402" width="180" height="94" class="card matt" />
+  <text x="320" y="436" class="label">4. Slice Tickets</text>
+  <text x="320" y="461" class="body">mattpocock:to-tickets</text>
+  <text x="320" y="481" class="body">vertical approved work</text>
 
   <rect x="522" y="402" width="180" height="94" class="card build" />
-  <text x="546" y="436" class="label">5. Build With TDD</text>
-  <text x="546" y="461" class="body">mattpocock:tdd</text>
+  <text x="546" y="436" class="label">5. Implement</text>
+  <text x="546" y="461" class="body">mattpocock:implement</text>
   <text x="546" y="481" class="body">specs stay in context</text>
 
   <rect x="748" y="402" width="142" height="94" class="card evidence" />
   <text x="772" y="436" class="label">6. Verify</text>
-  <text x="772" y="461" class="body">superpowers:verification</text>
+  <text x="772" y="461" class="body">mattpocock:code-review</text>
   <text x="772" y="481" class="body">evidence before claim</text>
 
   <path d="M 250 297 H 286" class="arrow" />

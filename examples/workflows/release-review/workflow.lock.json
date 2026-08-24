@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "release-review",
-  "workflowVersion": "0.1.0",
-  "generatedAt": "2026-07-17T16:23:46.307Z",
+  "workflowVersion": "0.2.0",
+  "generatedAt": "2026-08-24T07:12:36.535Z",
   "workflows": [
     {
-      "id": "workflow:release-review@0.1.0",
+      "id": "workflow:release-review@0.2.0",
       "name": "release-review",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": {
         "kind": "root"
       }
@@ -16,11 +16,11 @@
   "edges": [],
   "skills": [
     {
-      "source": "superpowers:brainstorming",
-      "resolvedName": "superpowers-brainstorming",
+      "source": "mattpocock:grilling",
+      "resolvedName": "grilling",
       "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:1c1eba0a93ff82e0d3af1e040cbbabae5ba7f8aa1ea3f9f92b10db759ffa1087"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:d7d68eaa92b8945023fadc6a6ee9d58fe156b9924cbb18970193d733339e8c4f"
     },
     {
       "source": "./skills/release-risk-review",
@@ -29,18 +29,18 @@
       "hash": "sha256:a8d0b4179e6ce9c607dd11948092b0206497a2c114718814703efd1c341e7ffd"
     },
     {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
+      "source": "mattpocock:to-tickets",
+      "resolvedName": "to-tickets",
       "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:bc3ff0415b4d0afce51a65123f5f1d079e34a436121fead087ee296d29af861d"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:558052d0a33212a1dbae6a5c86acbdfa224495f3eb259d1f6b1d3d0cd96e4629"
     },
     {
-      "source": "superpowers:verification-before-completion",
-      "resolvedName": "superpowers-verification-before-completion",
+      "source": "mattpocock:code-review",
+      "resolvedName": "code-review",
       "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:c18b038bea9b9d89b95f4779ee98e44d1b14360b5b818b40d4b2cce8a5ad1b35"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:95d58d926fb9b2f58c1c8c00ade1fb426528b9a96ad51a2ddab28c7d86ea4901"
     }
   ]
 }

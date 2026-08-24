@@ -154,8 +154,8 @@ repository for rollback and diagnosis. Production barrel files do not export
 them, and the shipped CLI does not import them. Direct focused tests preserve
 their behavior without making agent launch available.
 
-Supported sources include bundled skills, local skill directories, Superpowers
-plugin-cache skills, Matt Pocock installed skills, and external packages routed
+Supported sources include bundled skills, local skill directories, Matt Pocock
+installed skills, and external packages routed
 through the Skills CLI by `src/omniskill.ts`. Workflow manifests can keep
 the original step skill name in `skills[].source` and declare the installable
 Skills CLI package in `skills[].repo`.

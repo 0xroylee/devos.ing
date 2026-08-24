@@ -687,7 +687,7 @@ export const orchestrationCases: readonly OrchestrationCaseContent[] = [
         activity: ["Write tests first", "Build the approved slice", "Run focused checks"],
         result: "Landing implementation and focused tests complete.",
         sourceUrl:
-          "https://github.com/mattpocock/skills/blob/d574778f94cf620fcc8ce741584093bc650a61d3/skills/engineering/implement/SKILL.md",
+          "https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering/implement/SKILL.md",
       }),
       makeLane({
         skill: "qa-lead",

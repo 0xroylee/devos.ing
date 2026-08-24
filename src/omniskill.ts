@@ -25,7 +25,6 @@ import {
   loadOrchestrationConfigPlan,
   MissingInterfaceCraftSkillError,
   MissingMattPocockSkillError,
-  MissingSuperpowersSkillError,
   ModelRoutingSelectionsSchema,
   type ModelRoutingSetupPlan,
   type OmniskillExternalSkillDependencyInstaller,
@@ -1013,12 +1012,10 @@ function isMissingBootstrappableSkillError(
 ): error is
   | MissingInterfaceCraftSkillError
   | MissingMattPocockSkillError
-  | MissingSuperpowersSkillError
   | SkillSourceNotFoundError {
   return (
     error instanceof MissingInterfaceCraftSkillError ||
     error instanceof MissingMattPocockSkillError ||
-    error instanceof MissingSuperpowersSkillError ||
     (error instanceof SkillSourceNotFoundError &&
       Boolean(options.repo) &&
       Boolean(options.expectedInstalledName))

@@ -344,7 +344,7 @@ describe("landing app source contract", () => {
     expect(content).toContain('label: "Rework if needed"');
     expect(content).toContain("npx omniskill@latest setup-model-routing");
     expect(content).toContain(
-      "https://github.com/mattpocock/skills/blob/d574778f94cf620fcc8ce741584093bc650a61d3/skills/engineering/implement/SKILL.md",
+      "https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering/implement/SKILL.md",
     );
     expect(content).toContain("Prepare selected specialist handoffs");
     expect(content).not.toContain("Dispatch selected analysts");

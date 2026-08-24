@@ -17,7 +17,7 @@
       compatibility alias, or remain only in historical docs.
 - [x] Confirm how explicit the role-subagent prompt template should be in the
       entry skill.
-- [x] Write the approved design to `docs/superpowers/specs/`.
+- [x] Write the approved design to `docs/engineering/specs/`.
 - [x] Re-review the approved design for stale command names, accidental role
       renames, and misleading runtime claims.
 
@@ -26,7 +26,7 @@
 - [x] Confirm public test seams for the TDD pass:
       `loadWorkflowBundle`, README source-contract tests, and landing
       source-contract tests.
-- [x] Write an implementation plan in `docs/superpowers/plans/`.
+- [x] Write an implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for curated workflow loading, entry skill rename,
       lock-file alignment, README/docs commands, landing content, and
       role-subagent instruction behavior.

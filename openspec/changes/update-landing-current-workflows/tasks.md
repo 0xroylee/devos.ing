@@ -18,7 +18,7 @@
 - [x] Present 2-3 content update approaches with trade-offs.
 - [x] Confirm the recommended content direction with the human owner.
 - [x] Write the approved design to
-      `docs/superpowers/specs/2026-07-08-landing-current-workflows-design.md`.
+      `docs/engineering/specs/2026-07-08-landing-current-workflows-design.md`.
 - [x] Decide `landing/design.md` does not need a separate durable note before
       implementation unless the code changes reveal a new layout contract.
 - [x] Re-review the approved design for stale command names, placeholder
@@ -27,7 +27,7 @@
 ## 3. Plan Implementation
 
 - [x] Confirm public test seams for the TDD pass.
-- [x] Write an implementation plan in `docs/superpowers/plans/`.
+- [x] Write an implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for alias commands, current workflows,
       loop-enabled workflow content, global workflow records, dependency
       bootstrap copy, and no fake metrics.

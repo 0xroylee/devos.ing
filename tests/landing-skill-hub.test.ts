@@ -126,7 +126,7 @@ describe("landing teams and skill hub data", () => {
 
     const wayfinder = skills.find(({ name }) => name === "mattpocock:wayfinder");
     expect(wayfinder?.sourceUrl).toBe(
-      "https://github.com/mattpocock/skills/blob/v1.1.0/skills/engineering/wayfinder/SKILL.md",
+      "https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering/wayfinder/SKILL.md",
     );
   });
 

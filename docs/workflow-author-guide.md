@@ -114,20 +114,20 @@ Example:
   "skills": [
     { "source": "./skills/support-triage" },
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:grilling",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     { "source": "./skills/support-review" },
     {
-      "source": "superpowers:writing-plans",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     }
   ],
   "steps": [
     {
       "id": "shape",
       "title": "Clarify the support issue",
-      "skill": "superpowers:brainstorming",
+      "skill": "mattpocock:grilling",
       "gate": "human_approval"
     },
     {
@@ -139,7 +139,7 @@ Example:
     {
       "id": "plan",
       "title": "Write the fix plan",
-      "skill": "superpowers:writing-plans"
+      "skill": "mattpocock:to-tickets"
     }
   ]
 }
@@ -151,7 +151,7 @@ values.
 For a skill installed from the Skills CLI, keep `source` as the original skill
 name used by workflow steps. Set `repo` to an exact commit
 URL accepted by `npx skills add`, such as
-`https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99`. Do not publish a workflow
+`https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc`. Do not publish a workflow
 with a floating branch or bare repository reference.
 
 The entry skill itself belongs in `skills[]`, but it does not need its own step.
@@ -189,7 +189,7 @@ generated loop runner path in `workflow.json`:
     {
       "id": "shape",
       "title": "Clarify the support issue",
-      "skill": "superpowers:brainstorming",
+      "skill": "mattpocock:grilling",
       "instruction": "Clarify the issue and wait for explicit approval."
     }
   ]
@@ -435,7 +435,7 @@ local entry skill. Member workflow dependencies are expanded recursively; only
 the root team install record is written. Local helper skills may still be
 declared, but they are not team members.
 
-## Compatibility Example: Combine RTK, Superpowers, And Matt Pocock Skills
+## Compatibility Example: Combine RTK, Matt Pocock, And Matt Pocock Skills
 
 The checked-in `real-engineering` workflow shows how to combine local workflow
 guidance with external skill packs. It remains available as a compatibility demo
@@ -448,9 +448,9 @@ bun run dev -- validate examples/workflows/real-engineering
 It uses:
 
 - `./skills/rtk-command-discipline` for repo command rules
-- `superpowers:brainstorming`
-- `superpowers:writing-plans`
-- `superpowers:verification-before-completion`
+- `mattpocock:grilling`
+- `mattpocock:to-tickets`
+- `mattpocock:code-review`
 - `mattpocock:grill-with-docs`
 - `mattpocock:tdd`
 - `mattpocock:codebase-design`

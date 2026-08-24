@@ -158,14 +158,14 @@ Omniskills install plan: release-review@0.1.0
 Workflow records: ~/.omniskills
 Skill home: ~/.agents
 Skills to install:
-- superpowers:brainstorming
+- mattpocock:grilling
 - ./skills/release-risk-review
-- superpowers:writing-plans
-- superpowers:verification-before-completion
+- mattpocock:to-tickets
+- mattpocock:code-review
 ? Install 4 skills for release-review? yes
 Installing skills...
-Processing 1/4: superpowers:brainstorming
-Installed skill: superpowers-brainstorming
+Processing 1/4: mattpocock:grilling
+Installed skill: grilling
 Omniskills installed: release-review
 Omniskills file: ~/.omniskills/workflows/release-review.json
 +---------------------------------------------------------------+

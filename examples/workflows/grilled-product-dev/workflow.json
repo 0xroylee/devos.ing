@@ -1,19 +1,15 @@
 {
   "schemaVersion": "0.1",
   "name": "grilled-product-dev",
-  "version": "0.1.2",
-  "description": "Sharpen a product-development request with grilling before Superpowers design and planning.",
+  "version": "0.2.0",
+  "description": "Turn a vague product request into an approved specification and vertical tickets.",
   "loop": {
     "script": "./loop.mjs",
     "state": "global",
     "execution": "action-only",
     "type": "goal_based",
-    "goal": "Produce an approved implementation plan for a product-development request.",
-    "done_when": [
-      "grilled_direction_approved",
-      "design_spec_approved",
-      "implementation_plan_written"
-    ],
+    "goal": "Produce an approved specification and ticket set for a product-development request.",
+    "done_when": ["direction_approved", "specification_approved", "tickets_written"],
     "stop_when": ["human_blocks", "verification_fails", "workflow_complete"]
   },
   "skills": [
@@ -23,24 +19,24 @@
     },
     {
       "source": "mattpocock:grilling",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-spec",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:writing-plans",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     }
   ],
   "steps": [
     {
-      "id": "grill",
-      "title": "Sharpen the request through grilling",
+      "id": "clarify",
+      "title": "Clarify the request one question at a time",
       "skill": "mattpocock:grilling",
       "gate": "human_approval",
-      "instruction": "Ask one grilling question, include your recommended answer, and wait for explicit human approval before advancing.",
+      "instruction": "Ask one focused question, include your recommended answer, and wait for explicit approval before advancing.",
       "verify": {
         "type": "human_approval",
         "event": "approval",
@@ -48,26 +44,26 @@
       }
     },
     {
-      "id": "shape",
-      "title": "Turn the approved direction into a Superpowers design",
-      "skill": "superpowers:brainstorming",
+      "id": "spec",
+      "title": "Write the approved specification",
+      "skill": "mattpocock:to-spec",
       "gate": "human_approval",
-      "instruction": "Turn the approved direction into a Superpowers design spec, then wait for explicit human approval before advancing.",
+      "instruction": "Turn the approved direction into the canonical specification and wait for explicit approval before advancing.",
       "verify": {
         "type": "human_approval",
         "event": "approval",
-        "message_includes": "design approved"
+        "message_includes": "spec approved"
       }
     },
     {
-      "id": "plan",
-      "title": "Write the implementation plan",
-      "skill": "superpowers:writing-plans",
-      "instruction": "Write the approved implementation plan as small executable tasks, then log the plan result.",
+      "id": "tickets",
+      "title": "Slice the specification into vertical tickets",
+      "skill": "mattpocock:to-tickets",
+      "instruction": "Write dependency-aware vertical tickets, then log the result.",
       "verify": {
         "type": "event",
         "event": "phase_result",
-        "message_includes": "implementation plan written"
+        "message_includes": "tickets written"
       }
     }
   ]

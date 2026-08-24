@@ -15,13 +15,13 @@
 - [x] Compare generated CLI bridge, inline bundled runtime, and package-import
       runner options.
 - [x] Confirm the recommended design with the human owner.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 - [x] Re-review the written design for placeholders, contradictions, and scope
       creep.
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for validation semantics, install output, generated
       runner behavior, docs, and compatibility failures.
 

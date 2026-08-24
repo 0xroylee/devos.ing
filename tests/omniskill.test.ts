@@ -12,15 +12,13 @@ import {
 import {
   installAgentSkill,
   MissingMattPocockSkillError,
-  MissingSuperpowersSkillError,
   type SkillInstallResult,
   SkillSourceNotFoundError,
 } from "../src/plugins";
 import type { WorkflowGitCommand } from "../src/runtimes/omniskill/workflow-bundles";
-import { createWorkflowRemovalPlan } from "../src/runtimes/omniskill/workflow-bundles";
 
-const mattPocockV1_1Repo =
-  "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3";
+const mattPocockRepo =
+  "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc";
 const testCodexModelCatalog = async () => [
   {
     slug: "gpt-5.5",
@@ -1229,7 +1227,7 @@ describe("omniskill command module", () => {
     }
   });
 
-  test("fresh startup-team install has no Superpowers dependency or bootstrap", async () => {
+  test("fresh startup-team install records the current dependency graph", async () => {
     const rootDir = await mkdtemp(join(tmpdir(), "omniskill-startup-fresh-root-"));
     const homeDir = await mkdtemp(join(tmpdir(), "omniskill-startup-fresh-home-"));
     const examplesDir = join(rootDir, "examples");
@@ -1271,153 +1269,20 @@ describe("omniskill command module", () => {
       });
 
       expect(skillInstalls).toHaveLength(24);
-      expect(skillInstalls.some((source) => source.startsWith("superpowers:"))).toBe(false);
       expect(externalInstalls).toEqual([]);
       const installed = JSON.parse(
         await readFile(join(homeDir, ".omniskills", "workflows", "startup-team.json"), "utf8"),
       );
       expect(
-        installed.installArtifacts.some((artifact: { source: string }) =>
-          artifact.source.startsWith("superpowers:"),
+        installed.installArtifacts.filter(
+          ({ kind }: { kind?: string }) => kind !== "agent_profile",
         ),
-      ).toBe(false);
-    } finally {
-      await rm(rootDir, { recursive: true, force: true });
-      await rm(homeDir, { recursive: true, force: true });
-    }
-  });
-
-  test("startup-team upgrade releases but preserves prior Superpowers artifacts", async () => {
-    const rootDir = await mkdtemp(join(tmpdir(), "omniskill-startup-upgrade-root-"));
-    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-startup-upgrade-home-"));
-    const examplesDir = join(rootDir, "examples");
-    const teamDir = join(examplesDir, "teams", "startup-team");
-    const recordPath = join(homeDir, ".omniskills", "workflows", "startup-team.json");
-    const legacySources = [
-      "superpowers:brainstorming",
-      "superpowers:writing-plans",
-      "superpowers:verification-before-completion",
-    ];
-    const legacyArtifacts = legacySources.map((source) => {
-      const skillName = source.replace(":", "-");
-      return {
-        source,
-        skillName,
-        agent: "codex",
-        status: "installed",
-        createdByBootstrap: true,
-        paths: [join(homeDir, ".agents", "skills", skillName)],
-      };
-    });
-    const legacyArtifactPath = (artifact: (typeof legacyArtifacts)[number]) => {
-      const [path] = artifact.paths;
-      if (!path) throw new Error(`missing legacy artifact path for ${artifact.source}`);
-      return path;
-    };
-    const program = new Command();
-
-    try {
-      await cp(join(import.meta.dir, "..", "examples"), examplesDir, { recursive: true });
-      configureOmniskillCommand(program, {
-        rootDir,
-        installPrompt: { confirmInstall: async () => true },
-        installSkill: async (input) => {
-          const skillName = input.source.includes(":")
-            ? input.source.slice(input.source.indexOf(":") + 1)
-            : basename(input.source);
-          const destination = join(homeDir, ".agents", "skills", skillName);
-          await mkdir(destination, { recursive: true });
-          await writeFile(join(destination, "SKILL.md"), `${input.source}\n`);
-          return {
-            skillInstall: fakeSkillInstallResult({
-              source: input.source,
-              skillName,
-              destination,
-            }),
-          };
-        },
-        printSkillInstallResult: () => {},
-        installExternalSkillDependency: async () => {
-          throw new Error("startup-team must not bootstrap Superpowers during upgrade");
-        },
-        codexModelCatalog: testCodexModelCatalog,
-      });
-
-      await program.parseAsync(["install", teamDir, "--home", homeDir, "--agents", "codex"], {
-        from: "user",
-      });
-      const currentRecord = JSON.parse(await readFile(recordPath, "utf8"));
-      for (const [index, artifact] of legacyArtifacts.entries()) {
-        const nested = join(legacyArtifactPath(artifact), "nested", "sentinel.bin");
-        await mkdir(dirname(nested), { recursive: true });
-        await writeFile(nested, new Uint8Array([0, 255, index, 10, 13]));
-      }
-      await writeFile(
-        recordPath,
-        `${JSON.stringify(
-          {
-            ...currentRecord,
-            version: "0.7.0",
-            installArtifacts: [...currentRecord.installArtifacts, ...legacyArtifacts],
-          },
-          null,
-          2,
-        )}\n`,
-      );
-      const sentinelBefore = await Promise.all(
-        legacyArtifacts.map((artifact) =>
-          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
-        ),
-      );
-
-      await program.parseAsync(["install", teamDir, "--home", homeDir, "--agents", "codex"], {
-        from: "user",
-      });
-
-      const upgradedRecord = JSON.parse(await readFile(recordPath, "utf8"));
-      expect(upgradedRecord.version).toBe("0.8.0");
+      ).toHaveLength(24);
       expect(
-        upgradedRecord.installArtifacts.some((artifact: { source: string }) =>
-          artifact.source.startsWith("superpowers:"),
+        installed.installArtifacts.filter(
+          ({ kind }: { kind?: string }) => kind === "agent_profile",
         ),
-      ).toBe(false);
-      const removalPlan = await createWorkflowRemovalPlan({
-        rootDir: homeDir,
-        homeDir,
-        workflowName: "startup-team",
-      });
-      for (const artifact of legacyArtifacts) {
-        expect(removalPlan.artifactsToRemove.map(({ path }) => path)).not.toContain(
-          legacyArtifactPath(artifact),
-        );
-      }
-      const sentinelAfterUpgrade = await Promise.all(
-        legacyArtifacts.map((artifact) =>
-          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
-        ),
-      );
-      expect(
-        sentinelAfterUpgrade.every((bytes, index) => {
-          const before = sentinelBefore[index];
-          return before ? bytes.equals(before) : false;
-        }),
-      ).toBe(true);
-
-      await program.parseAsync(["remove", "startup-team", "--home", homeDir, "--yes"], {
-        from: "user",
-      });
-      const sentinelAfterRemoval = await Promise.all(
-        legacyArtifacts.map((artifact) =>
-          readFile(join(legacyArtifactPath(artifact), "nested", "sentinel.bin")),
-        ),
-      );
-      expect(
-        sentinelAfterRemoval.every((bytes, index) => {
-          const before = sentinelBefore[index];
-          return before ? bytes.equals(before) : false;
-        }),
-      ).toBe(true);
-      await expect(stat(recordPath)).rejects.toThrow();
+      ).toHaveLength(10);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
       await rm(homeDir, { recursive: true, force: true });
@@ -2205,9 +2070,9 @@ describe("omniskill command module", () => {
   test("install supports a workflow alias source", async () => {
     const rootDir = await mkdtemp(join(tmpdir(), "omniskill-alias-"));
     const homeDir = await mkdtemp(join(tmpdir(), "omniskill-alias-home-"));
-    const source = "openspec-superpowers";
+    const source = "openspec-delivery";
     const canonicalUrl =
-      "https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers";
+      "https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery";
     const skillInstalls: string[] = [];
     const printedSkills: string[] = [];
     const commands: WorkflowGitCommand[] = [];
@@ -2228,7 +2093,7 @@ describe("omniskill command module", () => {
           if (command.args[0] === "clone") {
             checkoutDir = command.args.at(-1) ?? "";
             await writeGitWorkflowFixtureAt(
-              join(checkoutDir, "examples", "workflows", "openspec-superpowers"),
+              join(checkoutDir, "examples", "workflows", "openspec-delivery"),
             );
             return { stdout: "", stderr: "", exitCode: 0 };
           }
@@ -2262,7 +2127,7 @@ describe("omniskill command module", () => {
         checkoutDir,
       ]);
       expect(skillInstalls).toEqual([
-        join(checkoutDir, "examples", "workflows", "openspec-superpowers", "skills", "git-entry"),
+        join(checkoutDir, "examples", "workflows", "openspec-delivery", "skills", "git-entry"),
       ]);
       expect(printedSkills).toEqual(["git-entry"]);
       expect(stripAnsiLines(logs)).toContain("Omniskills installed: git-workflow");
@@ -2274,7 +2139,7 @@ describe("omniskill command module", () => {
         kind: "git",
         url: canonicalUrl,
         commit: "abc123",
-        subdirectory: "examples/workflows/openspec-superpowers",
+        subdirectory: "examples/workflows/openspec-delivery",
       });
       await expect(stat(checkoutDir)).rejects.toThrow();
     } finally {
@@ -2345,7 +2210,7 @@ describe("omniskill command module", () => {
           if (command.args[0] === "clone") {
             checkoutDir = command.args.at(-1) ?? "";
             await writeGitWorkflowFixtureAt(
-              join(checkoutDir, "examples", "workflows", "openspec-superpowers"),
+              join(checkoutDir, "examples", "workflows", "openspec-delivery"),
             );
             return { stdout: "", stderr: "", exitCode: 0 };
           }
@@ -2357,7 +2222,7 @@ describe("omniskill command module", () => {
         printSkillInstallResult: () => {},
       });
 
-      await program.parseAsync(["validate", "openspec-superpowers"], { from: "user" });
+      await program.parseAsync(["validate", "openspec-delivery"], { from: "user" });
 
       expect(stripAnsiLines(logs)).toEqual([
         "Omniskills valid: git-workflow@0.1.0",
@@ -2489,7 +2354,7 @@ describe("omniskill command module", () => {
           if (command.args[0] === "clone") {
             checkoutDir = command.args.at(-1) ?? "";
             await writeGitWorkflowFixtureAt(
-              join(checkoutDir, "examples", "workflows", "openspec-superpowers"),
+              join(checkoutDir, "examples", "workflows", "openspec-delivery"),
             );
             return { stdout: "", stderr: "", exitCode: 0 };
           }
@@ -2501,7 +2366,7 @@ describe("omniskill command module", () => {
         printSkillInstallResult: () => {},
       });
 
-      await program.parseAsync(["deps", "openspec-superpowers"], { from: "user" });
+      await program.parseAsync(["deps", "openspec-delivery"], { from: "user" });
 
       expect(stripAnsiLines(logs)).toEqual([
         "Omniskills dependencies: git-workflow",
@@ -2797,7 +2662,7 @@ describe("omniskill command module", () => {
           name: "matt-bundle",
           version: "0.1.0",
           description: "Uses one Matt Pocock skill.",
-          skills: [{ source: "mattpocock:tdd", repo: mattPocockV1_1Repo }],
+          skills: [{ source: "mattpocock:tdd", repo: mattPocockRepo }],
           steps: [{ id: "tdd", title: "Implement with TDD", skill: "mattpocock:tdd" }],
         },
         null,
@@ -2835,106 +2700,10 @@ describe("omniskill command module", () => {
     );
 
     expect(skillInstalls).toEqual(["mattpocock:tdd", "mattpocock:tdd"]);
-    expect(externalInstalls).toEqual([
-      { source: "mattpocock:tdd", repo: mattPocockV1_1Repo, homeDir },
-    ]);
+    expect(externalInstalls).toEqual([{ source: "mattpocock:tdd", repo: mattPocockRepo, homeDir }]);
     expect(printedSkills).toEqual(["tdd"]);
     await expect(
       stat(join(rootDir, ".omniskills", "workflows", "matt-bundle.json")),
-    ).resolves.toBeTruthy();
-  });
-
-  test("uses the skills CLI before retrying each missing Superpowers workflow skill", async () => {
-    const rootDir = await mkdtemp(join(tmpdir(), "omniskill-"));
-    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-home-"));
-    const bundleDir = join(rootDir, "superpowers-bundle");
-    const externalInstalls: Array<{ source: string; repo?: string; homeDir: string }> = [];
-    const skillInstalls: string[] = [];
-    const printedSkills: string[] = [];
-    const installedExternalSources = new Set<string>();
-    const program = new Command();
-
-    await mkdir(bundleDir, { recursive: true });
-    await writeFile(
-      join(bundleDir, "workflow.json"),
-      JSON.stringify(
-        {
-          schemaVersion: "0.1",
-          name: "superpowers-bundle",
-          version: "0.1.0",
-          description: "Uses two Superpowers process skills.",
-          skills: [
-            { source: "superpowers:brainstorming" },
-            { source: "superpowers:writing-plans", repo: "obra/superpowers" },
-          ],
-          steps: [
-            {
-              id: "brainstorming",
-              title: "Shape the work",
-              skill: "superpowers:brainstorming",
-            },
-            {
-              id: "planning",
-              title: "Write the plan",
-              skill: "superpowers:writing-plans",
-            },
-          ],
-        },
-        null,
-        2,
-      ),
-    );
-
-    configureOmniskillCommand(program, {
-      rootDir,
-      installSkill: async (input) => {
-        skillInstalls.push(input.source);
-        if (
-          (input.source === "superpowers:brainstorming" ||
-            input.source === "superpowers:writing-plans") &&
-          !installedExternalSources.has(input.source)
-        ) {
-          throw new MissingSuperpowersSkillError({
-            displayName: input.source.replace("superpowers:", ""),
-            source: input.source,
-          });
-        }
-
-        return {
-          skillInstall: fakeSkillInstallResult({
-            source: input.source,
-            skillName: input.source.replace(":", "-"),
-            destination: join(homeDir, ".agents", "skills", input.source.replace(":", "-")),
-          }),
-        };
-      },
-      printSkillInstallResult: (result) => {
-        printedSkills.push(result.skillName);
-      },
-      installExternalSkillDependency: async (input) => {
-        externalInstalls.push(input);
-        installedExternalSources.add(input.source);
-      },
-    });
-
-    await program.parseAsync(
-      ["install", bundleDir, "--dir", rootDir, "--home", homeDir, "--agents", "codex"],
-      { from: "user" },
-    );
-
-    expect(skillInstalls).toEqual([
-      "superpowers:brainstorming",
-      "superpowers:brainstorming",
-      "superpowers:writing-plans",
-      "superpowers:writing-plans",
-    ]);
-    expect(externalInstalls).toEqual([
-      { source: "superpowers:brainstorming", homeDir },
-      { source: "superpowers:writing-plans", repo: "obra/superpowers", homeDir },
-    ]);
-    expect(printedSkills).toEqual(["superpowers-brainstorming", "superpowers-writing-plans"]);
-    await expect(
-      stat(join(rootDir, ".omniskills", "workflows", "superpowers-bundle.json")),
     ).resolves.toBeTruthy();
   });
 
@@ -2954,7 +2723,7 @@ describe("omniskill command module", () => {
           name: "matt-bundle",
           version: "0.1.0",
           description: "Uses one Matt Pocock skill.",
-          skills: [{ source: "mattpocock:tdd", repo: mattPocockV1_1Repo }],
+          skills: [{ source: "mattpocock:tdd", repo: mattPocockRepo }],
           steps: [{ id: "tdd", title: "Implement with TDD", skill: "mattpocock:tdd" }],
         },
         null,
@@ -2979,11 +2748,9 @@ describe("omniskill command module", () => {
         { from: "user" },
       ),
     ).rejects.toThrow(
-      `The skills CLI ran for ${mattPocockV1_1Repo}, but mattpocock:tdd is still missing.`,
+      `The skills CLI ran for ${mattPocockRepo}, but mattpocock:tdd is still missing.`,
     );
-    expect(externalInstalls).toEqual([
-      { source: "mattpocock:tdd", repo: mattPocockV1_1Repo, homeDir },
-    ]);
+    expect(externalInstalls).toEqual([{ source: "mattpocock:tdd", repo: mattPocockRepo, homeDir }]);
   });
 
   test("materializes immutable GitHub commit sources before adding external dependencies", async () => {
@@ -2992,13 +2759,13 @@ describe("omniskill command module", () => {
 
     await installExternalSkillDependencyWithSkillsCli({
       source: "mattpocock:tdd",
-      repo: mattPocockV1_1Repo,
+      repo: mattPocockRepo,
       homeDir,
       runCommand: async (command) => {
         commands.push(command);
         return {
           stdout: command.args.includes("rev-parse")
-            ? "d574778f94cf620fcc8ce741584093bc650a61d3\n"
+            ? "5b15a47f2d7150f545fbcacbfe381787fc0230dc\n"
             : "",
           stderr: "",
           exitCode: 0,
@@ -3024,13 +2791,13 @@ describe("omniskill command module", () => {
       },
       {
         executable: "git",
-        args: ["fetch", "--depth", "1", "origin", "d574778f94cf620fcc8ce741584093bc650a61d3"],
+        args: ["fetch", "--depth", "1", "origin", "5b15a47f2d7150f545fbcacbfe381787fc0230dc"],
         cwd: sourceDir,
         env: expect.objectContaining({ HOME: homeDir }),
       },
       {
         executable: "git",
-        args: ["checkout", "--detach", "d574778f94cf620fcc8ce741584093bc650a61d3"],
+        args: ["checkout", "--detach", "5b15a47f2d7150f545fbcacbfe381787fc0230dc"],
         cwd: sourceDir,
         env: expect.objectContaining({ HOME: homeDir }),
       },
@@ -3069,7 +2836,7 @@ describe("omniskill command module", () => {
     await expect(
       installExternalSkillDependencyWithSkillsCli({
         source: "mattpocock:tdd",
-        repo: mattPocockV1_1Repo,
+        repo: mattPocockRepo,
         homeDir,
         runCommand: async (command) => {
           commands.push(command);
@@ -3094,13 +2861,13 @@ describe("omniskill command module", () => {
     await expect(
       installExternalSkillDependencyWithSkillsCli({
         source: "mattpocock:tdd",
-        repo: mattPocockV1_1Repo,
+        repo: mattPocockRepo,
         homeDir,
         runCommand: async (command) => {
           commands.push(command);
           if (command.args.includes("rev-parse")) {
             return {
-              stdout: "d574778f94cf620fcc8ce741584093bc650a61d3\n",
+              stdout: "5b15a47f2d7150f545fbcacbfe381787fc0230dc\n",
               stderr: "",
               exitCode: 0,
             };
@@ -3111,7 +2878,7 @@ describe("omniskill command module", () => {
           return { stdout: "", stderr: "", exitCode: 0 };
         },
       }),
-    ).rejects.toThrow(`skills CLI failed while installing ${mattPocockV1_1Repo} (exit 1)`);
+    ).rejects.toThrow(`skills CLI failed while installing ${mattPocockRepo} (exit 1)`);
 
     const sourceDir = commands[0]?.args[1];
     if (!sourceDir) throw new Error("Expected a temporary pinned skill source directory");
@@ -3124,8 +2891,8 @@ describe("omniskill command module", () => {
     const commands: OmniskillExternalSkillCommand[] = [];
 
     await installExternalSkillDependencyWithSkillsCli({
-      source: "superpowers:brainstorming",
-      repo: "[obra/superpowers](https://github.com/obra/superpowers)",
+      source: "mattpocock:tdd",
+      repo: "[mattpocock/skills](https://github.com/mattpocock/skills)",
       homeDir,
       runCommand: async (command) => {
         commands.push(command);
@@ -3137,11 +2904,11 @@ describe("omniskill command module", () => {
       "--yes",
       "skills@latest",
       "add",
-      "obra/superpowers",
+      "mattpocock/skills",
       "--yes",
       "--global",
       "--skill",
-      "brainstorming",
+      "tdd",
       "--agent",
       "codex",
     ]);
@@ -3206,40 +2973,6 @@ describe("omniskill command module", () => {
       {
         executable: "npx",
         args: ["--yes", "skills@latest", "add", "mattpocock/skills", "--yes", "--global"],
-        cwd: homeDir,
-        env: expect.objectContaining({ HOME: homeDir }),
-      },
-    ]);
-  });
-
-  test("installs Superpowers external dependencies from the Superpowers package", async () => {
-    const homeDir = await mkdtemp(join(tmpdir(), "omniskill-home-"));
-    const commands: OmniskillExternalSkillCommand[] = [];
-
-    await installExternalSkillDependencyWithSkillsCli({
-      source: "superpowers:brainstorming",
-      homeDir,
-      runCommand: async (command) => {
-        commands.push(command);
-        return { stdout: "", stderr: "", exitCode: 0 };
-      },
-    });
-
-    expect(commands).toEqual([
-      {
-        executable: "npx",
-        args: [
-          "--yes",
-          "skills@latest",
-          "add",
-          "obra/superpowers",
-          "--yes",
-          "--global",
-          "--skill",
-          "brainstorming",
-          "--agent",
-          "codex",
-        ],
         cwd: homeDir,
         env: expect.objectContaining({ HOME: homeDir }),
       },

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "getsuperpower-landing",
+      "name": "omniskill-landing",
       "dependencies": {
         "boring-avatars": "2.0.4",
         "geist": "^1.7.2",

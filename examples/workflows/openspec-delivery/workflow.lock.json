@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "0.2",
+  "workflow": "openspec-delivery",
+  "workflowVersion": "0.2.0",
+  "generatedAt": "2026-08-24T07:22:11.896Z",
+  "workflows": [
+    {
+      "id": "workflow:openspec-delivery@0.2.0",
+      "name": "openspec-delivery",
+      "version": "0.2.0",
+      "source": {
+        "kind": "root"
+      }
+    }
+  ],
+  "edges": [],
+  "skills": [
+    {
+      "source": "./skills/openspec-delivery",
+      "resolvedName": "openspec-delivery",
+      "kind": "local",
+      "hash": "sha256:8115f8c995838ed668715066c02dc3a4340154dbebba80973f4f5e21c8d34be5"
+    },
+    {
+      "source": "./skills/opsx-handoff-review",
+      "resolvedName": "opsx-handoff-review",
+      "kind": "local",
+      "hash": "sha256:c421f4f7c96c7dc716e43bb04301dbb71ef8f78945f75cbf0cb2fcca6b027b0d"
+    },
+    {
+      "source": "mattpocock:codebase-design",
+      "resolvedName": "codebase-design",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:d9e6b6dde193cd5097e2ba80a30822c54429d51ffdbbba0fe9cddff6c11f6768"
+    },
+    {
+      "source": "mattpocock:to-tickets",
+      "resolvedName": "to-tickets",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:558052d0a33212a1dbae6a5c86acbdfa224495f3eb259d1f6b1d3d0cd96e4629"
+    },
+    {
+      "source": "mattpocock:implement",
+      "resolvedName": "implement",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:e8a476efb93d0ca34044bd3ab33a51e97a25f2504bb39658431a45cc9def07ef"
+    },
+    {
+      "source": "mattpocock:tdd",
+      "resolvedName": "tdd",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:c64e0b51838bceca248bfe4dac750a5265aa6726bc05b968e22a661a45cc2007"
+    },
+    {
+      "source": "mattpocock:diagnosing-bugs",
+      "resolvedName": "diagnosing-bugs",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:91cc6c7ca8f79fafdbf74b032f53f318ccdcbb71027b2a8dd53359557c5db45e"
+    },
+    {
+      "source": "mattpocock:code-review",
+      "resolvedName": "code-review",
+      "kind": "external",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:95d58d926fb9b2f58c1c8c00ade1fb426528b9a96ad51a2ddab28c7d86ea4901"
+    }
+  ]
+}

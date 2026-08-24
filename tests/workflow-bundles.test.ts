@@ -29,6 +29,9 @@ import {
   writeWorkflowLockFile,
 } from "../src/runtimes/omniskill/workflow-bundles";
 
+const mattPocockRepo =
+  "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc";
+
 const startupRoleContracts = [
   {
     role: "ceo",
@@ -660,7 +663,7 @@ describe("workflow bundles", () => {
           { source: "./child" },
           {
             source: "mattpocock:implement",
-            repo: "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+            repo: "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
           },
         ],
         steps: [{ id: "run", title: "Run", skill: "mattpocock:implement" }],
@@ -674,7 +677,7 @@ describe("workflow bundles", () => {
       expect(graph.dependencies).toEqual([
         {
           source: "mattpocock:implement",
-          repo: "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+          repo: "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
         },
       ]);
     } finally {
@@ -1652,19 +1655,15 @@ describe("workflow bundles", () => {
       state: "global",
       execution: "action-only",
       type: "goal_based",
-      goal: "Produce an approved implementation plan for a product-development request.",
-      done_when: [
-        "grilled_direction_approved",
-        "design_spec_approved",
-        "implementation_plan_written",
-      ],
+      goal: "Produce an approved specification and ticket set for a product-development request.",
+      done_when: ["direction_approved", "specification_approved", "tickets_written"],
       stop_when: ["human_blocks", "verification_fails", "workflow_complete"],
     });
     expect(bundle.manifest.skills[0]).toEqual({
       source: "./skills/grilled-product-dev",
       entry: true,
     });
-    expect(bundle.manifest.steps.map((step) => step.id)).toEqual(["grill", "shape", "plan"]);
+    expect(bundle.manifest.steps.map((step) => step.id)).toEqual(["clarify", "spec", "tickets"]);
     expect(bundle.manifest.steps.map((step) => step.verify)).toEqual([
       {
         type: "human_approval",
@@ -1674,18 +1673,18 @@ describe("workflow bundles", () => {
       {
         type: "human_approval",
         event: "approval",
-        message_includes: "design approved",
+        message_includes: "spec approved",
       },
       {
         type: "event",
         event: "phase_result",
-        message_includes: "implementation plan written",
+        message_includes: "tickets written",
       },
     ]);
     expect(bundle.manifest.steps.map((step) => step.instruction)).toEqual([
-      "Ask one grilling question, include your recommended answer, and wait for explicit human approval before advancing.",
-      "Turn the approved direction into a Superpowers design spec, then wait for explicit human approval before advancing.",
-      "Write the approved implementation plan as small executable tasks, then log the plan result.",
+      "Ask one focused question, include your recommended answer, and wait for explicit approval before advancing.",
+      "Turn the approved direction into the canonical specification and wait for explicit approval before advancing.",
+      "Write dependency-aware vertical tickets, then log the result.",
     ]);
     expect(createWorkflowLoopMetadata(bundle)).toEqual({
       schemaVersion: "0.1",
@@ -1695,12 +1694,8 @@ describe("workflow bundles", () => {
       state: "global",
       execution: "action-only",
       type: "goal_based",
-      goal: "Produce an approved implementation plan for a product-development request.",
-      done_when: [
-        "grilled_direction_approved",
-        "design_spec_approved",
-        "implementation_plan_written",
-      ],
+      goal: "Produce an approved specification and ticket set for a product-development request.",
+      done_when: ["direction_approved", "specification_approved", "tickets_written"],
       stop_when: ["human_blocks", "verification_fails", "workflow_complete"],
       commands: ["start", "status", "log", "advance", "summary"],
     });
@@ -2022,7 +2017,7 @@ describe("workflow bundles", () => {
     }
   });
 
-  test("pins every Matt Pocock example dependency to the v1.1.0 catalog", async () => {
+  test("pins every Matt Pocock example dependency to the latest audited commit", async () => {
     const mattPocockWorkflowNames = [
       "ceo",
       "cto",
@@ -2031,13 +2026,11 @@ describe("workflow bundles", () => {
       "engineering-manager",
       "founding-engineer",
       "grilled-product-dev",
-      "openspec-superpowers",
+      "openspec-delivery",
       "product-manager",
       "qa-lead",
       "real-engineering",
     ] as const;
-    const mattPocockV1_1Repo =
-      "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3";
     const retiredMattPocockSources = [
       "mattpocock:decision-mapping",
       "mattpocock:to-prd",
@@ -2057,7 +2050,7 @@ describe("workflow bundles", () => {
 
       expect(mattPocockSkills).not.toHaveLength(0);
       for (const skill of mattPocockSkills) {
-        expect(skill.repo).toBe(mattPocockV1_1Repo);
+        expect(skill.repo).toBe(mattPocockRepo);
         expect(retiredMattPocockSources).not.toContain(skill.source);
       }
       for (const source of stepSources) {
@@ -2081,7 +2074,7 @@ describe("workflow bundles", () => {
     );
     expect(nestedMattPocockSkills).not.toHaveLength(0);
     for (const skill of nestedMattPocockSkills) {
-      expect(skill.repo).toBe(mattPocockV1_1Repo);
+      expect(skill.repo).toBe(mattPocockRepo);
       expect(retiredMattPocockSources).not.toContain(skill.source);
     }
     await startupTeamGraph.cleanup?.();
@@ -2094,35 +2087,10 @@ describe("workflow bundles", () => {
     );
     expect(developmentDesignDelivery.manifest.steps.map((step) => [step.id, step.skill])).toEqual(
       expect.arrayContaining([
-        ["interface-design", "mattpocock:prototype"],
-        ["review", "mattpocock:code-review"],
+        ["prototype", "mattpocock:prototype"],
+        ["implement", "mattpocock:implement"],
       ]),
     );
-  });
-
-  test("keeps default startup workflows free of Superpowers dependencies", async () => {
-    const defaultWorkflowPaths = [
-      join(import.meta.dir, "..", "examples", "teams", "startup-team"),
-      join(import.meta.dir, "..", "examples", "workflows", "product-manager"),
-      join(import.meta.dir, "..", "examples", "workflows", "engineering-manager"),
-      join(import.meta.dir, "..", "examples", "workflows", "founding-engineer"),
-      join(import.meta.dir, "..", "examples", "workflows", "qa-lead"),
-    ];
-
-    for (const workflowPath of defaultWorkflowPaths) {
-      const bundle = await loadWorkflowBundle(workflowPath);
-      expect(
-        bundle.manifest.skills.filter((skill) => skill.source.startsWith("superpowers:")),
-      ).toEqual([]);
-      expect(
-        bundle.lock?.skills.filter((skill) => skill.source.startsWith("superpowers:")),
-      ).toEqual([]);
-      const graph = await resolveWorkflowDependencyGraph({ bundle });
-      expect(
-        graph.dependencies.filter((dependency) => dependency.source.startsWith("superpowers:")),
-      ).toEqual([]);
-      await graph.cleanup?.();
-    }
   });
 
   test("example portfolio uses immutable external sources and explicit lock exceptions", async () => {
@@ -2146,8 +2114,7 @@ describe("workflow bundles", () => {
     const approvedExternalRepositories = {
       emilkowalski:
         "https://github.com/emilkowalski/skills/tree/6bf24434f7730ad169077756cf9c7cd7bd675fc6",
-      superpowers:
-        "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+      mattpocock: mattPocockRepo,
     } as const;
     const manifestNames = new Set<string>();
 
@@ -2164,7 +2131,7 @@ describe("workflow bundles", () => {
           if (skill.repo) {
             expect(skill.repo).toMatch(immutableGitHubSource);
             const provider = skill.source.split(":", 1)[0];
-            if (provider === "emilkowalski" || provider === "superpowers") {
+            if (provider === "emilkowalski" || provider === "mattpocock") {
               expect(skill.repo).toBe(approvedExternalRepositories[provider]);
             }
           }
@@ -2312,7 +2279,6 @@ describe("workflow bundles", () => {
       graph.dependencies.filter(({ source }) => source === "mattpocock:implement"),
     ).toHaveLength(1);
     expect(graph.dependencies).toHaveLength(24);
-    expect(graph.dependencies.some(({ source }) => source.startsWith("superpowers:"))).toBe(false);
     expect(
       graph.dependencies.filter(({ source }) =>
         source.endsWith("/examples/workflows/setup-model-routing/skills/setup-model-routing"),
@@ -2629,8 +2595,8 @@ describe("workflow bundles", () => {
           version: "0.1.0",
           description: "Entry skill is not local.",
           loop: { script: "./loop.mjs", state: "global", execution: "action-only" },
-          skills: [{ source: "superpowers:brainstorming", entry: true }],
-          steps: [{ id: "entry", title: "Entry", skill: "superpowers:brainstorming" }],
+          skills: [{ source: "mattpocock:grilling", entry: true }],
+          steps: [{ id: "entry", title: "Entry", skill: "mattpocock:grilling" }],
         },
         null,
         2,
@@ -2719,15 +2685,15 @@ describe("workflow bundles", () => {
           description: "Uses repo metadata for Skills CLI installs.",
           skills: [
             {
-              source: "superpowers:brainstorming",
-              repo: "obra/superpowers",
+              source: "mattpocock:grilling",
+              repo: "mattpocock/skills",
             },
           ],
           steps: [
             {
               id: "brainstorming",
               title: "Shape the work",
-              skill: "superpowers:brainstorming",
+              skill: "mattpocock:grilling",
             },
           ],
         },
@@ -2741,22 +2707,22 @@ describe("workflow bundles", () => {
 
       expect(bundle.manifest.skills).toEqual([
         {
-          source: "superpowers:brainstorming",
-          repo: "obra/superpowers",
+          source: "mattpocock:grilling",
+          repo: "mattpocock/skills",
         },
       ]);
       expect(getWorkflowSkillInstallDependencies(bundle)).toEqual([
         {
-          source: "superpowers:brainstorming",
-          repo: "obra/superpowers",
+          source: "mattpocock:grilling",
+          repo: "mattpocock/skills",
         },
       ]);
       const install = await installWorkflowBundle({ rootDir, bundle });
       const installed = JSON.parse(await readFile(install.path, "utf8"));
       expect(installed.skills).toEqual([
         {
-          source: "superpowers:brainstorming",
-          repo: "obra/superpowers",
+          source: "mattpocock:grilling",
+          repo: "mattpocock/skills",
         },
       ]);
     } finally {
@@ -2790,11 +2756,11 @@ describe("workflow bundles", () => {
           description: "Uses locked skill fingerprints.",
           skills: [
             { source: "./skills/locked-workflow", entry: true },
-            { source: "superpowers:writing-plans", repo: "obra/superpowers" },
+            { source: "mattpocock:to-tickets", repo: "mattpocock/skills" },
           ],
           steps: [
             { id: "entry", title: "Entry", skill: "./skills/locked-workflow" },
-            { id: "plan", title: "Plan", skill: "superpowers:writing-plans" },
+            { id: "plan", title: "Plan", skill: "mattpocock:to-tickets" },
           ],
         },
         null,
@@ -2822,10 +2788,10 @@ describe("workflow bundles", () => {
           kind: "local",
         },
         {
-          source: "superpowers:writing-plans",
-          resolvedName: "superpowers-writing-plans",
+          source: "mattpocock:to-tickets",
+          resolvedName: "to-tickets",
           kind: "external",
-          repo: "obra/superpowers",
+          repo: "mattpocock/skills",
         },
       ]);
       for (const skill of lock.skills) {
@@ -3225,12 +3191,12 @@ describe("workflow bundles", () => {
             source: { kind: "local", path: "/tmp/legacy-workflow" },
             skills: [
               { source: "./skills/local-review" },
-              { source: "superpowers:brainstorming" },
+              { source: "mattpocock:grilling" },
               { source: "https://example.com/unknown.git#skills/custom" },
             ],
             steps: [
               { id: "local", title: "Local", skill: "./skills/local-review" },
-              { id: "shape", title: "Shape", skill: "superpowers:brainstorming" },
+              { id: "shape", title: "Shape", skill: "mattpocock:grilling" },
             ],
           },
           null,
@@ -3249,7 +3215,7 @@ describe("workflow bundles", () => {
         join(rootDir, ".agents", "skills", "local-review"),
       );
       expect(plan.artifactsToRemove.map((artifact) => artifact.path)).toContain(
-        join(rootDir, ".agents", "skills", "superpowers-brainstorming"),
+        join(rootDir, ".agents", "skills", "grilling"),
       );
       expect(plan.skippedArtifacts).toEqual([
         {
@@ -3271,10 +3237,10 @@ describe("workflow bundles", () => {
       "./skills/release-risk-review",
     );
     expect(bundle.manifest.steps.map((step) => step.id)).toEqual([
-      "shape",
+      "clarify",
       "release-risk-review",
       "plan",
-      "verification",
+      "review",
     ]);
   });
 
@@ -3284,23 +3250,20 @@ describe("workflow bundles", () => {
     expect(bundle.manifest.name).toBe("real-engineering");
     expect(bundle.manifest.skills.map((skill) => skill.source)).toEqual([
       "./skills/rtk-command-discipline",
-      "superpowers:brainstorming",
-      "superpowers:writing-plans",
-      "superpowers:verification-before-completion",
-      "mattpocock:grill-with-docs",
+      "mattpocock:grilling",
+      "mattpocock:to-spec",
+      "mattpocock:to-tickets",
+      "mattpocock:implement",
       "mattpocock:tdd",
-      "mattpocock:codebase-design",
       "mattpocock:diagnosing-bugs",
+      "mattpocock:code-review",
     ]);
     expect(bundle.manifest.steps.map((step) => [step.id, step.skill])).toEqual([
       ["command-discipline", "./skills/rtk-command-discipline"],
-      ["shape", "superpowers:brainstorming"],
-      ["grill", "mattpocock:grill-with-docs"],
-      ["plan", "superpowers:writing-plans"],
-      ["design", "mattpocock:codebase-design"],
-      ["tdd", "mattpocock:tdd"],
-      ["debug", "mattpocock:diagnosing-bugs"],
-      ["verification", "superpowers:verification-before-completion"],
+      ["clarify", "mattpocock:grilling"],
+      ["spec", "mattpocock:to-spec"],
+      ["plan", "mattpocock:to-tickets"],
+      ["implement", "mattpocock:implement"],
     ]);
   });
 
@@ -3310,26 +3273,22 @@ describe("workflow bundles", () => {
     expect(bundle.manifest.name).toBe("development-design-delivery");
     expect(bundle.manifest.skills.map((skill) => skill.source)).toEqual([
       "./skills/development-design-delivery",
-      "superpowers:brainstorming",
+      "mattpocock:grilling",
       "mattpocock:prototype",
-      "mattpocock:grill-with-docs",
-      "superpowers:writing-plans",
-      "mattpocock:codebase-design",
+      "mattpocock:to-spec",
+      "mattpocock:to-tickets",
+      "mattpocock:implement",
       "mattpocock:tdd",
       "mattpocock:diagnosing-bugs",
       "mattpocock:code-review",
-      "superpowers:verification-before-completion",
     ]);
     expect(bundle.manifest.steps.map((step) => [step.id, step.skill, step.gate ?? null])).toEqual([
-      ["shape", "superpowers:brainstorming", "human_approval"],
-      ["interface-design", "mattpocock:prototype", "human_approval"],
-      ["requirement-review", "mattpocock:grill-with-docs", "human_approval"],
-      ["implementation-plan", "superpowers:writing-plans", null],
-      ["architecture-boundary", "mattpocock:codebase-design", null],
-      ["build", "mattpocock:tdd", null],
-      ["debug", "mattpocock:diagnosing-bugs", null],
-      ["review", "mattpocock:code-review", null],
-      ["verification", "superpowers:verification-before-completion", null],
+      ["clarify", "mattpocock:grilling", null],
+      ["prototype", "mattpocock:prototype", "human_approval"],
+      ["spec", "mattpocock:to-spec", null],
+      ["plan", "mattpocock:to-tickets", "human_approval"],
+      ["implement", "mattpocock:implement", null],
+      ["verify", "./skills/development-design-delivery", null],
     ]);
     await expect(
       readFile(
@@ -3345,9 +3304,7 @@ describe("workflow bundles", () => {
         ),
         "utf8",
       ),
-    ).resolves.toContain(
-      "This is the entry skill for the development-design-delivery Omniskills workflow.",
-    );
+    ).resolves.toContain("Run this flow in order:");
   });
 
   test("loads deliver-code as an adaptive direct-delivery workflow", async () => {
@@ -3422,16 +3379,18 @@ describe("workflow bundles", () => {
   });
 
   test("loads the openspec delivery example workflow from the handoff diagram", async () => {
-    const bundle = await loadWorkflowBundle("examples/workflows/openspec-superpowers");
+    const bundle = await loadWorkflowBundle("examples/workflows/openspec-delivery");
 
     expect(bundle.manifest.name).toBe("openspec-delivery");
     expect(bundle.manifest.skills.map((skill) => skill.source)).toEqual([
       "./skills/openspec-delivery",
       "./skills/opsx-handoff-review",
-      "superpowers:brainstorming",
-      "superpowers:writing-plans",
+      "mattpocock:codebase-design",
+      "mattpocock:to-tickets",
+      "mattpocock:implement",
       "mattpocock:tdd",
-      "superpowers:verification-before-completion",
+      "mattpocock:diagnosing-bugs",
+      "mattpocock:code-review",
     ]);
     expect(
       bundle.manifest.skills
@@ -3439,38 +3398,36 @@ describe("workflow bundles", () => {
         .map((skill) => [skill.source, skill.repo]),
     ).toEqual([
       [
-        "superpowers:brainstorming",
-        "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+        "mattpocock:codebase-design",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       ],
       [
-        "superpowers:writing-plans",
-        "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+        "mattpocock:to-tickets",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      ],
+      [
+        "mattpocock:implement",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       ],
       [
         "mattpocock:tdd",
-        "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       ],
       [
-        "superpowers:verification-before-completion",
-        "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
+        "mattpocock:diagnosing-bugs",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
       ],
-    ]);
-    expect(
-      bundle.manifest.skills
-        .map((skill) => skill.source)
-        .filter((source) => source.startsWith("superpowers:")),
-    ).toEqual([
-      "superpowers:brainstorming",
-      "superpowers:writing-plans",
-      "superpowers:verification-before-completion",
+      [
+        "mattpocock:code-review",
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      ],
     ]);
     expect(bundle.manifest.steps.map((step) => [step.id, step.skill])).toEqual([
       ["opsx-propose", "./skills/opsx-handoff-review"],
       ["opsx-review", "./skills/opsx-handoff-review"],
-      ["design-deepening", "superpowers:brainstorming"],
-      ["implementation-plan", "superpowers:writing-plans"],
-      ["task-by-task-build", "mattpocock:tdd"],
-      ["verification", "superpowers:verification-before-completion"],
+      ["design", "mattpocock:codebase-design"],
+      ["plan", "mattpocock:to-tickets"],
+      ["implement", "mattpocock:implement"],
       ["opsx-archive", "./skills/opsx-handoff-review"],
     ]);
     await expect(
@@ -3480,14 +3437,14 @@ describe("workflow bundles", () => {
           "..",
           "examples",
           "workflows",
-          "openspec-superpowers",
+          "openspec-delivery",
           "skills",
           "openspec-delivery",
           "SKILL.md",
         ),
         "utf8",
       ),
-    ).resolves.toContain("This is the entry skill for the openspec-delivery Omniskills workflow.");
+    ).resolves.toContain("Run this flow in order:");
   });
 
   test("loads a workflow bundle from a public git URL", async () => {
@@ -3549,94 +3506,93 @@ describe("workflow bundles", () => {
     await rm(tempDir, { recursive: true, force: true });
   });
 
-  for (const source of ["openspec-delivery", "openspec-superpowers"]) {
-    test(`loads the OpenSpec alias ${source} through its compatibility catalog path`, async () => {
-      const tempDir = await mkdtemp(join(tmpdir(), "workflow-bundle-alias-"));
-      const canonicalUrl =
-        "https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers";
-      const commands: WorkflowGitCommand[] = [];
-      let checkoutDir = "";
+  test("loads the OpenSpec alias through its canonical catalog path", async () => {
+    const source = "openspec-delivery";
+    const tempDir = await mkdtemp(join(tmpdir(), "workflow-bundle-alias-"));
+    const canonicalUrl =
+      "https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery";
+    const commands: WorkflowGitCommand[] = [];
+    let checkoutDir = "";
 
-      const bundle = await loadWorkflowBundle(source, {
-        tempDir,
-        runGitCommand: async (command) => {
-          commands.push(command);
-          if (command.args[0] === "clone") {
-            checkoutDir = command.args.at(-1) ?? "";
-            const workflowDir = join(checkoutDir, "examples", "workflows", "openspec-superpowers");
-            await mkdir(join(workflowDir, "skills", "openspec-delivery"), {
-              recursive: true,
-            });
-            await writeFile(
-              join(workflowDir, "skills", "openspec-delivery", "SKILL.md"),
-              [
-                "---",
-                "name: openspec-delivery",
-                'description: "Entry skill from the examples catalog."',
-                "---",
-                "",
-                "# openspec-delivery",
-              ].join("\n"),
-            );
-            await writeFile(
-              join(workflowDir, "workflow.json"),
-              JSON.stringify(
-                {
-                  schemaVersion: "0.1",
-                  name: "openspec-delivery",
-                  version: "0.1.0",
-                  description: "Installs from the examples catalog.",
-                  skills: [{ source: "./skills/openspec-delivery" }],
-                  steps: [
-                    {
-                      id: "entry",
-                      title: "Run OpenSpec delivery",
-                      skill: "./skills/openspec-delivery",
-                    },
-                  ],
-                },
-                null,
-                2,
-              ),
-            );
-            return { stdout: "", stderr: "", exitCode: 0 };
-          }
+    const bundle = await loadWorkflowBundle(source, {
+      tempDir,
+      runGitCommand: async (command) => {
+        commands.push(command);
+        if (command.args[0] === "clone") {
+          checkoutDir = command.args.at(-1) ?? "";
+          const workflowDir = join(checkoutDir, "examples", "workflows", "openspec-delivery");
+          await mkdir(join(workflowDir, "skills", "openspec-delivery"), {
+            recursive: true,
+          });
+          await writeFile(
+            join(workflowDir, "skills", "openspec-delivery", "SKILL.md"),
+            [
+              "---",
+              "name: openspec-delivery",
+              'description: "Entry skill from the examples catalog."',
+              "---",
+              "",
+              "# openspec-delivery",
+            ].join("\n"),
+          );
+          await writeFile(
+            join(workflowDir, "workflow.json"),
+            JSON.stringify(
+              {
+                schemaVersion: "0.1",
+                name: "openspec-delivery",
+                version: "0.1.0",
+                description: "Installs from the examples catalog.",
+                skills: [{ source: "./skills/openspec-delivery" }],
+                steps: [
+                  {
+                    id: "entry",
+                    title: "Run OpenSpec delivery",
+                    skill: "./skills/openspec-delivery",
+                  },
+                ],
+              },
+              null,
+              2,
+            ),
+          );
+          return { stdout: "", stderr: "", exitCode: 0 };
+        }
 
-          return { stdout: "abc123\n", stderr: "", exitCode: 0 };
-        },
-      });
-
-      expect(commands.map((command) => command.args[0])).toEqual(["clone", "rev-parse"]);
-      expect(commands[0]?.args).toEqual([
-        "clone",
-        "--depth",
-        "1",
-        "https://github.com/devos-ing/omni-skills.git",
-        checkoutDir,
-      ]);
-      expect(bundle.manifest.name).toBe("openspec-delivery");
-      expect(bundle.source).toEqual({
-        kind: "git",
-        url: canonicalUrl,
-        commit: "abc123",
-        subdirectory: "examples/workflows/openspec-superpowers",
-      });
-      expect(getWorkflowSkillInstallSources(bundle)).toEqual([
-        join(
-          checkoutDir,
-          "examples",
-          "workflows",
-          "openspec-superpowers",
-          "skills",
-          "openspec-delivery",
-        ),
-      ]);
-
-      await bundle.cleanup?.();
-      await expect(stat(checkoutDir)).rejects.toThrow();
-      await rm(tempDir, { recursive: true, force: true });
+        return { stdout: "abc123\n", stderr: "", exitCode: 0 };
+      },
     });
-  }
+
+    expect(commands.map((command) => command.args[0])).toEqual(["clone", "rev-parse"]);
+    expect(commands[0]?.args).toEqual([
+      "clone",
+      "--depth",
+      "1",
+      "https://github.com/devos-ing/omni-skills.git",
+      checkoutDir,
+    ]);
+    expect(bundle.manifest.name).toBe("openspec-delivery");
+    expect(bundle.source).toEqual({
+      kind: "git",
+      url: canonicalUrl,
+      commit: "abc123",
+      subdirectory: "examples/workflows/openspec-delivery",
+    });
+    expect(getWorkflowSkillInstallSources(bundle)).toEqual([
+      join(
+        checkoutDir,
+        "examples",
+        "workflows",
+        "openspec-delivery",
+        "skills",
+        "openspec-delivery",
+      ),
+    ]);
+
+    await bundle.cleanup?.();
+    await expect(stat(checkoutDir)).rejects.toThrow();
+    await rm(tempDir, { recursive: true, force: true });
+  });
 
   test("resolves team aliases from examples/teams and retains team metadata", async () => {
     const tempDir = await mkdtemp(join(tmpdir(), "workflow-team-alias-"));

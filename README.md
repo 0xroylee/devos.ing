@@ -147,7 +147,7 @@ skills to use.
 | --- | --- | --- |
 | Move one startup feature from direction through acceptance | `startup-team` | After QA, User Outcome Replay, and human feature acceptance; only the delegated deliver-code role writes. |
 | Make one product decision or define customer-value scope | `product-manager` | A read-only product recommendation, spec, ticket set, or delivery plan. |
-| Turn a vague product request into an approved plan | `grilled-product-dev` | An approved implementation plan; it does not implement the work. |
+| Turn a vague product request into approved delivery tickets | `grilled-product-dev` | An approved specification and vertical tickets; it does not implement the work. |
 | Deliver a product or interface change with prototyping and review | `development-design-delivery` | Verified implementation evidence after the approved design and plan. |
 | Deliver a general engineering change with repository command discipline | `real-engineering` | Verified engineering evidence after planning, TDD, and debugging. |
 
@@ -178,9 +178,8 @@ forward, verify evidence, and keep advancing until the goal is done.
 Omniskills workflows can compose local skills, bundled skills, and external
 skill packs:
 
-- Matt Pocock skills for TDD, review, design pressure-testing, domain modeling,
-  PRDs, and issue slicing.
-- Superpowers skills for brainstorming, planning, execution, and verification.
+- Matt Pocock skills for grilling, specifications, vertical tickets,
+  prototyping, TDD, diagnosis, and code review.
 - Emil Kowalski skills for design engineering and motion. The canonical
   identifiers are `emilkowalski:emil-design-eng`,
   `emilkowalski:animation-vocabulary`, `emilkowalski:apple-design`, and
@@ -191,10 +190,10 @@ skill packs:
 
 `omniskill install` uses each workflow skill's `repo` metadata to fetch
 missing external skills through the Skills CLI. For example,
-`{ "source": "superpowers:brainstorming", "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99" }`
+`{ "source": "mattpocock:grilling", "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc" }`
 keeps the original skill name in `source`. For an exact 40-character commit,
 Omniskills fetches and verifies that detached commit in a temporary checkout,
-then passes the local checkout to `npx skills add --copy --skill brainstorming`.
+then passes the local checkout to `npx skills add --copy --skill grilling`.
 This avoids treating a commit SHA as a branch name and removes the checkout
 after installation.
 
@@ -301,9 +300,9 @@ The full guide is in [`docs/workflow-author-guide.md`](docs/workflow-author-guid
 | `examples/workflows/founding-engineer` | Read-only implementation framing, affected seams, test strategy, and technical risk. | Hands the approved frame to a separate implementer. |
 | `examples/workflows/qa-lead` | Acceptance checks, regression focus, and release verification. | Uses review, diagnosing, and verification skills. |
 | `examples/workflows/grilled-product-dev` | Goal loops for shaping product-development work into an approved plan. | Provides `loop start`, `loop status`, and `loop advance`. |
-| `examples/workflows/openspec-superpowers` | Compatibility/demo workflow for OpenSpec delivery. | Kept for one release while the role catalog becomes the primary example set. |
+| `examples/workflows/openspec-delivery` | OpenSpec proposal-to-archive delivery. | Uses the same Matt Pocock implementation path as the other engineering workflows. |
 | `examples/workflows/development-design-delivery` | Compatibility/demo workflow for product-minded engineering. | Richer composition example with verification. |
-| `examples/workflows/real-engineering` | Compatibility/demo workflow combining RTK, Superpowers, and Matt Pocock skills. | Fetches external skills if missing. |
+| `examples/workflows/real-engineering` | Compatibility/demo workflow combining RTK and Matt Pocock skills. | Fetches external skills if missing. |
 | `examples/workflows/release-review` | Compatibility/demo workflow for release-risk review. | Good minimal example. |
 | `examples/workflows/haaland` | Curated playful Haaland/JTS meme workflow. | Generates one meme from its bundled profile asset. |
 

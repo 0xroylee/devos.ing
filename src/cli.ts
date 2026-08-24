@@ -79,7 +79,7 @@ export function buildProgram(options: BuildProgramOptions = {}): Command {
   configureSkillInstallCommand(
     skillsCommand
       .command("install")
-      .description("Install a bundled, local, Superpowers, or external skills package."),
+      .description("Install a bundled, local, Matt Pocock, or external skills package."),
     rootDir,
     installExternalSkillDependency,
   );

@@ -35,10 +35,6 @@ export function getSkillsCliPackageForSource(source: string): string | null {
     return source;
   }
 
-  if (source.startsWith("superpowers:")) {
-    return "obra/superpowers";
-  }
-
   if (source.startsWith("mattpocock:")) {
     return "mattpocock/skills";
   }
@@ -71,10 +67,6 @@ export function getSkillsCliSkillNameForSource(source: string): string | null {
   const interfaceCraftSkillName = getInterfaceCraftInstalledSkillName(source);
   if (interfaceCraftSkillName) {
     return interfaceCraftSkillName;
-  }
-
-  if (source.startsWith("superpowers:")) {
-    return source.slice("superpowers:".length).trim() || null;
   }
 
   if (source.startsWith("mattpocock:")) {

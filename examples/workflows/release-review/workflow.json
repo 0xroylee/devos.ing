@@ -1,30 +1,30 @@
 {
   "schemaVersion": "0.1",
   "name": "release-review",
-  "version": "0.1.0",
-  "description": "Shape, review, plan, and preserve evidence for release changes.",
+  "version": "0.2.0",
+  "description": "Clarify a release, review risk, plan the change, and review the result.",
   "skills": [
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:grilling",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "./skills/release-risk-review"
     },
     {
-      "source": "superpowers:writing-plans",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:verification-before-completion",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:code-review",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     }
   ],
   "steps": [
     {
-      "id": "shape",
-      "title": "Shape the release request",
-      "skill": "superpowers:brainstorming",
+      "id": "clarify",
+      "title": "Clarify the release request one question at a time",
+      "skill": "mattpocock:grilling",
       "gate": "human_approval"
     },
     {
@@ -35,13 +35,13 @@
     },
     {
       "id": "plan",
-      "title": "Write the release implementation plan",
-      "skill": "superpowers:writing-plans"
+      "title": "Slice the release into vertical tickets",
+      "skill": "mattpocock:to-tickets"
     },
     {
-      "id": "verification",
-      "title": "Verify the release before completion",
-      "skill": "superpowers:verification-before-completion"
+      "id": "review",
+      "title": "Review the release diff against standards and scope",
+      "skill": "mattpocock:code-review"
     }
   ]
 }

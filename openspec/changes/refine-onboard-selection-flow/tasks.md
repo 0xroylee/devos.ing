@@ -13,11 +13,11 @@
 - [ ] Explore the current onboard prompt and command-runner seams.
 - [ ] Present 2-3 onboard menu designs with trade-offs.
 - [ ] Get explicit design approval before implementation.
-- [ ] Save the approved design to `docs/superpowers/specs/`.
+- [ ] Save the approved design to `docs/engineering/specs/`.
 
 ## 3. Plan Implementation
 
-- [ ] Write the implementation plan in `docs/superpowers/plans/`.
+- [ ] Write the implementation plan in `docs/engineering/plans/`.
 - [ ] Include TDD slices for logo output, injected multi-select choices, skill
       install selection, RTK selection, CodeGraph selection, skip behavior, and
       smoke checks.

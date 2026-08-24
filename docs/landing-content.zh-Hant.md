@@ -95,7 +95,7 @@ Cases：
 1. Build a landing page — `$startup-goal`
    - Coordinator activity：Launch selected installed roles。
    - Product、design、engineering planning 平行執行，再依序通過 implementation 與 QA gates。
-   - Implement source：`https://github.com/mattpocock/skills/blob/d574778f94cf620fcc8ce741584093bc650a61d3/skills/engineering/implement/SKILL.md`。
+   - Implement source：`https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering/implement/SKILL.md`。
 2. Research a stock — `$finance-research`
    - Coordinator activity：Prepare selected specialist handoffs。
    - Company、financial、valuation specialists 平行執行，`$risk-analysis` 挑戰 thesis。

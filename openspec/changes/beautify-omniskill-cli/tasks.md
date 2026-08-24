@@ -20,7 +20,7 @@
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for root help, theme helpers, command output reuse,
       docs, smoke checks, and no-command behavior if approved.
 

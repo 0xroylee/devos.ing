@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "grilled-product-dev",
-  "workflowVersion": "0.1.2",
-  "generatedAt": "2026-07-17T16:23:46.328Z",
+  "workflowVersion": "0.2.0",
+  "generatedAt": "2026-08-24T07:22:11.834Z",
   "workflows": [
     {
-      "id": "workflow:grilled-product-dev@0.1.2",
+      "id": "workflow:grilled-product-dev@0.2.0",
       "name": "grilled-product-dev",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "source": {
         "kind": "root"
       }
@@ -19,28 +19,28 @@
       "source": "./skills/grilled-product-dev",
       "resolvedName": "grilled-product-dev",
       "kind": "local",
-      "hash": "sha256:c298928f5b99eae7273c8a03264ca6cab69803c826cdfa63c77cf632130c31e8"
+      "hash": "sha256:0ed10a5699e37e3842ea15b7334278b32b3067422213e01e6244c9724ff68c8a"
     },
     {
       "source": "mattpocock:grilling",
       "resolvedName": "grilling",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:ace2c1149f8451f00b1cfa9eb2f1f04b40604fbbaa523fe53255b47093ffe600"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:d7d68eaa92b8945023fadc6a6ee9d58fe156b9924cbb18970193d733339e8c4f"
     },
     {
-      "source": "superpowers:brainstorming",
-      "resolvedName": "superpowers-brainstorming",
+      "source": "mattpocock:to-spec",
+      "resolvedName": "to-spec",
       "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:1c1eba0a93ff82e0d3af1e040cbbabae5ba7f8aa1ea3f9f92b10db759ffa1087"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:db61c3b5558bc35d5db34b3d47a7616b0c284fe26840723fb7086603bc53312c"
     },
     {
-      "source": "superpowers:writing-plans",
-      "resolvedName": "superpowers-writing-plans",
+      "source": "mattpocock:to-tickets",
+      "resolvedName": "to-tickets",
       "kind": "external",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-      "hash": "sha256:bc3ff0415b4d0afce51a65123f5f1d079e34a436121fead087ee296d29af861d"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:558052d0a33212a1dbae6a5c86acbdfa224495f3eb259d1f6b1d3d0cd96e4629"
     }
   ]
 }

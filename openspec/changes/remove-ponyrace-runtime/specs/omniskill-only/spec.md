@@ -48,7 +48,7 @@ The codebase SHALL remove the older Ponyrace requirement-court feature.
 
 ### Requirement: Skill Installation Remains Supported
 
-The CLI SHALL continue to install bundled, local, Superpowers, and external
+The CLI SHALL continue to install bundled, local, Matt Pocock, and external
 skill dependencies.
 
 #### Scenario: user installs an external Skills CLI package

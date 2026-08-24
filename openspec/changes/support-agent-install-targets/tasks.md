@@ -15,13 +15,13 @@
 - [ ] Explore 2-3 target-normalization and destination strategies with
       trade-offs.
 - [ ] Confirm the recommended design with the human owner.
-- [ ] Save the approved design to `docs/superpowers/specs/`.
+- [ ] Save the approved design to `docs/engineering/specs/`.
 - [ ] Re-review the written design for unfinished markers, contradictions, and
       scope creep.
 
 ## 3. Plan Implementation
 
-- [ ] Write the implementation plan in `docs/superpowers/plans/`.
+- [ ] Write the implementation plan in `docs/engineering/plans/`.
 - [ ] Include TDD slices for parser aliases, target destinations, command
       help text, update behavior, docs, and scratch-home smoke checks.
 

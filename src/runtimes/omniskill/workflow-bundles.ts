@@ -1904,15 +1904,6 @@ function inferLegacySkillName(source: string): { skillName: string } | { reason:
     const skillName = basename(source);
     return skillName ? { skillName } : { reason: "Local skill source has no folder name" };
   }
-  if (source === "superpowers:brainstorming") {
-    return { skillName: "superpowers-brainstorming" };
-  }
-  if (source === "superpowers:writing-plans") {
-    return { skillName: "superpowers-writing-plans" };
-  }
-  if (source === "superpowers:verification-before-completion") {
-    return { skillName: "superpowers-verification-before-completion" };
-  }
   if (source.startsWith("mattpocock:")) {
     const skillName = source.slice("mattpocock:".length).trim();
     return skillName ? { skillName } : { reason: "Matt Pocock skill source has no skill name" };
@@ -2224,15 +2215,15 @@ function createScaffoldManifest(name: string): WorkflowBundleManifest {
     description: `Omniskills workflow for ${name}.`,
     skills: [
       { source: `./skills/${name}` },
-      { source: "superpowers:brainstorming", repo: "obra/superpowers" },
+      { source: "mattpocock:grilling", repo: "mattpocock/skills" },
       { source: "./skills/custom-review" },
-      { source: "superpowers:writing-plans", repo: "obra/superpowers" },
+      { source: "mattpocock:to-tickets", repo: "mattpocock/skills" },
     ],
     steps: [
       {
         id: "shape",
         title: "Shape the request",
-        skill: "superpowers:brainstorming",
+        skill: "mattpocock:grilling",
         gate: "human_approval",
       },
       {
@@ -2244,7 +2235,7 @@ function createScaffoldManifest(name: string): WorkflowBundleManifest {
       {
         id: "plan",
         title: "Write the implementation plan",
-        skill: "superpowers:writing-plans",
+        skill: "mattpocock:to-tickets",
       },
     ],
   });
@@ -2345,8 +2336,7 @@ function parseWorkflowAliasSource(source: string): GitWorkflowSource | null {
   const catalogPath = source.endsWith("-team")
     ? canonicalExamplesTeamPath
     : canonicalExamplesWorkflowPath;
-  const catalogDirectory = source === "openspec-delivery" ? "openspec-superpowers" : source;
-  const url = `${canonicalExamplesGitUrl}#${catalogPath}/${catalogDirectory}`;
+  const url = `${canonicalExamplesGitUrl}#${catalogPath}/${source}`;
   const gitSource = parseGitWorkflowSource(url);
   if (!gitSource) {
     throw new Error(`Could not build canonical Omniskills alias URL: ${source}`);

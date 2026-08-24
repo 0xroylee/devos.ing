@@ -1,83 +1,70 @@
 {
   "schemaVersion": "0.1",
   "name": "real-engineering",
-  "version": "0.1.1",
-  "description": "Shape, plan, implement, test, debug, and preserve evidence for serious engineering work.",
+  "version": "0.2.0",
+  "description": "Clarify, specify, plan, implement, and review serious engineering work.",
   "skills": [
     {
       "source": "./skills/rtk-command-discipline"
     },
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:grilling",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:writing-plans",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-spec",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:verification-before-completion",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "mattpocock:grill-with-docs",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "source": "mattpocock:implement",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:tdd",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
-    },
-    {
-      "source": "mattpocock:codebase-design",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:diagnosing-bugs",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
+    },
+    {
+      "source": "mattpocock:code-review",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     }
   ],
   "steps": [
     {
       "id": "command-discipline",
-      "title": "Use repo command wrapper",
+      "title": "Use the repository command wrapper",
       "skill": "./skills/rtk-command-discipline"
     },
     {
-      "id": "shape",
-      "title": "Shape the request",
-      "skill": "superpowers:brainstorming",
+      "id": "clarify",
+      "title": "Clarify the request one question at a time",
+      "skill": "mattpocock:grilling",
       "gate": "human_approval"
     },
     {
-      "id": "grill",
-      "title": "Stress-test the requirement",
-      "skill": "mattpocock:grill-with-docs",
-      "gate": "human_approval"
+      "id": "spec",
+      "title": "Write the approved specification",
+      "skill": "mattpocock:to-spec"
     },
     {
       "id": "plan",
-      "title": "Write the implementation plan",
-      "skill": "superpowers:writing-plans"
+      "title": "Slice the specification into vertical tickets",
+      "skill": "mattpocock:to-tickets",
+      "gate": "human_approval"
     },
     {
-      "id": "design",
-      "title": "Check the codebase design boundary",
-      "skill": "mattpocock:codebase-design"
-    },
-    {
-      "id": "tdd",
-      "title": "Implement with red-green-refactor",
-      "skill": "mattpocock:tdd"
-    },
-    {
-      "id": "debug",
-      "title": "Use systematic debugging when blocked",
-      "skill": "mattpocock:diagnosing-bugs"
-    },
-    {
-      "id": "verification",
-      "title": "Verify the result before completion",
-      "skill": "superpowers:verification-before-completion"
+      "id": "implement",
+      "title": "Implement the approved tickets",
+      "skill": "mattpocock:implement",
+      "phase": "implementation",
+      "instruction": "Invoke only when commit permission is explicit; otherwise implement the approved ticket with mattpocock:tdd and do not commit."
     }
   ]
 }

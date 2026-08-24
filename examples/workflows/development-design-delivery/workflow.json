@@ -1,97 +1,79 @@
 {
   "schemaVersion": "0.1",
   "name": "development-design-delivery",
-  "version": "0.1.1",
-  "description": "Shape, design, plan, implement, review, and preserve evidence for serious product engineering work.",
+  "version": "0.2.0",
+  "description": "Clarify, prototype, specify, plan, implement, and verify a product change.",
   "skills": [
     {
       "source": "./skills/development-design-delivery"
     },
     {
-      "source": "superpowers:brainstorming",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:grilling",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:prototype",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "mattpocock:grill-with-docs",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "source": "mattpocock:to-spec",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "superpowers:writing-plans",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "source": "mattpocock:to-tickets",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
-      "source": "mattpocock:codebase-design",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "source": "mattpocock:implement",
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:tdd",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:diagnosing-bugs",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     },
     {
       "source": "mattpocock:code-review",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3"
-    },
-    {
-      "source": "superpowers:verification-before-completion",
-      "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc"
     }
   ],
   "steps": [
     {
-      "id": "shape",
-      "title": "Shape the request and success criteria",
-      "skill": "superpowers:brainstorming",
-      "gate": "human_approval"
+      "id": "clarify",
+      "title": "Clarify the product request one question at a time",
+      "skill": "mattpocock:grilling"
     },
     {
-      "id": "interface-design",
-      "title": "Explore API, module, or UI interface options",
+      "id": "prototype",
+      "title": "Prototype only the uncertain interface",
       "skill": "mattpocock:prototype",
       "gate": "human_approval"
     },
     {
-      "id": "requirement-review",
-      "title": "Stress-test the plan and record docs",
-      "skill": "mattpocock:grill-with-docs",
+      "id": "spec",
+      "title": "Write the approved specification",
+      "skill": "mattpocock:to-spec"
+    },
+    {
+      "id": "plan",
+      "title": "Slice the specification into vertical tickets",
+      "skill": "mattpocock:to-tickets",
       "gate": "human_approval"
     },
     {
-      "id": "implementation-plan",
-      "title": "Write the task-by-task implementation plan",
-      "skill": "superpowers:writing-plans"
+      "id": "implement",
+      "title": "Implement the approved tickets",
+      "skill": "mattpocock:implement",
+      "phase": "implementation",
+      "instruction": "Invoke only when commit permission is explicit; otherwise implement the approved ticket with mattpocock:tdd and do not commit."
     },
     {
-      "id": "architecture-boundary",
-      "title": "Check module boundaries and seams",
-      "skill": "mattpocock:codebase-design"
-    },
-    {
-      "id": "build",
-      "title": "Implement with TDD",
-      "skill": "mattpocock:tdd"
-    },
-    {
-      "id": "debug",
-      "title": "Use systematic debugging when blocked",
-      "skill": "mattpocock:diagnosing-bugs"
-    },
-    {
-      "id": "review",
-      "title": "Review against standards and spec",
-      "skill": "mattpocock:code-review"
-    },
-    {
-      "id": "verification",
-      "title": "Verify the result before completion",
-      "skill": "superpowers:verification-before-completion"
+      "id": "verify",
+      "title": "Collect fresh verification evidence",
+      "skill": "./skills/development-design-delivery"
     }
   ]
 }

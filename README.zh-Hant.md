@@ -133,7 +133,7 @@ companion skills 的 entry skill。
 | Discovery、PRD、acceptance criteria 或 issue slicing | `product-manager` |
 | 把模糊的 product-development goal 推進成 approved plan 的可恢復 loop | `grilled-product-dev` |
 | 示範 product-minded engineering composition 與 verification | `development-design-delivery` |
-| 示範如何組合 RTK、Superpowers 與 Matt Pocock skills | `real-engineering` |
+| 示範如何組合 RTK 與 Matt Pocock skills | `real-engineering` |
 
 `founding-engineer` 只產出 read-only implementation frame；它不會實作工作。
 
@@ -159,8 +159,7 @@ npx omniskill@latest loop advance grilled-product-dev --run <run-id> --json
 
 Omniskills workflows 可以組合 local skills、bundled skills、external skill packs：
 
-- Matt Pocock skills：TDD、review、design pressure-testing、domain modeling、PRDs、issue slicing。
-- Superpowers skills：brainstorming、planning、execution、verification。
+- Matt Pocock skills：grilling、specifications、vertical tickets、prototyping、TDD、diagnosis、code review。
 - Emil Kowalski skills：提供 design engineering 與 motion 能力。Canonical identifiers 是
   `emilkowalski:emil-design-eng`、`emilkowalski:animation-vocabulary`、
   `emilkowalski:apple-design`、`emilkowalski:review-animations`，並從
@@ -170,10 +169,10 @@ Omniskills workflows 可以組合 local skills、bundled skills、external skill
 
 `omniskill install` 會使用每個 workflow skill 的 `repo` metadata，透過 Skills CLI 抓取缺少的 external
 skills。例如：
-`{ "source": "superpowers:brainstorming", "repo": "https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99" }`
+`{ "source": "mattpocock:grilling", "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc" }`
 會在 `source` 保留原始 skill name。若 repo 指向 40 字元的 exact commit，
 Omniskills 會在暫存 checkout 中 fetch 並驗證 detached commit，再把本地 checkout
-交給 `npx skills add --copy --skill brainstorming`。這可避免把 commit SHA
+交給 `npx skills add --copy --skill grilling`。這可避免把 commit SHA
 誤當成 branch name，並會在安裝後移除暫存 checkout。
 
 如果 automatic bootstrap 失敗，請透過 Omniskills 執行 package install，然後重試：
@@ -265,9 +264,9 @@ npx omniskill@latest deps ./release-review
 | `examples/workflows/founding-engineer` | Read-only implementation framing、test seams、debugging evidence、review risk。 | Handoff 給獨立 implementer；不修改檔案。 |
 | `examples/workflows/qa-lead` | Acceptance checks、regression focus、release verification。 | Uses review, diagnosing, and verification skills. |
 | `examples/workflows/grilled-product-dev` | 將 product-development work 形成 approved plan 的 goal loops。 | Provides `loop start`, `loop status`, and `loop advance`. |
-| `examples/workflows/openspec-superpowers` | OpenSpec delivery 的 compatibility/demo workflow。 | Kept for one release while the role catalog becomes the primary example set. |
+| `examples/workflows/openspec-delivery` | OpenSpec proposal-to-archive delivery。 | 使用與其他 engineering workflows 相同的 Matt Pocock implementation path。 |
 | `examples/workflows/development-design-delivery` | Product-minded engineering 的 compatibility/demo workflow。 | Richer composition example with verification. |
-| `examples/workflows/real-engineering` | 組合 RTK、Superpowers、Matt Pocock skills 的 compatibility/demo workflow。 | Fetches external skills if missing. |
+| `examples/workflows/real-engineering` | 組合 RTK 與 Matt Pocock skills 的 compatibility/demo workflow。 | Fetches external skills if missing. |
 | `examples/workflows/release-review` | Release-risk review 的 compatibility/demo workflow。 | Good minimal example. |
 | `examples/workflows/haaland` | Curated playful Haaland/JTS meme workflow。 | 使用 bundled profile asset 產生一張 meme。 |
 

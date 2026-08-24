@@ -17,7 +17,7 @@ Omniskills workflow and team bundles.
 - `src/omniskill.ts` - primary Omniskills command module.
 - `src/runtimes/omniskill/` - internal runtime for workflow
   manifests, lock files, install records, removal plans, and loop metadata.
-- `src/plugins/` - skill installer seam for bundled, local, Superpowers,
+- `src/plugins/` - skill installer seam for bundled, local, Matt Pocock,
   external, and agent-target installs.
 - `tests/` - Bun tests for runtime behavior and CLI command registration.
 - `docs/architecture.md` - authoritative architecture map.

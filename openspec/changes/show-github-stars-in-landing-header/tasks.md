@@ -11,13 +11,13 @@
 
 - [x] Explore 2-3 header star-display approaches with trade-offs.
 - [x] Confirm the recommended design with the human owner.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 - [x] Re-review the written design for unfinished markers, contradictions, and
       scope creep.
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for GitHub metadata formatting, page-to-client prop
       wiring, header rendering, fallback behavior, and verification commands.
 

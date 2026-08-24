@@ -117,7 +117,7 @@ without silently guessing unsafe paths.
 
 - **GIVEN** a workflow record has no removal artifact metadata
 - **AND** the manifest skills can be mapped to skill names from local skill
-  paths, known Superpowers sources, known Matt Pocock sources, or bundled skill
+  paths, known Matt Pocock sources, known Matt Pocock sources, or bundled skill
   names
 - **WHEN** a user runs
   `omniskill remove legacy-workflow --home <home> --yes`

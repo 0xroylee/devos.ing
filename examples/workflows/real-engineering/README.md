@@ -1,27 +1,18 @@
 # Real Engineering Omniskills Workflow
 
-This example combines:
+A short engineering path:
 
-- RTK command discipline
-- Superpowers brainstorming, writing-plans, and verification
-- Matt Pocock engineering skills
+1. Use the repository command wrapper.
+2. Clarify one question at a time with `mattpocock:grilling`.
+3. Publish the approved specification with `mattpocock:to-spec`.
+4. Slice vertical tickets with `mattpocock:to-tickets`.
+5. Implement only approved tickets with `mattpocock:implement`.
 
-`omniskill install` automatically uses the Skills CLI to fetch missing
-`mattpocock:*` dependencies. If that automatic bootstrap fails, run the same
-package install through the CLI and retry:
-
-```bash
-bun run dev -- skills install mattpocock/skills
-```
-
-Validate this Omniskills workflow from the repo root:
+The workflow also installs Matt Pocock's `tdd`, `diagnosing-bugs`, and
+`code-review` companion skills. It invokes `implement` only when commit
+permission is explicit; otherwise it uses `tdd` without committing.
 
 ```bash
 bun run dev -- validate examples/workflows/real-engineering
-```
-
-Install it into a project:
-
-```bash
 bun run dev -- install examples/workflows/real-engineering
 ```

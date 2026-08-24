@@ -14,7 +14,7 @@ records, and the live root command surface.
 ## Motivation
 
 The repository has moved since the landing copy was written. Current docs and
-CLI help now teach alias installs such as `install openspec-superpowers`, list
+CLI help now teach alias installs such as `install openspec-delivery`, list
 `lock`, `remove`, `onboard`, and `loop` as live commands, document global
 workflow records under `~/.omniskill/workflows/`, and include a
 loop-enabled `grilled-product-dev` example.

@@ -11,21 +11,21 @@
 
 - [x] Explore alias resolver approaches and trade-offs.
 - [x] Confirm the recommended design with the human owner.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 - [x] Re-review the written design for placeholders, contradictions, and scope
       creep.
 
 ## 3. Plan Implementation
 
 - [x] Design doc reviewed and approved by the human owner.
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for source parsing, alias-not-found handling,
       install integration, validate/deps integration, docs, and smoke
       checks.
 
 ## 4. Implement With TDD
 
-- [x] Add a failing runtime test for loading `openspec-superpowers` as an alias.
+- [x] Add a failing runtime test for loading `openspec-delivery` as an alias.
 - [x] Implement minimal alias normalization to the canonical examples git URL.
 - [x] Add a failing install test proving alias installs store canonical source
       metadata and resolve local workflow skills from the fetched checkout.

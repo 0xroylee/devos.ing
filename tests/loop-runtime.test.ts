@@ -161,15 +161,11 @@ describe("loop runtime", () => {
       expect(payload.runId).toBe("direct");
       expect(payload.goal).toEqual({
         type: "goal_based",
-        goal: "Produce an approved implementation plan for a product-development request.",
-        done_when: [
-          "grilled_direction_approved",
-          "design_spec_approved",
-          "implementation_plan_written",
-        ],
+        goal: "Produce an approved specification and ticket set for a product-development request.",
+        done_when: ["direction_approved", "specification_approved", "tickets_written"],
         stop_when: ["human_blocks", "verification_fails", "workflow_complete"],
       });
-      expect(payload.step.id).toBe("grill");
+      expect(payload.step.id).toBe("clarify");
       expect(payload.step.verify).toEqual({
         type: "human_approval",
         event: "approval",
@@ -177,7 +173,7 @@ describe("loop runtime", () => {
       });
       expect(payload.actions).toContainEqual({
         type: "verify",
-        step: "grill",
+        step: "clarify",
         verify: {
           type: "human_approval",
           event: "approval",
@@ -225,7 +221,7 @@ describe("loop runtime", () => {
       expect(start.exitCode).toBe(0);
       expect(start.stderr).toBe("");
       expect(start.stdout).toContain("Status: active");
-      expect(start.stdout).toContain("Step: grill - Sharpen the request through grilling");
+      expect(start.stdout).toContain("Step: clarify - Clarify the request one question at a time");
       expect(start.stdout).toContain("Skill: mattpocock:grilling");
       const runId = parseRunIdFromTextOutput(start.stdout);
 
@@ -238,11 +234,11 @@ describe("loop runtime", () => {
         step: { id: string; verify: { type: string } };
       };
       expect(status.goal.goal).toBe(
-        "Produce an approved implementation plan for a product-development request.",
+        "Produce an approved specification and ticket set for a product-development request.",
       );
       expect(status.selectedByLatest).toBe(true);
       expect(status.runId).toBe(runId);
-      expect(status.step.id).toBe("grill");
+      expect(status.step.id).toBe("clarify");
       expect(status.step.verify.type).toBe("human_approval");
 
       const log = await runRuntime(
@@ -253,9 +249,9 @@ describe("loop runtime", () => {
           "--type",
           "phase_result",
           "--step",
-          "grill",
+          "clarify",
           "--message",
-          "Drafted the grill result",
+          "Drafted the clarification result",
           "--metadata",
           '{"result":"ok"}',
         ],
@@ -273,10 +269,10 @@ describe("loop runtime", () => {
             "--run",
             runId,
             "--to",
-            "plan",
+            "tickets",
             "--force",
             "--reason",
-            "Skip shape after approval",
+            "Skip spec after approval",
             "--json",
           ],
           homeDir,
@@ -286,7 +282,7 @@ describe("loop runtime", () => {
         step: { id: string; index: number };
       };
       expect(forced.status).toBe("active");
-      expect(forced.step).toMatchObject({ id: "plan", index: 2 });
+      expect(forced.step).toMatchObject({ id: "tickets", index: 2 });
 
       const summary = await runRuntime(["summary", "--latest"], homeDir);
       expect(summary.exitCode).toBe(0);
@@ -299,15 +295,15 @@ describe("loop runtime", () => {
         ?.slice("Summary: ".length);
       expect(summaryPath).toBeTruthy();
       const summaryMarkdown = await readFile(summaryPath ?? "", "utf8");
-      expect(summaryMarkdown).toContain("Current step: plan");
+      expect(summaryMarkdown).toContain("Current step: tickets");
       expect(summaryMarkdown).toContain(
-        "Goal: Produce an approved implementation plan for a product-development request.",
+        "Goal: Produce an approved specification and ticket set for a product-development request.",
       );
-      expect(summaryMarkdown).toContain("- done_when: grilled_direction_approved");
+      expect(summaryMarkdown).toContain("- done_when: direction_approved");
       expect(summaryMarkdown).toContain("- stop_when: workflow_complete");
-      expect(summaryMarkdown).toContain("- grill: Sharpen the request through grilling");
-      expect(summaryMarkdown).toContain("Skip shape after approval");
-      expect(summaryMarkdown).toContain("Drafted the grill result");
+      expect(summaryMarkdown).toContain("- clarify: Clarify the request one question at a time");
+      expect(summaryMarkdown).toContain("Skip spec after approval");
+      expect(summaryMarkdown).toContain("Drafted the clarification result");
 
       const complete = parseJsonOutput(
         await runRuntime(["advance", "--run", runId, "--json"], homeDir),
@@ -399,7 +395,7 @@ describe("loop runtime", () => {
             new URL("file:///tmp/missing-workflow.json"),
           ),
         ),
-      ).toMatchObject({ runId: "override", step: { id: "grill" } });
+      ).toMatchObject({ runId: "override", step: { id: "clarify" } });
 
       const duplicateRun = await runRuntime(["start", "--run", "override", "--json"], homeDir);
       expect(duplicateRun.exitCode).toBe(1);
@@ -424,7 +420,7 @@ describe("loop runtime", () => {
       expect(missingRun.stderr).toContain("log requires --run <id>");
 
       const forcedWithoutReason = await runRuntime(
-        ["advance", "--run", "override", "--to", "shape", "--force"],
+        ["advance", "--run", "override", "--to", "spec", "--force"],
         homeDir,
       );
       expect(forcedWithoutReason.exitCode).toBe(1);

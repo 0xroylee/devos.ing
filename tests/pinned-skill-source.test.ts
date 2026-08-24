@@ -3,7 +3,7 @@ import { stat } from "node:fs/promises";
 import { materializePinnedSkillSource } from "../src/plugins/pinned-skill-source";
 
 const pinnedSource =
-  "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3";
+  "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc";
 
 describe("pinned skill source materializer", () => {
   test("verifies the detached checkout identity", async () => {
@@ -16,7 +16,7 @@ describe("pinned skill source materializer", () => {
         commands.push(command.args);
         return {
           stdout: command.args.includes("rev-parse")
-            ? "d574778f94cf620fcc8ce741584093bc650a61d3\n"
+            ? "5b15a47f2d7150f545fbcacbfe381787fc0230dc\n"
             : "",
           stderr: "",
           exitCode: 0,

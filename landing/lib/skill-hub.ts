@@ -26,13 +26,9 @@ const providerSources: Record<string, { provider: string; root: string }> = {
     provider: "emilkowalski/skills",
     root: "https://github.com/emilkowalski/skills/blob/main/skills",
   },
-  superpowers: {
-    provider: "obra/superpowers",
-    root: "https://github.com/obra/superpowers/blob/main/skills",
-  },
   mattpocock: {
-    provider: "mattpocock/skills@v1.1.0",
-    root: "https://github.com/mattpocock/skills/blob/v1.1.0/skills/engineering",
+    provider: "mattpocock/skills@5b15a47",
+    root: "https://github.com/mattpocock/skills/blob/5b15a47f2d7150f545fbcacbfe381787fc0230dc/skills/engineering",
   },
 };
 

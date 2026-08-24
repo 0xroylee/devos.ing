@@ -1,4 +1,4 @@
-import { constants, type Dirent } from "node:fs";
+import { constants } from "node:fs";
 import { access, cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -74,15 +74,6 @@ export class SkillSourceNotFoundError extends Error {
   }
 }
 
-export class MissingSuperpowersSkillError extends Error {
-  constructor(input: { displayName: string; source: string }) {
-    super(
-      `Superpowers ${input.displayName} skill not found. Install or enable the Superpowers plugin, then run: ${formatSuperpowersInstallCommand(input.source)}`,
-    );
-    this.name = "MissingSuperpowersSkillError";
-  }
-}
-
 export class MissingMattPocockSkillError extends Error {
   constructor(input: { skillName: string; homeDir?: string | undefined }) {
     const location = input.homeDir ? ` under ${input.homeDir}` : "";
@@ -104,34 +95,6 @@ export class MissingInterfaceCraftSkillError extends Error {
 }
 
 const DEFAULT_BUNDLED_SKILL = "creating-bundle-skills";
-
-interface SupportedSuperpowersSkill {
-  source: string;
-  displayName: string;
-  skillFolder: string;
-  installName: string;
-}
-
-const supportedSuperpowersSkills = [
-  {
-    source: "superpowers:brainstorming",
-    displayName: "brainstorming",
-    skillFolder: "brainstorming",
-    installName: "superpowers-brainstorming",
-  },
-  {
-    source: "superpowers:writing-plans",
-    displayName: "writing-plans",
-    skillFolder: "writing-plans",
-    installName: "superpowers-writing-plans",
-  },
-  {
-    source: "superpowers:verification-before-completion",
-    displayName: "verification-before-completion",
-    skillFolder: "verification-before-completion",
-    installName: "superpowers-verification-before-completion",
-  },
-] as const satisfies readonly SupportedSuperpowersSkill[];
 
 const interfaceCraftSkillMappings = [
   {
@@ -293,13 +256,6 @@ export async function resolveInstallSkillSource(
     return resolveMattPocockSkill(mattPocockSkillName, options);
   }
 
-  const superpowersSkill = supportedSuperpowersSkills.find(
-    (skill) => skill.source === sourceOrName,
-  );
-  if (superpowersSkill) {
-    return resolveSuperpowersSkill(superpowersSkill, options);
-  }
-
   const cwd = options.cwd ?? process.cwd();
   const pathCandidate = isAbsolute(sourceOrName) ? sourceOrName : resolve(cwd, sourceOrName);
 
@@ -340,13 +296,8 @@ export async function resolveInstallSkillName(
     if (error instanceof MissingMattPocockSkillError && mattPocockSkillName) {
       resolvedName = mattPocockSkillName;
     } else {
-      const superpowersSkill = supportedSuperpowersSkills.find(
-        (skill) => skill.source === sourceOrName,
-      );
       const interfaceCraftSkillName = getInterfaceCraftInstalledSkillName(sourceOrName);
-      if (error instanceof MissingSuperpowersSkillError && superpowersSkill) {
-        resolvedName = superpowersSkill.installName;
-      } else if (error instanceof MissingInterfaceCraftSkillError && interfaceCraftSkillName) {
+      if (error instanceof MissingInterfaceCraftSkillError && interfaceCraftSkillName) {
         resolvedName = interfaceCraftSkillName;
       } else if (error instanceof SkillSourceNotFoundError && options.expectedName) {
         resolvedName = options.expectedName;
@@ -422,93 +373,6 @@ async function resolveBundledSkillPath(skillName: string): Promise<string | null
   }
 
   return null;
-}
-
-async function resolveSuperpowersSkill(
-  skill: SupportedSuperpowersSkill,
-  options: ResolveInstallSkillSourceOptions,
-): Promise<ResolvedInstallSkillSource> {
-  const homeDir = options.homeDir ?? process.env.HOME ?? process.cwd();
-  const skillPath =
-    (await findSuperpowersSkillPath(homeDir, skill.skillFolder)) ??
-    (await findInstalledSuperpowersSkillPath(homeDir, skill));
-
-  if (!skillPath) {
-    throw new MissingSuperpowersSkillError({
-      displayName: skill.displayName,
-      source: skill.source,
-    });
-  }
-
-  return {
-    kind: "path",
-    name: skill.installName,
-    path: skillPath,
-  };
-}
-
-async function findInstalledSuperpowersSkillPath(
-  homeDir: string,
-  skill: SupportedSuperpowersSkill,
-): Promise<string | null> {
-  return (
-    (await findInstalledSkillPath(homeDir, skill.installName)) ??
-    (await findInstalledSkillPath(homeDir, skill.skillFolder))
-  );
-}
-
-async function findSuperpowersSkillPath(
-  homeDir: string,
-  skillFolder: string,
-): Promise<string | null> {
-  const roots = [
-    join(homeDir, ".codex", "plugins", "cache", "openai-curated", "superpowers"),
-    join(homeDir, ".codex", "plugins", "cache", "openai-curated-remote", "superpowers"),
-    join(homeDir, ".codex", "plugins", "cache", "openai-bundled", "superpowers"),
-  ];
-
-  for (const root of roots) {
-    const skillPath = await findNestedSuperpowersSkillPath(root, skillFolder);
-    if (skillPath) {
-      return skillPath;
-    }
-  }
-
-  return null;
-}
-
-async function findNestedSuperpowersSkillPath(
-  root: string,
-  skillFolder: string,
-): Promise<string | null> {
-  let entries: Dirent[];
-  try {
-    entries = await readdir(root, { withFileTypes: true });
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return null;
-    }
-    throw error;
-  }
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) {
-      continue;
-    }
-
-    const skillPath = join(root, entry.name, "skills", skillFolder);
-    if (await pathExists(join(skillPath, "SKILL.md"))) {
-      return skillPath;
-    }
-  }
-
-  return null;
-}
-
-export function isMissingSuperpowersSkillError(
-  error: unknown,
-): error is MissingSuperpowersSkillError {
-  return error instanceof MissingSuperpowersSkillError;
 }
 
 export function parseSkillInstallAgents(rawAgents: string): SkillInstallAgent[] {
@@ -789,10 +653,6 @@ function normalizeSkillInstallAgent(agent: string): SkillInstallAgent | null {
 
 function looksLikePath(value: string): boolean {
   return value.startsWith(".") || value.startsWith("~") || value.includes(sep) || isAbsolute(value);
-}
-
-function formatSuperpowersInstallCommand(source: string): string {
-  return `omniskill skills install ${source} --agents codex,claude,cursor,copilot,hermes,openclaw,opencode --home ~`;
 }
 
 async function pathExists(path: string): Promise<boolean> {

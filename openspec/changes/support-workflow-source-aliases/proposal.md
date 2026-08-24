@@ -3,12 +3,12 @@
 ## Summary
 
 Allow Omniskill source commands to accept a public workflow alias such as
-`openspec-superpowers` as shorthand for the canonical Omniskill examples
+`openspec-delivery` as shorthand for the canonical Omniskill examples
 repository path:
 
 ```bash
-npx omniskill@latest@latest install openspec-superpowers
-npx omniskill@latest@latest install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers'
+npx omniskill@latest@latest install openspec-delivery
+npx omniskill@latest@latest install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery'
 ```
 
 These two commands should resolve to the same workflow bundle. Existing public
@@ -33,7 +33,7 @@ In scope:
 - Preserve the existing explicit public git URL behavior, including
   `#examples/workflows/<name>` fragments.
 - Resolve aliases by workflow folder name, not by manifest display name. For
-  example, `openspec-superpowers` resolves to the `examples/workflows/openspec-superpowers`
+  example, `openspec-delivery` resolves to the `examples/workflows/openspec-delivery`
   folder even though that workflow's manifest name is `openspec-delivery`.
 - Write installed workflow source metadata using the resolved canonical public
   git URL, so alias installs and full-link installs have the same durable source
@@ -72,8 +72,8 @@ the canonical path it checked.
 
 ## Acceptance Criteria
 
-- `npx omniskill@latest@latest install openspec-superpowers` installs the same
-  workflow as `npx omniskill@latest@latest install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-superpowers'`.
+- `npx omniskill@latest@latest install openspec-delivery` installs the same
+  workflow as `npx omniskill@latest@latest install 'https://github.com/devos-ing/omni-skills.git#examples/workflows/openspec-delivery'`.
 - `validate` and `deps` accept the same alias source form because they
   share the workflow source loader.
 - Explicit public git URLs still work exactly as they do today.
@@ -86,7 +86,7 @@ the canonical path it checked.
 - Existing local path and `workflow.json` path behavior continues to work.
 - Focused Bun tests cover alias load/install behavior, public URL passthrough,
   and unknown aliases.
-- CLI smoke checks cover `deps openspec-superpowers` and `validate openspec-superpowers`
+- CLI smoke checks cover `deps openspec-delivery` and `validate openspec-delivery`
   against the local examples repo path when network-free verification is needed,
   plus the existing explicit public URL path where network is available.
 - `rtk bun run check` passes before delivery.

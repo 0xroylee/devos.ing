@@ -67,14 +67,16 @@ export interface RunCliSandboxEvaluationOptions {
   workflowSource?: string;
 }
 
-const defaultWorkflowSource = "examples/workflows/openspec-superpowers";
+const defaultWorkflowSource = "examples/workflows/openspec-delivery";
 const expectedInstalledSkills = [
   "openspec-delivery",
   "opsx-handoff-review",
-  "superpowers-brainstorming",
-  "superpowers-writing-plans",
-  "superpowers-verification-before-completion",
+  "codebase-design",
+  "to-tickets",
+  "implement",
   "tdd",
+  "diagnosing-bugs",
+  "code-review",
 ];
 
 export async function runCliSandboxEvaluation(
@@ -220,10 +222,8 @@ async function runBaseline(input: {
         id: "baseline-lists-dependencies",
         label: "CLI lists workflow dependencies before install",
         passed:
-          logs.some((line) => stripAnsi(line).includes("- mattpocock:tdd")) &&
-          logs.some((line) =>
-            stripAnsi(line).includes("- superpowers:verification-before-completion"),
-          ),
+          logs.some((line) => stripAnsi(line).includes("- mattpocock:implement")) &&
+          logs.some((line) => stripAnsi(line).includes("- mattpocock:code-review")),
         detail: "deps should expose reusable workflow skill requirements",
       },
       {
@@ -388,32 +388,19 @@ async function runCommand(input: {
 }
 
 async function writeFakeDependencyHome(homeDir: string): Promise<void> {
-  const superpowersRoot = join(
-    homeDir,
-    ".codex",
-    "plugins",
-    "cache",
-    "openai-curated",
-    "superpowers",
-    "sandbox-plugin",
-    "skills",
-  );
-  await writeSkill(join(superpowersRoot, "brainstorming"), {
-    name: "brainstorming",
-    description: "Sandbox Superpowers brainstorming skill.",
-  });
-  await writeSkill(join(superpowersRoot, "writing-plans"), {
-    name: "writing-plans",
-    description: "Sandbox Superpowers writing-plans skill.",
-  });
-  await writeSkill(join(superpowersRoot, "verification-before-completion"), {
-    name: "verification-before-completion",
-    description: "Sandbox Superpowers verification skill.",
-  });
-  await writeSkill(join(homeDir, ".agents", "skills", "tdd"), {
-    name: "tdd",
-    description: "Sandbox Matt Pocock TDD skill.",
-  });
+  for (const name of [
+    "codebase-design",
+    "to-tickets",
+    "implement",
+    "tdd",
+    "diagnosing-bugs",
+    "code-review",
+  ]) {
+    await writeSkill(join(homeDir, ".agents", "skills", name), {
+      name,
+      description: `Sandbox Matt Pocock ${name} skill.`,
+    });
+  }
 }
 
 async function writeSkill(

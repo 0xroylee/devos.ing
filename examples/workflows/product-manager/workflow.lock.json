@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "product-manager",
   "workflowVersion": "0.3.0",
-  "generatedAt": "2026-08-15T06:08:28.869Z",
+  "generatedAt": "2026-08-24T07:12:19.028Z",
   "workflows": [
     {
       "id": "workflow:product-manager@0.3.0",
@@ -25,15 +25,15 @@
       "source": "mattpocock:to-spec",
       "resolvedName": "to-spec",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:ca71d81c69e99abad7d3e730d3cdc87e90ac4efac1edae94ee82e16890fb8b84"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:db61c3b5558bc35d5db34b3d47a7616b0c284fe26840723fb7086603bc53312c"
     },
     {
       "source": "mattpocock:to-tickets",
       "resolvedName": "to-tickets",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:5d9c9aa0dc2ed6b52784fd50a9bd5c9355d0ef64312c49d506e18449893c76a2"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:558052d0a33212a1dbae6a5c86acbdfa224495f3eb259d1f6b1d3d0cd96e4629"
     }
   ]
 }

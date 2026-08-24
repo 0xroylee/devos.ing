@@ -7,7 +7,7 @@
 - [x] Confirm whether `bundle` and `workflow` aliases stay for one transition
       period.
 
-## 2. Deepen Design With Superpowers
+## 2. Deepen Design With Matt Pocock
 
 - [x] Map current command surfaces to keep/remove decisions.
 - [x] Map source files to keep/remove decisions.
@@ -16,7 +16,7 @@
 
 ## 3. Plan The Implementation
 
-- [x] Write a Superpowers implementation plan with TDD slices.
+- [x] Write a Matt Pocock implementation plan with TDD slices.
 - [x] Include exact test removals, replacements, and smoke commands.
 - [x] Preserve acceptance criteria from `specs/omniskill-only/spec.md`.
 

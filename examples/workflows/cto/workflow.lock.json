@@ -2,7 +2,7 @@
   "schemaVersion": "0.2",
   "workflow": "cto",
   "workflowVersion": "0.2.0",
-  "generatedAt": "2026-07-17T16:23:46.357Z",
+  "generatedAt": "2026-08-24T07:12:18.804Z",
   "workflows": [
     {
       "id": "workflow:cto@0.2.0",
@@ -25,29 +25,29 @@
       "source": "mattpocock:codebase-design",
       "resolvedName": "codebase-design",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:45f1f27c670c4065170eb689a04235e84982f87f133f537f55b12329ff5fec1a"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:d9e6b6dde193cd5097e2ba80a30822c54429d51ffdbbba0fe9cddff6c11f6768"
     },
     {
       "source": "mattpocock:domain-modeling",
       "resolvedName": "domain-modeling",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:0573fd6a60918e5280ce20409cdcb30eed03ec64550404c28dc1f825b3b43276"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:07d39c45615e30fcf4e9f61c398bbe3117ee1b014f3e871b4455a37d22861fad"
     },
     {
       "source": "mattpocock:diagnosing-bugs",
       "resolvedName": "diagnosing-bugs",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:0ce16c85852384eae72203418ea0d45145b86b8a04bb6a9d3693def451e08b89"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:91cc6c7ca8f79fafdbf74b032f53f318ccdcbb71027b2a8dd53359557c5db45e"
     },
     {
       "source": "mattpocock:code-review",
       "resolvedName": "code-review",
       "kind": "external",
-      "repo": "https://github.com/mattpocock/skills/tree/d574778f94cf620fcc8ce741584093bc650a61d3",
-      "hash": "sha256:4281a8bb8667c7c46ca512cc19782af9606876d9bab13d306688829783ebfa13"
+      "repo": "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      "hash": "sha256:95d58d926fb9b2f58c1c8c00ade1fb426528b9a96ad51a2ddab28c7d86ea4901"
     }
   ]
 }

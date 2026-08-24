@@ -14,7 +14,7 @@ function readRepoFile(path: string): string {
 }
 
 describe("README source contract", () => {
-  test("leads with startup superpower positioning", () => {
+  test("leads with startup-team positioning", () => {
     const readme = readReadme();
     const firstScreen = readme.slice(0, 1800);
 
@@ -151,16 +151,15 @@ describe("README source contract", () => {
       expect(content).toMatch(/same\s+checkout/);
       expect(content).toMatch(/mixed\s+ownership/);
       expect(content).toContain("npx omniskill@latest setup-model-routing");
-      expect(content).toContain("npx skills add --copy --skill brainstorming");
+      expect(content).toContain("npx skills add --copy --skill grilling");
       expect(content).toMatch(/commit SHA/);
     }
 
-    expect(english).not.toContain(
-      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-    );
-    expect(traditionalChinese).not.toContain(
-      "npx skills add https://github.com/obra/superpowers/tree/d884ae04edebef577e82ff7c4e143debd0bbec99",
-    );
+    for (const content of [english, traditionalChinese]) {
+      expect(content).toContain(
+        "https://github.com/mattpocock/skills/tree/5b15a47f2d7150f545fbcacbfe381787fc0230dc",
+      );
+    }
 
     expect(english).toContain("Finance Team and Market Team remain lockless local previews");
     expect(traditionalChinese).toMatch(
@@ -264,8 +263,8 @@ describe("README source contract", () => {
   });
 
   test("records the clean-install amendment to the approved startup-team plan", () => {
-    const design = readRepoFile("docs/superpowers/specs/2026-07-14-startup-team-design.md");
-    const plan = readRepoFile("docs/superpowers/plans/2026-07-14-startup-team.md");
+    const design = readRepoFile("docs/engineering/specs/2026-07-14-startup-team-design.md");
+    const plan = readRepoFile("docs/engineering/plans/2026-07-14-startup-team.md");
 
     for (const document of [design, plan]) {
       expect(document).toContain("Clean-install amendment");
@@ -278,7 +277,7 @@ describe("README source contract", () => {
     const readme = readReadme();
 
     expect(readme).toContain("Matt Pocock skills");
-    expect(readme).toContain("Superpowers skills");
+    expect(readme).toContain("Emil Kowalski skills");
     expect(readme).toContain("Richer composition example with verification");
     expect(readme).toContain("More workflow packs are coming");
   });

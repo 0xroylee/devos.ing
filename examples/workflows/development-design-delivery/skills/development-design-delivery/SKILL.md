@@ -1,62 +1,28 @@
 ---
 name: development-design-delivery
-description: Use when running a product-minded engineering workflow from request shaping through interface design, implementation, review, and evidence capture.
+description: Use when a product change needs one focused prototype before implementation.
 ---
 
-# Development Design Delivery Omniskills Workflow
+# Development Design Delivery
 
-This is the entry skill for the development-design-delivery Omniskills workflow.
+Run this flow in order:
 
-When this skill is used, run the workflow below in order. Load/use every
-required sub-skill before doing the work for its phase.
+1. Use `mattpocock:grilling` one question at a time until the request is clear.
+2. Use `mattpocock:prototype` only for a material API, module, or UI uncertainty.
+   Wait for explicit approval of the selected direction.
+3. Use `mattpocock:to-spec` to publish the approved specification.
+4. Use `mattpocock:to-tickets` to create vertical tickets. Wait for explicit
+   approval of the ticket set.
+5. Use `mattpocock:implement` only when commit permission is explicit.
+   Otherwise implement the approved ticket with `mattpocock:tdd` and do not
+   commit. Use `mattpocock:diagnosing-bugs` only after an unexpected failure.
+6. Run the repository's fresh verification commands and report the evidence.
+   `mattpocock:code-review` is part of implementation closeout.
 
-## Required Sub-Skills
-
-Before doing workflow work, load/use these skills in order:
-
-1. superpowers:brainstorming - shape the request, context, constraints, and success criteria
-2. mattpocock:prototype - build a throwaway interface prototype to explore API, module, or UI options
-3. mattpocock:grill-with-docs - stress-test the requirement and preserve design docs
-4. superpowers:writing-plans - split approved scope into executable tasks
-5. mattpocock:codebase-design - check module boundaries, seams, and testability
-6. mattpocock:tdd - build task by task with failing tests first
-7. mattpocock:diagnosing-bugs - diagnose unexpected failures or regressions when blocked
-8. mattpocock:code-review - review changes against standards and the approved spec
-9. superpowers:verification-before-completion - verify results before claiming completion
-
-If any required sub-skill is unavailable, stop and tell the user which
-dependency is missing. For missing `mattpocock:*` skills, tell the user to run:
+If a required Matt Pocock skill is missing, tell the user to run:
 
 ```bash
 omniskill skills install mattpocock/skills
 ```
 
-## Flow
-
-1. Shape the request and success criteria.
-   - Skill: superpowers:brainstorming
-   - Gate: wait for explicit human approval.
-2. Build a throwaway interface prototype to explore API, module, or UI options.
-   - Skill: mattpocock:prototype
-   - Gate: wait for explicit human approval.
-3. Stress-test the plan and record docs.
-   - Skill: mattpocock:grill-with-docs
-   - Gate: wait for explicit human approval.
-4. Write the task-by-task implementation plan.
-   - Skill: superpowers:writing-plans
-5. Check module boundaries and seams before implementation.
-   - Skill: mattpocock:codebase-design
-6. Implement with TDD.
-   - Skill: mattpocock:tdd
-7. Use systematic debugging if behavior is unexpected or tests fail.
-   - Skill: mattpocock:diagnosing-bugs
-8. Review the change against repo standards and the approved spec.
-   - Skill: mattpocock:code-review
-9. Verify the result before claiming completion.
-   - Skill: superpowers:verification-before-completion
-
-## Author Notes
-
-- Keep this entry skill, `workflow.json`, and `README.md` aligned when adding or removing steps.
-- This skill orchestrates through required instructions; Omniskills installs and validates the dependency skills.
-- Do not silently skip approval gates, throwaway interface prototyping, implementation planning, TDD, review, or verification.
+Do not expand scope or silently skip either approval gate.

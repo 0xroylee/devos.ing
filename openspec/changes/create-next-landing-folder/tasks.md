@@ -14,13 +14,13 @@
 
 - [x] Explore 2-3 landing app structure and styling approaches with trade-offs.
 - [x] Confirm the recommended design with the human owner.
-- [x] Save the approved design to `docs/superpowers/specs/`.
+- [x] Save the approved design to `docs/engineering/specs/`.
 - [x] Re-review the written design for placeholders, contradictions, and scope
       creep.
 
 ## 3. Plan Implementation
 
-- [x] Write the implementation plan in `docs/superpowers/plans/`.
+- [x] Write the implementation plan in `docs/engineering/plans/`.
 - [x] Include TDD slices for the Next app scaffold, ported components, Tailwind
       setup, metadata, docs, and verification commands.
 
