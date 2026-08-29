@@ -375,13 +375,14 @@ export const startupTeam: TeamCardContent = {
       description: "Acceptance checks and release risk",
     },
   ],
-  localSkillNames: ["startup-goal"],
+  localSkillNames: ["startup-goal", "unslop"],
   avatarSeed: "sha256:e2445fdfee4ef3d0a8aae8333a820a8485338bd1f62674c2596be49dba878f5f",
   tag: "Team",
   accent: "text-[#c83c24]",
   sourceUrl: `${githubUrl}/tree/main/examples/teams/startup-team`,
   skillSourceUrls: {
     "startup-goal": `${githubUrl}/blob/main/examples/teams/startup-team/skills/startup-goal/SKILL.md`,
+    unslop: `${githubUrl}/blob/main/examples/teams/startup-team/skills/unslop/SKILL.md`,
     ceo: `${githubUrl}/blob/main/examples/workflows/ceo/skills/ceo/SKILL.md`,
     cto: `${githubUrl}/blob/main/examples/workflows/cto/skills/cto/SKILL.md`,
     "product-manager": `${githubUrl}/blob/main/examples/workflows/product-manager/skills/product-manager/SKILL.md`,
@@ -395,6 +396,7 @@ export const startupTeam: TeamCardContent = {
   installCommand: "npx omniskill@latest install startup-team",
   skills: [
     { name: "startup-goal", description: "Coordinate role subagents around one goal" },
+    { name: "unslop", description: "Polish user-facing prose without changing evidence" },
     { name: "ceo", description: "Company direction and tradeoffs" },
     { name: "cto", description: "Architecture and technical risk" },
     { name: "product-manager", description: "Discovery, PRDs, and issue slicing" },
@@ -420,7 +422,8 @@ export const startupTeam: TeamCardContent = {
     {
       label: "Plan approval",
       skill: "startup-goal",
-      description: "Wait for explicit human approval of the implementation boundary.",
+      description:
+        "Polish the plan prose without changing evidence, then wait for explicit approval.",
     },
     {
       label: "Implement",
@@ -445,7 +448,8 @@ export const startupTeam: TeamCardContent = {
     {
       label: "Feature acceptance",
       skill: "startup-goal",
-      description: "Wait for human acceptance before activating the next milestone.",
+      description:
+        "Polish the verified result prose without changing evidence, then wait for acceptance.",
     },
   ],
 };

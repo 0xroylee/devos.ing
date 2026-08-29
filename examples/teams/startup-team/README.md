@@ -20,6 +20,11 @@ approval. The plan is synthesized in the captured pre-launch order, never the
 order results happened to finish. Reviews and repairs that depend on another
 role run only after that prerequisite.
 
+Before the coordinator shows a plan for approval or a verified feature for
+acceptance, it runs `$unslop` over the user-facing prose. This edits wording
+only. It cannot change facts, evidence labels, citations, paths, commands,
+identifiers, scope, acceptance criteria, risks, or decisions.
+
 Install it from the repo root:
 
 ```bash

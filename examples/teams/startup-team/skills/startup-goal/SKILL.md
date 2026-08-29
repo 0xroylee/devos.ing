@@ -160,6 +160,15 @@ wishes. Activate the next dependency-ready milestone without silently reopening
 accepted decisions. A scope change requires human approval and invalidates only
 affected downstream plans.
 
+## Polish user-facing prose
+
+Before presenting a plan for approval or a feature for acceptance, run
+`$unslop` over the prose. It may improve wording and rhythm, but it must not
+change facts, evidence classifications, citations, repository paths, commands,
+identifiers, scope, acceptance criteria, risk status, or decisions. If clearer
+wording exposes a contradiction, return to the owning stage instead of editing
+the contradiction away.
+
 ## Internal role execution policy
 
 Use the host's internal agent-launch capability and the installed

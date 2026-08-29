@@ -1928,7 +1928,6 @@ describe("workflow bundles", () => {
       ),
       "utf8",
     );
-
     for (const contract of [
       "## Internal role execution policy",
       "internal agent-launch capability",
@@ -2202,11 +2201,24 @@ describe("workflow bundles", () => {
       ),
       "utf8",
     );
+    const unslopSkill = await readFile(
+      join(
+        import.meta.dir,
+        "..",
+        "examples",
+        "teams",
+        "startup-team",
+        "skills",
+        "unslop",
+        "SKILL.md",
+      ),
+      "utf8",
+    );
 
     expect(bundle.manifest).toMatchObject({
       kind: "team",
       name: "startup-team",
-      version: "0.8.0",
+      version: "0.9.0",
       coordinator: "./skills/startup-goal",
       members: canonicalMembers,
       loop: {
@@ -2250,8 +2262,14 @@ describe("workflow bundles", () => {
     expect(bundle.manifest.steps.find((step) => step.id === "evaluating")?.instruction).toContain(
       "launch the installed profile for the accountable outcome role",
     );
+    for (const stepId of ["awaiting_plan_approval", "awaiting_acceptance"]) {
+      expect(bundle.manifest.steps.find((step) => step.id === stepId)?.instruction).toContain(
+        "$unslop",
+      );
+    }
     expect(bundle.manifest.skills).toEqual([
       { source: "./skills/startup-goal", entry: true },
+      { source: "./skills/unslop" },
       ...canonicalMembers.map((source) => ({ source })),
       { source: "../../workflows/setup-model-routing/skills/setup-model-routing" },
     ]);
@@ -2278,7 +2296,12 @@ describe("workflow bundles", () => {
     expect(
       graph.dependencies.filter(({ source }) => source === "mattpocock:implement"),
     ).toHaveLength(1);
-    expect(graph.dependencies).toHaveLength(24);
+    expect(graph.dependencies).toHaveLength(25);
+    expect(
+      graph.dependencies.filter(({ source }) =>
+        source.endsWith("/examples/teams/startup-team/skills/unslop"),
+      ),
+    ).toHaveLength(1);
     expect(
       graph.dependencies.filter(({ source }) =>
         source.endsWith("/examples/workflows/setup-model-routing/skills/setup-model-routing"),
@@ -2295,6 +2318,7 @@ describe("workflow bundles", () => {
       "## 6. Execute implementation and QA roles",
       "## 7. Reconstruct and evaluate the user outcome",
       "## 8. Carry accepted context forward",
+      "## Polish user-facing prose",
       "## Internal role execution policy",
       "## Loop limits",
     ]) {
@@ -2323,6 +2347,9 @@ describe("workflow bundles", () => {
     expect(skill).toContain("one repair");
     expect(skill).toContain("one targeted review");
     expect(skill).toContain("mode: delegated");
+    expect(skill).toMatch(/must not\s+change facts/);
+    expect(unslopSkill).toContain("name: unslop");
+    expect(unslopSkill).toContain("Preserve meaning");
     expect(skill).toContain("source coordinator");
     expect(skill).toContain("milestone ID");
     expect(skill).toContain("approved Goal Tunnel");

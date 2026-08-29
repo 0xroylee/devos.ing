@@ -1268,7 +1268,7 @@ describe("omniskill command module", () => {
         from: "user",
       });
 
-      expect(skillInstalls).toHaveLength(24);
+      expect(skillInstalls).toHaveLength(25);
       expect(externalInstalls).toEqual([]);
       const installed = JSON.parse(
         await readFile(join(homeDir, ".omniskills", "workflows", "startup-team.json"), "utf8"),
@@ -1277,7 +1277,7 @@ describe("omniskill command module", () => {
         installed.installArtifacts.filter(
           ({ kind }: { kind?: string }) => kind !== "agent_profile",
         ),
-      ).toHaveLength(24);
+      ).toHaveLength(25);
       expect(
         installed.installArtifacts.filter(
           ({ kind }: { kind?: string }) => kind === "agent_profile",

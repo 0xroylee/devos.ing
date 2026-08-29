@@ -1,13 +1,13 @@
 {
   "schemaVersion": "0.2",
   "workflow": "startup-team",
-  "workflowVersion": "0.8.0",
-  "generatedAt": "2026-08-24T07:12:44.363Z",
+  "workflowVersion": "0.9.0",
+  "generatedAt": "2026-08-29T05:53:37.109Z",
   "workflows": [
     {
-      "id": "workflow:startup-team@0.8.0",
+      "id": "workflow:startup-team@0.9.0",
       "name": "startup-team",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "source": {
         "kind": "root"
       }
@@ -87,35 +87,35 @@
   ],
   "edges": [
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:ceo@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:cto@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:product-manager@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:web-design@0.2.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:engineering-manager@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:founding-engineer@0.3.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:deliver-code@0.1.0"
     },
     {
-      "from": "workflow:startup-team@0.8.0",
+      "from": "workflow:startup-team@0.9.0",
       "to": "workflow:qa-lead@0.3.0"
     }
   ],
@@ -124,7 +124,13 @@
       "source": "./skills/startup-goal",
       "resolvedName": "startup-goal",
       "kind": "local",
-      "hash": "sha256:b1469d9341cd59efddc24e19324bf3327e3573ba0f3c029cdc2574b75c93451d"
+      "hash": "sha256:4729e7cf67bc6275b9b49d9d9257d1c30c2d5dd97ad37b06fb04209ae2502d0c"
+    },
+    {
+      "source": "./skills/unslop",
+      "resolvedName": "unslop",
+      "kind": "local",
+      "hash": "sha256:dab0c4d6dbfb5ebee145efe80b1c6cd204d5959c4cef01511ad75ef95e59bd20"
     },
     {
       "source": "../../workflows/ceo/skills/ceo",
